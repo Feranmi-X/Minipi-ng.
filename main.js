@@ -1158,8 +1158,8 @@ const testimonials = [
         text: "Minipi saved me from buying fake gadgets online. Their customer support guided me perfectly and my MacBook arrived safely."
     },
     {
-        name: "Molayo Solomon",
-        role: "Hair marker",
+        name: "charles",
+        role: "business man",
         text: "The prices are amazing. I've purchased accessories, headphones, and a laptop. Every product exceeded expectations."
     },
     {
@@ -1189,13 +1189,13 @@ function renderTestimonials() {
 
     currentSet.forEach(item => {
         container.innerHTML += `
-            <div class="bg-brand border border-gray-800 rounded-3xl p-8 hover:border-cyan-500 transition duration-500 hover:-translate-y-2">
+            <div class="bg-brand/60 border border-gray-800 rounded-3xl p-8 hover:border-cyan-500 transition duration-500 hover:-translate-y-2">
                 
                 <div class="flex mb-5 text-yellow-400 text-xl">
                     ★★★★★
                 </div>
 
-                <p class="text-gray-300 leading-relaxed mb-6">
+                <p class="text-black dark:text-white leading-relaxed mb-6">
                     "${item.text}"
                 </p>
 
