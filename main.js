@@ -1189,7 +1189,7 @@ function renderTestimonials() {
 
     currentSet.forEach(item => {
         container.innerHTML += `
-            <div class="bg-gray-900 border border-gray-800 rounded-3xl p-8 hover:border-cyan-500 transition duration-500 hover:-translate-y-2">
+            <div class="bg-brand border border-gray-800 rounded-3xl p-8 hover:border-cyan-500 transition duration-500 hover:-translate-y-2">
                 
                 <div class="flex mb-5 text-yellow-400 text-xl">
                     ★★★★★
