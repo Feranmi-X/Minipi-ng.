@@ -1,0 +1,1036 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minipi NG — Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Poppins", "sans-serif"] },
+            colors: { brand: { DEFAULT: "#ff7a00", hover: "#e06d00" } },
+            keyframes: {
+              fadeUp: {
+                "0%": { opacity: "0", transform: "translateY(10px)" },
+                "100%": { opacity: "1", transform: "translateY(0)" },
+              },
+              dropIn: {
+                "0%": { opacity: "0", transform: "translateY(-6px)" },
+                "100%": { opacity: "1", transform: "translateY(0)" },
+              },
+            },
+            animation: {
+              fadeUp: "fadeUp 0.3s ease both",
+              dropIn: "dropIn 0.15s ease",
+            },
+          },
+        },
+      };
+    </script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      .modal-scroll::-webkit-scrollbar {
+        width: 6px;
+      }
+      .modal-scroll::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 4px;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+      }
+    </style>
+  </head>
+
+  <body
+    class="font-sans bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-gray-100 min-h-screen transition-colors duration-300"
+  >
+    <!-- ── LOGIN GATE ─────────────────────────────────────────── -->
+    <div
+      id="loginGate"
+      class="min-h-screen flex items-center justify-center p-5"
+    >
+      <div
+        class="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-2xl shadow-xl w-full max-w-[360px] p-8 animate-fadeUp"
+      >
+        <div class="text-center mb-6">
+          <div class="text-2xl font-extrabold mb-1">
+            <span class="text-brand">mini</span>pi NG<span class="text-brand"
+              >.</span
+            >
+          </div>
+          <p class="text-sm text-gray-500 dark:text-gray-400">
+            Admin Dashboard
+          </p>
+        </div>
+        <div
+          id="loginError"
+          class="hidden mb-4 px-3 py-2.5 rounded-xl text-xs bg-red-50 border border-red-200 text-red-600 dark:bg-red-500/10 dark:border-red-500/30 dark:text-red-400"
+        ></div>
+        <div class="mb-4">
+          <label class="block text-xs font-semibold mb-1.5">Admin Email</label>
+          <input
+            id="loginEmail"
+            type="email"
+            placeholder="admin@yourdomain.com"
+            class="w-full px-4 py-[11px] rounded-xl border border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-[13px] focus:border-brand placeholder:text-gray-400 transition-colors"
+          />
+        </div>
+        <div class="mb-6">
+          <label class="block text-xs font-semibold mb-1.5">Password</label>
+          <input
+            id="loginPwd"
+            type="password"
+            placeholder="••••••••"
+            class="w-full px-4 py-[11px] rounded-xl border border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-[13px] focus:border-brand placeholder:text-gray-400 transition-colors"
+          />
+        </div>
+        <button
+          id="loginBtn"
+          class="w-full py-3 rounded-full bg-brand text-white text-sm font-semibold hover:opacity-90 disabled:opacity-60 transition-opacity flex items-center justify-center gap-2"
+        >
+          Sign In to Admin
+        </button>
+        <p class="text-center text-xs text-gray-400 mt-4">
+          Only authorised admin accounts can access this panel.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── ADMIN SHELL (hidden until authenticated) ──────────── -->
+    <div id="adminShell" class="hidden min-h-screen flex flex-col">
+      <!-- TOP BAR -->
+      <header
+        class="sticky top-0 z-50 bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-800 shadow-sm"
+      >
+        <div class="max-w-[1280px] mx-auto px-5 py-3 flex items-center gap-4">
+          <div class="text-[20px] font-extrabold shrink-0">
+            <span class="text-brand">mini</span>pi NG<span class="text-brand"
+              >.</span
+            >
+            <span
+              class="ml-2 text-xs font-semibold bg-brand/10 text-brand px-2 py-0.5 rounded-full align-middle"
+              >Admin</span
+            >
+          </div>
+          <div class="flex-1"></div>
+          <!-- Dark mode -->
+          <button
+            id="themeBtn"
+            aria-label="Toggle dark mode"
+            class="w-[38px] h-[38px] rounded-full border border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 flex items-center justify-center hover:border-brand transition-colors"
+          >
+            <i id="themeIcon" class="fas fa-sun text-sm"></i>
+          </button>
+          <!-- Admin user -->
+          <div
+            id="adminUserPill"
+            class="hidden items-center gap-2 bg-gray-100 dark:bg-neutral-800 px-3 py-1.5 rounded-full text-xs font-medium"
+          >
+            <i class="fas fa-user-shield text-brand text-[11px]"></i>
+            <span id="adminUserEmail" class="max-w-[160px] truncate"></span>
+          </div>
+          <!-- Logout -->
+          <button
+            id="logoutBtn"
+            class="flex items-center gap-1.5 px-4 py-2 rounded-full border border-gray-200 dark:border-neutral-700 text-xs font-semibold hover:border-red-400 hover:text-red-500 transition-colors"
+          >
+            <i class="fas fa-sign-out-alt text-[11px]"></i> Sign Out
+          </button>
+        </div>
+      </header>
+
+      <!-- MAIN -->
+      <main class="flex-1 max-w-[1280px] mx-auto w-full px-5 py-8">
+        <!-- STAT CARDS -->
+        <div
+          id="statCards"
+          class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8"
+        ></div>
+
+        <!-- TOOLBAR -->
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+          <h2 class="text-lg font-bold">Products</h2>
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Search -->
+            <div class="relative">
+              <i
+                class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"
+              ></i>
+              <input
+                id="searchInput"
+                type="text"
+                placeholder="Search products…"
+                class="pl-8 pr-4 py-2 rounded-full border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-[13px] focus:border-brand w-[220px] placeholder:text-gray-400 transition-colors"
+              />
+            </div>
+            <!-- Category filter -->
+            <select
+              id="catFilter"
+              class="px-4 py-2 rounded-full border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-[13px] focus:border-brand transition-colors"
+            >
+              <option value="all">All Categories</option>
+              <option value="phone">Phones</option>
+              <option value="tablet">Tablets</option>
+              <option value="laptop">Laptops</option>
+              <option value="gaming">Gaming</option>
+            </select>
+            <!-- Add product -->
+            <button
+              id="addProductBtn"
+              class="flex items-center gap-2 px-5 py-2 rounded-full bg-brand text-white text-[13px] font-semibold hover:opacity-90 transition-opacity"
+            >
+              <i class="fas fa-plus text-[11px]"></i> Add Product
+            </button>
+          </div>
+        </div>
+
+        <!-- TABLE -->
+        <div
+          class="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden shadow-sm"
+        >
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr
+                  class="border-b border-gray-100 dark:border-neutral-800 bg-gray-50 dark:bg-neutral-800/50"
+                >
+                  <th
+                    class="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide w-16"
+                  >
+                    Image
+                  </th>
+                  <th
+                    class="text-left px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide"
+                  >
+                    Name
+                  </th>
+                  <th
+                    class="text-left px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide"
+                  >
+                    Category
+                  </th>
+                  <th
+                    class="text-left px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide"
+                  >
+                    Price (₦)
+                  </th>
+                  <th
+                    class="text-left px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide hidden md:table-cell"
+                  >
+                    Description
+                  </th>
+                  <th
+                    class="text-right px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide"
+                  >
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="productTableBody"></tbody>
+            </table>
+          </div>
+          <div
+            id="tableEmpty"
+            class="hidden py-16 text-center text-gray-400 dark:text-gray-600 text-sm"
+          >
+            <i class="fas fa-box-open text-4xl mb-3 block opacity-30"></i>
+            No products found.
+          </div>
+          <div
+            id="tableLoading"
+            class="py-16 text-center text-gray-400 text-sm"
+          >
+            <i
+              class="fas fa-spinner fa-spin text-brand text-2xl mb-3 block"
+            ></i>
+            Loading products…
+          </div>
+        </div>
+
+        <!-- PAGINATION -->
+        <div
+          id="pagination"
+          class="flex items-center justify-between mt-4 text-xs text-gray-500 dark:text-gray-400 hidden"
+        >
+          <span id="pageInfo"></span>
+          <div class="flex gap-2">
+            <button
+              id="prevPage"
+              class="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-neutral-700 hover:border-brand disabled:opacity-40 transition-colors"
+            >
+              ← Prev
+            </button>
+            <button
+              id="nextPage"
+              class="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-neutral-700 hover:border-brand disabled:opacity-40 transition-colors"
+            >
+              Next →
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- ── PRODUCT MODAL (Add / Edit) ────────────────────────── -->
+    <div
+      id="productModal"
+      class="hidden fixed inset-0 bg-black/60 z-[500] items-center justify-center p-5"
+    >
+      <div
+        class="modal-scroll bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl w-full max-w-[520px] max-h-[90vh] overflow-y-auto animate-fadeUp relative"
+      >
+        <div
+          class="flex items-center justify-between px-6 py-5 border-b border-gray-100 dark:border-neutral-800"
+        >
+          <h3 id="modalTitle" class="text-base font-bold">Add Product</h3>
+          <button
+            id="modalClose"
+            class="w-[30px] h-[30px] flex items-center justify-center rounded-full bg-gray-100 dark:bg-neutral-800 hover:text-brand transition-colors"
+          >
+            <i class="fas fa-times text-sm"></i>
+          </button>
+        </div>
+        <div class="px-6 py-5 flex flex-col gap-4">
+          <div
+            id="modalError"
+            class="hidden px-3 py-2.5 rounded-xl text-xs bg-red-50 border border-red-200 text-red-600 dark:bg-red-500/10 dark:border-red-500/30 dark:text-red-400"
+          ></div>
+
+          <!-- Name -->
+          <div>
+            <label class="block text-xs font-semibold mb-1.5"
+              >Product Name <span class="text-red-500">*</span></label
+            >
+            <input
+              id="fName"
+              type="text"
+              placeholder="e.g. iPhone 15 Pro Max"
+              class="w-full px-4 py-[11px] rounded-xl border border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 text-[13px] focus:border-brand placeholder:text-gray-400 transition-colors"
+            />
+          </div>
+
+          <!-- Category -->
+          <div>
+            <label class="block text-xs font-semibold mb-1.5"
+              >Category <span class="text-red-500">*</span></label
+            >
+            <select
+              id="fCat"
+              class="w-full px-4 py-[11px] rounded-xl border border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 text-[13px] focus:border-brand transition-colors"
+            >
+              <option value="">Select category…</option>
+              <option value="phone">Phone</option>
+              <option value="tablet">Tablet</option>
+              <option value="laptop">Laptop</option>
+              <option value="gaming">Gaming</option>
+            </select>
+          </div>
+
+          <!-- Price -->
+          <div>
+            <label class="block text-xs font-semibold mb-1.5"
+              >Price (₦) <span class="text-red-500">*</span></label
+            >
+            <input
+              id="fPrice"
+              type="number"
+              min="0"
+              placeholder="e.g. 1845000"
+              class="w-full px-4 py-[11px] rounded-xl border border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 text-[13px] focus:border-brand placeholder:text-gray-400 transition-colors"
+            />
+          </div>
+
+          <!-- Image URL -->
+          <div>
+            <label class="block text-xs font-semibold mb-1.5"
+              >Image URL <span class="text-red-500">*</span></label
+            >
+            <input
+              id="fImg"
+              type="url"
+              placeholder="https://images.unsplash.com/…"
+              class="w-full px-4 py-[11px] rounded-xl border border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 text-[13px] focus:border-brand placeholder:text-gray-400 transition-colors"
+            />
+            <!-- Image preview -->
+            <div id="imgPreviewWrap" class="hidden mt-2">
+              <img
+                id="imgPreview"
+                src=""
+                alt="Preview"
+                class="w-20 h-20 object-cover rounded-xl border border-gray-200 dark:border-neutral-700"
+              />
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label class="block text-xs font-semibold mb-1.5"
+              >Description</label
+            >
+            <textarea
+              id="fDesc"
+              rows="3"
+              placeholder="Short product description…"
+              class="w-full px-4 py-[11px] rounded-xl border border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 text-[13px] focus:border-brand placeholder:text-gray-400 transition-colors resize-none"
+            ></textarea>
+          </div>
+        </div>
+        <div
+          class="px-6 py-4 border-t border-gray-100 dark:border-neutral-800 flex gap-3 justify-end"
+        >
+          <button
+            id="modalCancelBtn"
+            class="px-5 py-2.5 rounded-full border border-gray-200 dark:border-neutral-700 text-sm font-medium hover:border-gray-400 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            id="modalSaveBtn"
+            class="px-6 py-2.5 rounded-full bg-brand text-white text-sm font-semibold hover:opacity-90 disabled:opacity-60 transition-opacity flex items-center gap-2"
+          >
+            Save Product
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DELETE CONFIRM MODAL ───────────────────────────────── -->
+    <div
+      id="deleteModal"
+      class="hidden fixed inset-0 bg-black/60 z-[600] items-center justify-center p-5"
+    >
+      <div
+        class="bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl w-full max-w-[380px] p-7 animate-fadeUp"
+      >
+        <div
+          class="w-12 h-12 rounded-full bg-red-50 dark:bg-red-500/10 flex items-center justify-center mx-auto mb-4"
+        >
+          <i class="fas fa-trash text-red-500 text-lg"></i>
+        </div>
+        <h3 class="text-base font-bold text-center mb-1.5">Delete Product?</h3>
+        <p
+          id="deleteMsg"
+          class="text-[13px] text-gray-500 dark:text-gray-400 text-center mb-6"
+        ></p>
+        <div class="flex gap-3">
+          <button
+            id="deleteCancelBtn"
+            class="flex-1 py-2.5 rounded-full border border-gray-200 dark:border-neutral-700 text-sm font-medium hover:border-gray-400 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            id="deleteConfirmBtn"
+            class="flex-1 py-2.5 rounded-full bg-red-500 text-white text-sm font-semibold hover:opacity-90 disabled:opacity-60 transition-opacity flex items-center justify-center gap-2"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TOAST ─────────────────────────────────────────────── -->
+    <div
+      id="toast"
+      class="fixed bottom-7 left-1/2 -translate-x-1/2 translate-y-20 bg-neutral-900 text-white text-[13px] font-medium px-5 py-[11px] rounded-full shadow-2xl z-[9999] flex items-center gap-2 transition-all duration-300 opacity-0 whitespace-nowrap pointer-events-none"
+    >
+      <div id="toastDot" class="w-2 h-2 rounded-full bg-brand shrink-0"></div>
+      <span id="toastMsg"></span>
+    </div>
+
+    <!-- ══════════════════ JAVASCRIPT ══════════════════════════ -->
+    <script>
+      // ── CONFIG ─────────────────────────────────────────────────
+      // ⚠️  Replace with your actual Supabase URL and anon key
+      const SB_URL = "https://sygdrjmjjxwxuczcnxjr.supabase.co";
+      const SB_KEY = "sb_publishable_lAqlBUViE_Jcq7PbVALyLg_b-X9YQvO";
+
+      // ⚠️  Set admin emails — only these can access the dashboard
+      const ADMIN_EMAILS = ["admin@minipi.ng", "solomonfemi97@gmail.com"];
+
+      // ── SUPABASE INIT ──────────────────────────────────────────
+      let sb = null;
+      try {
+        if (window.supabase?.createClient) {
+          sb = window.supabase.createClient(SB_URL, SB_KEY);
+        }
+      } catch (e) {
+        console.warn("Supabase init failed", e);
+      }
+
+      // ── DARK MODE ──────────────────────────────────────────────
+      const html = document.documentElement;
+      const themeBtn = document.getElementById("themeBtn");
+      const themeIcon = document.getElementById("themeIcon");
+
+      function applyTheme(dark) {
+        html.classList.toggle("dark", dark);
+        themeIcon.className = dark
+          ? "fas fa-moon text-sm"
+          : "fas fa-sun text-sm";
+      }
+      const saved = localStorage.getItem("gTheme");
+      applyTheme(
+        saved
+          ? saved === "dark"
+          : window.matchMedia("(prefers-color-scheme: dark)").matches,
+      );
+      themeBtn.addEventListener("click", () => {
+        const d = html.classList.contains("dark");
+        applyTheme(!d);
+        localStorage.setItem("gTheme", !d ? "dark" : "light");
+      });
+
+      // ── TOAST ──────────────────────────────────────────────────
+      let toastTimer;
+      function showToast(msg, type = "success") {
+        const t = document.getElementById("toast");
+        const dot = document.getElementById("toastDot");
+        document.getElementById("toastMsg").textContent = msg;
+        dot.className = `w-2 h-2 rounded-full shrink-0 ${type === "error" ? "bg-red-500" : "bg-brand"}`;
+        t.classList.replace("opacity-0", "opacity-100");
+        t.classList.replace("translate-y-20", "translate-y-0");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          t.classList.replace("opacity-100", "opacity-0");
+          t.classList.replace("translate-y-0", "translate-y-20");
+        }, 3000);
+      }
+
+      // ── LOADING SPINNER HELPER ─────────────────────────────────
+      function setBusy(btn, busy, loadText, origText) {
+        btn.disabled = busy;
+        btn.innerHTML = busy
+          ? `<i class="fas fa-spinner fa-spin text-xs"></i>${loadText}`
+          : origText;
+      }
+
+      // ── LOGIN GATE ─────────────────────────────────────────────
+      const loginGate = document.getElementById("loginGate");
+      const adminShell = document.getElementById("adminShell");
+
+      function showLoginError(msg) {
+        const el = document.getElementById("loginError");
+        el.textContent = msg;
+        el.classList.remove("hidden");
+      }
+
+      document.getElementById("loginPwd").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") document.getElementById("loginBtn").click();
+      });
+
+      document
+        .getElementById("loginBtn")
+        .addEventListener("click", async () => {
+          const email = document
+            .getElementById("loginEmail")
+            .value.trim()
+            .toLowerCase();
+          const pwd = document.getElementById("loginPwd").value;
+          const btn = document.getElementById("loginBtn");
+
+          document.getElementById("loginError").classList.add("hidden");
+
+          if (!email || !pwd) {
+            showLoginError("Please enter your email and password.");
+            return;
+          }
+          if (!sb) {
+            showLoginError("Supabase is not connected. Check your config.");
+            return;
+          }
+
+          setBusy(btn, true, " Signing in…", "Sign In to Admin");
+          try {
+            const { data, error } = await sb.auth.signInWithPassword({
+              email,
+              password: pwd,
+            });
+            if (error) throw error;
+
+            const userEmail = data.user.email.toLowerCase();
+            // Check admin list OR check a custom claim / role in your DB
+            // For now we check the ADMIN_EMAILS array — update this to match your email
+            const isAdmin = ADMIN_EMAILS.map((e) => e.toLowerCase()).includes(
+              userEmail,
+            );
+            if (!isAdmin) {
+              await sb.auth.signOut();
+              throw new Error("This account does not have admin privileges.");
+            }
+
+            enterAdmin(data.user);
+          } catch (err) {
+            let msg = err.message || "Sign in failed.";
+            if (/Invalid login/i.test(msg))
+              msg = "Incorrect email or password.";
+            showLoginError(msg);
+          } finally {
+            setBusy(btn, false, "", "Sign In to Admin");
+          }
+        });
+
+      function enterAdmin(user) {
+        loginGate.classList.add("hidden");
+        adminShell.classList.remove("hidden");
+        document
+          .getElementById("adminUserPill")
+          .classList.replace("hidden", "flex");
+        document.getElementById("adminUserEmail").textContent = user.email;
+        loadProducts();
+      }
+
+      // ── LOGOUT ─────────────────────────────────────────────────
+      document
+        .getElementById("logoutBtn")
+        .addEventListener("click", async () => {
+          if (sb) await sb.auth.signOut().catch(() => {});
+          adminShell.classList.add("hidden");
+          loginGate.classList.remove("hidden");
+          document.getElementById("loginEmail").value = "";
+          document.getElementById("loginPwd").value = "";
+          document.getElementById("loginError").classList.add("hidden");
+          products = [];
+          renderTable();
+        });
+
+      // ── SESSION RESTORE ─────────────────────────────────────────
+      if (sb) {
+        sb.auth.getSession().then(({ data }) => {
+          if (data?.session?.user) {
+            const userEmail = data.session.user.email.toLowerCase();
+            const isAdmin = ADMIN_EMAILS.map((e) => e.toLowerCase()).includes(
+              userEmail,
+            );
+            if (isAdmin) enterAdmin(data.session.user);
+          }
+        });
+      }
+
+      // ── PRODUCTS STATE ─────────────────────────────────────────
+      let products = [];
+      let filteredProducts = [];
+      let currentPage = 1;
+      const PAGE_SIZE = 15;
+      let editingId = null;
+
+      // ── LOAD PRODUCTS FROM SUPABASE ────────────────────────────
+      async function loadProducts() {
+        document.getElementById("tableLoading").classList.remove("hidden");
+        document.getElementById("tableEmpty").classList.add("hidden");
+        document.getElementById("productTableBody").innerHTML = "";
+
+        if (!sb) {
+          showToast("Supabase not connected.", "error");
+          document.getElementById("tableLoading").classList.add("hidden");
+          return;
+        }
+
+        try {
+          const { data, error } = await sb
+            .from("products")
+            .select("*")
+            .order("created_at", { ascending: false });
+
+          if (error) throw error;
+          products = data || [];
+          applyFilters();
+          renderStats();
+        } catch (err) {
+          showToast("Failed to load products: " + err.message, "error");
+          document.getElementById("tableLoading").classList.add("hidden");
+        }
+      }
+
+      // ── FILTERS ────────────────────────────────────────────────
+      document.getElementById("searchInput").addEventListener("input", () => {
+        currentPage = 1;
+        applyFilters();
+      });
+      document.getElementById("catFilter").addEventListener("change", () => {
+        currentPage = 1;
+        applyFilters();
+      });
+
+      function applyFilters() {
+        const q = document.getElementById("searchInput").value.toLowerCase();
+        const cat = document.getElementById("catFilter").value;
+        filteredProducts = products.filter((p) => {
+          const okCat = cat === "all" || p.cat === cat;
+          const okQ =
+            !q ||
+            p.name.toLowerCase().includes(q) ||
+            (p.description || "—").toLowerCase().includes(q);
+          return okCat && okQ;
+        });
+        currentPage = 1;
+        renderTable();
+      }
+
+      // ── RENDER TABLE ───────────────────────────────────────────
+      function renderTable() {
+        const tbody = document.getElementById("productTableBody");
+        const loading = document.getElementById("tableLoading");
+        const empty = document.getElementById("tableEmpty");
+        const pagination = document.getElementById("pagination");
+
+        loading.classList.add("hidden");
+
+        if (!filteredProducts.length) {
+          tbody.innerHTML = "";
+          empty.classList.remove("hidden");
+          pagination.classList.add("hidden");
+          return;
+        }
+
+        empty.classList.add("hidden");
+
+        const start = (currentPage - 1) * PAGE_SIZE;
+        const page = filteredProducts.slice(start, start + PAGE_SIZE);
+        const totalPages = Math.ceil(filteredProducts.length / PAGE_SIZE);
+
+        const fmt = (n) => "₦" + Number(n).toLocaleString("en-NG");
+        const catBadge = {
+          phone:
+            "bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+          tablet:
+            "bg-purple-50 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400",
+          laptop:
+            "bg-teal-50 text-teal-700 dark:bg-teal-500/10 dark:text-teal-400",
+          gaming:
+            "bg-orange-50 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400",
+        };
+
+        tbody.innerHTML = page
+          .map(
+            (p) => `
+          <tr class="border-b border-gray-50 dark:border-neutral-800 hover:bg-gray-50 dark:hover:bg-neutral-800/40 transition-colors group animate-fadeUp">
+            <td class="px-5 py-3">
+              <img src="${p.img || ""}" alt="${p.name}"
+                class="w-11 h-11 object-cover rounded-xl bg-gray-100 dark:bg-neutral-800 border border-gray-100 dark:border-neutral-700"
+                onerror="this.src='https://placehold.co/44x44/f3f4f6/9ca3af?text=IMG'" />
+            </td>
+            <td class="px-4 py-3">
+              <div class="text-[13px] font-semibold max-w-[180px] truncate" title="${p.name}">${p.name}</div>
+              <div class="text-[11px] text-gray-400 mt-0.5">ID: ${p.id}</div>
+            </td>
+            <td class="px-4 py-3">
+              <span class="text-[11px] font-semibold uppercase tracking-wide px-2 py-1 rounded-full ${catBadge[p.cat] || "bg-gray-100 text-gray-600"}">
+                ${p.cat || "—"}
+              </span>
+            </td>
+            <td class="px-4 py-3 text-[13px] font-bold text-brand">${fmt(p.price)}</td>
+            <td class="px-4 py-3 hidden md:table-cell">
+              <div class="text-[12px] text-gray-500 dark:text-gray-400 max-w-[240px] truncate" title="${p.desc || ""}">${p.desc || "—"}</div>
+            </td>
+            <td class="px-5 py-3 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <button class="edit-btn w-8 h-8 rounded-lg border border-gray-200 dark:border-neutral-700 flex items-center justify-center hover:border-brand hover:text-brand transition-colors text-xs"
+                  data-id="${p.id}" title="Edit">
+                  <i class="fas fa-pen pointer-events-none"></i>
+                </button>
+                <button class="delete-btn w-8 h-8 rounded-lg border border-gray-200 dark:border-neutral-700 flex items-center justify-center hover:border-red-400 hover:text-red-500 transition-colors text-xs"
+                  data-id="${p.id}" data-name="${p.name}" title="Delete">
+                  <i class="fas fa-trash pointer-events-none"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `,
+          )
+          .join("");
+
+        // Pagination
+        pagination.classList.toggle("hidden", totalPages <= 1);
+        document.getElementById("pageInfo").textContent =
+          `Showing ${start + 1}–${Math.min(start + PAGE_SIZE, filteredProducts.length)} of ${filteredProducts.length} products`;
+        document.getElementById("prevPage").disabled = currentPage <= 1;
+        document.getElementById("nextPage").disabled =
+          currentPage >= totalPages;
+      }
+
+      document.getElementById("prevPage").addEventListener("click", () => {
+        currentPage--;
+        renderTable();
+      });
+      document.getElementById("nextPage").addEventListener("click", () => {
+        currentPage++;
+        renderTable();
+      });
+
+      // Delegated edit / delete clicks
+      document
+        .getElementById("productTableBody")
+        .addEventListener("click", (e) => {
+          const editBtn = e.target.closest(".edit-btn");
+          const delBtn = e.target.closest(".delete-btn");
+          if (editBtn) openEditModal(editBtn.dataset.id);
+          if (delBtn) openDeleteModal(delBtn.dataset.id, delBtn.dataset.name);
+        });
+
+      // ── STATS ──────────────────────────────────────────────────
+      function renderStats() {
+        const cats = { phone: 0, tablet: 0, laptop: 0, gaming: 0 };
+        products.forEach((p) => {
+          if (cats[p.cat] !== undefined) cats[p.cat]++;
+        });
+
+        const statDef = [
+          {
+            label: "Total Products",
+            value: products.length,
+            icon: "fa-box",
+            color: "text-brand",
+          },
+          {
+            label: "Phones",
+            value: cats.phone,
+            icon: "fa-mobile-alt",
+            color: "text-blue-500",
+          },
+          {
+            label: "Tablets",
+            value: cats.tablet,
+            icon: "fa-tablet-alt",
+            color: "text-purple-500",
+          },
+          {
+            label: "Laptops",
+            value: cats.laptop,
+            icon: "fa-laptop",
+            color: "text-teal-500",
+          },
+          {
+            label: "Gaming",
+            value: cats.gaming,
+            icon: "fa-gamepad",
+            color: "text-orange-500",
+          },
+        ];
+
+        document.getElementById("statCards").innerHTML = statDef
+          .map(
+            (s) => `
+          <div class="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-2xl p-4 flex items-center gap-3 shadow-sm">
+            <div class="w-10 h-10 rounded-xl bg-gray-50 dark:bg-neutral-800 flex items-center justify-center shrink-0">
+              <i class="fas ${s.icon} ${s.color}"></i>
+            </div>
+            <div>
+              <div class="text-xl font-bold">${s.value}</div>
+              <div class="text-[11px] text-gray-500 dark:text-gray-400">${s.label}</div>
+            </div>
+          </div>
+        `,
+          )
+          .join("");
+      }
+
+      // ── PRODUCT MODAL (ADD / EDIT) ─────────────────────────────
+      const productModal = document.getElementById("productModal");
+
+      function openModal() {
+        productModal.classList.remove("hidden");
+        productModal.classList.add("flex");
+        document.getElementById("modalError").classList.add("hidden");
+      }
+      function closeModal() {
+        productModal.classList.add("hidden");
+        productModal.classList.remove("flex");
+        editingId = null;
+        clearForm();
+      }
+
+      function clearForm() {
+        ["fName", "fCat", "fPrice", "fImg", "fDesc"].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el.tagName === "SELECT") el.value = "";
+          else el.value = "";
+        });
+        document.getElementById("imgPreviewWrap").classList.add("hidden");
+        document.getElementById("modalError").classList.add("hidden");
+      }
+
+      document.getElementById("addProductBtn").addEventListener("click", () => {
+        editingId = null;
+        document.getElementById("modalTitle").textContent = "Add Product";
+        document.getElementById("modalSaveBtn").textContent = "Save Product";
+        clearForm();
+        openModal();
+      });
+
+      document
+        .getElementById("modalClose")
+        .addEventListener("click", closeModal);
+      document
+        .getElementById("modalCancelBtn")
+        .addEventListener("click", closeModal);
+      productModal.addEventListener("click", (e) => {
+        if (e.target === productModal) closeModal();
+      });
+
+      function openEditModal(id) {
+        const p = products.find((x) => String(x.id) === String(id));
+        if (!p) return;
+        editingId = p.id;
+        document.getElementById("modalTitle").textContent = "Edit Product";
+        document.getElementById("modalSaveBtn").textContent = "Update Product";
+        document.getElementById("fName").value = p.name || "";
+        document.getElementById("fCat").value = p.cat || "";
+        document.getElementById("fPrice").value = p.price || "";
+        document.getElementById("fImg").value = p.img || "";
+        document.getElementById("fDesc").value = p.description || "";
+        if (p.img) {
+          document.getElementById("imgPreview").src = p.img;
+          document.getElementById("imgPreviewWrap").classList.remove("hidden");
+        }
+        openModal();
+      }
+
+      // Image preview on URL input
+      document.getElementById("fImg").addEventListener("input", (e) => {
+        const val = e.target.value.trim();
+        const wrap = document.getElementById("imgPreviewWrap");
+        const img = document.getElementById("imgPreview");
+        if (val) {
+          img.src = val;
+          wrap.classList.remove("hidden");
+        } else {
+          wrap.classList.add("hidden");
+        }
+      });
+
+      // ── SAVE (CREATE / UPDATE) ─────────────────────────────────
+      document
+        .getElementById("modalSaveBtn")
+        .addEventListener("click", async () => {
+          const name = document.getElementById("fName").value.trim();
+          const cat = document.getElementById("fCat").value;
+          const price = Number(document.getElementById("fPrice").value);
+          const img = document.getElementById("fImg").value.trim();
+          const desc = document.getElementById("fDesc").value.trim();
+          const errEl = document.getElementById("modalError");
+          const btn = document.getElementById("modalSaveBtn");
+
+          errEl.classList.add("hidden");
+
+          if (!name) {
+            errEl.textContent = "Product name is required.";
+            errEl.classList.remove("hidden");
+            return;
+          }
+          if (!cat) {
+            errEl.textContent = "Please select a category.";
+            errEl.classList.remove("hidden");
+            return;
+          }
+          if (!price || price <= 0) {
+            errEl.textContent = "Please enter a valid price.";
+            errEl.classList.remove("hidden");
+            return;
+          }
+          if (!img) {
+            errEl.textContent = "Please enter an image URL.";
+            errEl.classList.remove("hidden");
+            return;
+          }
+          if (!sb) {
+            errEl.textContent = "Supabase not connected.";
+            errEl.classList.remove("hidden");
+            return;
+          }
+
+          const payload = { name, cat, price, img, description: desc };
+          const origText = btn.textContent;
+          setBusy(btn, true, " Saving…", origText);
+
+          try {
+            if (editingId) {
+              // UPDATE
+              const { error } = await sb
+                .from("products")
+                .update(payload)
+                .eq("id", editingId);
+              if (error) throw error;
+              showToast("Product updated successfully!");
+            } else {
+              // CREATE
+              const { error } = await sb.from("products").insert([payload]);
+              if (error) throw error;
+              showToast("Product added successfully!");
+            }
+            closeModal();
+            await loadProducts();
+          } catch (err) {
+            errEl.textContent = err.message || "Failed to save product.";
+            errEl.classList.remove("hidden");
+          } finally {
+            setBusy(btn, false, "", origText);
+          }
+        });
+
+      // ── DELETE ─────────────────────────────────────────────────
+      const deleteModal = document.getElementById("deleteModal");
+      let deletingId = null;
+
+      function openDeleteModal(id, name) {
+        deletingId = id;
+        document.getElementById("deleteMsg").textContent =
+          `"${name}" will be permanently removed from your store. This cannot be undone.`;
+        deleteModal.classList.remove("hidden");
+        deleteModal.classList.add("flex");
+      }
+      function closeDeleteModal() {
+        deleteModal.classList.add("hidden");
+        deleteModal.classList.remove("flex");
+        deletingId = null;
+      }
+
+      document
+        .getElementById("deleteCancelBtn")
+        .addEventListener("click", closeDeleteModal);
+      deleteModal.addEventListener("click", (e) => {
+        if (e.target === deleteModal) closeDeleteModal();
+      });
+
+      document
+        .getElementById("deleteConfirmBtn")
+        .addEventListener("click", async () => {
+          if (!deletingId || !sb) return;
+          const btn = document.getElementById("deleteConfirmBtn");
+          setBusy(btn, true, " Deleting…", "Delete");
+          try {
+            const { error } = await sb
+              .from("products")
+              .delete()
+              .eq("id", deletingId);
+            if (error) throw error;
+            showToast("Product deleted.", "success");
+            closeDeleteModal();
+            await loadProducts();
+          } catch (err) {
+            showToast("Delete failed: " + err.message, "error");
+          } finally {
+            setBusy(btn, false, "", "Delete");
+          }
+        });
+    </script>
+  </body>
+</html>

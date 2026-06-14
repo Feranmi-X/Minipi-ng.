@@ -1146,4 +1146,20 @@
       // ── INIT ──────────────────────────────────────────────────
       styleFilterPills();
       renderProducts();
-      renderCart();
+     async function loadProductsFromSupabase() {
+  if (!sb) {
+    renderProducts(); // fallback to hardcoded array if Supabase fails
+    return;
+  }
+  const { data, error } = await sb.from("products").select("*");
+  if (!error && data && data.length) {
+    products.length = 0;      // clear the hardcoded array
+    products.push(...data);   // fill it with Supabase data
+  }
+  renderProducts();
+}
+
+// ── INIT ──────────────────────────────────────────────
+styleFilterPills();
+loadProductsFromSupabase(); // ← replaces the old renderProducts()
+renderCart();
