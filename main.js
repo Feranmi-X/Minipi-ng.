@@ -1092,6 +1092,15 @@
           }
         });
 
+
+
+        //about
+
+        function toggleContent() {
+            const content = document.getElementById('moreContent');
+            content.classList.toggle('hidden');
+        }
+    
       // ── SIGN OUT ──────────────────────────────────────────────
       document
         .getElementById("logoutBtn")
