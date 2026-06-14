@@ -1143,6 +1143,94 @@
         });
       }
 
+      //testimonies
+
+      
+const testimonials = [
+    {
+        name: "Iwari",
+        role: "Bussiness Woman",
+        text: "I ordered an iPhone from Minipi and received it within 24 hours. The device was original, sealed, and exactly as advertised."
+    },
+    {
+        name: "Ayofe",
+        role: "Content Creator",
+        text: "Minipi saved me from buying fake gadgets online. Their customer support guided me perfectly and my MacBook arrived safely."
+    },
+    {
+        name: "Molayo Solomon",
+        role: "Hair marker",
+        text: "The prices are amazing. I've purchased accessories, headphones, and a laptop. Every product exceeded expectations."
+    },
+    {
+        name: "Chidi Monday",
+        role: "Business Owner",
+        text: "Their delivery speed shocked me. Ordered in the morning and got my smartwatch before evening."
+    },
+    {
+        name: "Daniel Wilson",
+        role: "Photographer",
+        text: "Bought a camera and accessories from Minipi. Everything was genuine and packaged professionally."
+    },
+    {
+        name: "Amanda Okon",
+        role: "Student",
+        text: "Best gadget store I've used. Affordable prices, secure payment, and excellent after-sales support."
+    }
+];
+
+let currentIndex = 0;
+const container = document.getElementById("testimonialContainer");
+
+function renderTestimonials() {
+    container.innerHTML = "";
+
+    const currentSet = testimonials.slice(currentIndex, currentIndex + 3);
+
+    currentSet.forEach(item => {
+        container.innerHTML += `
+            <div class="bg-gray-900 border border-gray-800 rounded-3xl p-8 hover:border-cyan-500 transition duration-500 hover:-translate-y-2">
+                
+                <div class="flex mb-5 text-yellow-400 text-xl">
+                    ★★★★★
+                </div>
+
+                <p class="text-gray-300 leading-relaxed mb-6">
+                    "${item.text}"
+                </p>
+
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-lg">
+                        ${item.name.charAt(0)}
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-lg">
+                            ${item.name}
+                        </h4>
+                        <p class="text-sm text-gray-400">
+                            ${item.role}
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        `;
+    });
+
+    currentIndex += 3;
+
+    if (currentIndex >= testimonials.length) {
+        currentIndex = 0;
+    }
+}
+
+renderTestimonials();
+
+// Change every 60 seconds (1 minute)
+setInterval(renderTestimonials, 60000);
+
+
       // ── INIT ──────────────────────────────────────────────────
       styleFilterPills();
       renderProducts();
