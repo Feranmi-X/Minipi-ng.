@@ -121,6 +121,19 @@
           transform: translateX(0);
         }
       }
+      @keyframes scrollRight {
+        from {
+          transform: translateX(-100%);
+        }
+        to {
+          transform: translateX(100%);
+        }
+      }
+
+      .scroll-right {
+        animation: scrollRight 15s linear infinite;
+        white-space: nowrap;
+      }
     </style>
     <link
       rel="stylesheet"
@@ -411,6 +424,15 @@
         </ul>
       </div>
     </header>
+
+    <div class="overflow-hidden bg-gradient-to-r from-brand to-brand/50 py-3">
+      <div class="scroll-right text-white font-bold text-lg">
+        🚀 SHOP NOW!!! &nbsp; | &nbsp; 📱 Latest Gadgets &nbsp; | &nbsp; 🎧
+        Premium Audio Gear &nbsp; | &nbsp; 💻 Tech Deals Daily &nbsp; | &nbsp;
+        ⚡ Fast Delivery &nbsp; | &nbsp; 🔥 Limited Time Offers &nbsp; | &nbsp;
+        🛒 Best Prices Guaranteed &nbsp; | &nbsp; ✨ Upgrade Your Tech Today!
+      </div>
+    </div>
 
     <!-- HERO -->
     <section
