@@ -9,6 +9,8 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -69,6 +71,19 @@
       .modal-scroll::-webkit-scrollbar-thumb {
         background: #d1d5db;
         border-radius: 4px;
+      }
+
+      .fade-section {
+        opacity: 0;
+        transform: translateY(50px);
+        transition:
+          opacity 0.8s ease,
+          transform 0.8s ease;
+      }
+
+      .fade-section.show {
+        opacity: 1;
+        transform: translateY(0);
       }
     </style>
     <link
@@ -367,7 +382,7 @@
       class="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-[#1a1a2e] dark:to-neutral-900 transition-colors duration-300"
     >
       <div
-        class="max-w-[1280px] mx-auto px-5 py-12 md:py-16 grid grid-cols-1 md:grid-cols-2 gap-10 items-center text-center md:text-left"
+        class="fade-section max-w-[1280px] mx-auto px-5 py-12 md:py-16 grid grid-cols-1 md:grid-cols-2 gap-10 items-center text-center md:text-left"
       >
         <div>
           <p
@@ -1260,6 +1275,362 @@
     >
       <div class="w-2 h-2 rounded-full bg-brand shrink-0"></div>
       <span id="toastMsg"></span>
+    </div>
+
+    <!-- PROFILE MODAL -->
+    <div
+      id="mp-overlay"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 600;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+      "
+    >
+      <div
+        id="mp-modal"
+        style="
+          background: var(--color-background-primary, #fff);
+          border-radius: 16px;
+          border: 0.5px solid #e5e7eb;
+          width: 100%;
+          max-width: 520px;
+          max-height: 88vh;
+          overflow-y: auto;
+          position: relative;
+          font-family: Poppins, sans-serif;
+        "
+      >
+        <button
+          id="mp-close-btn"
+          style="
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #f3f4f6;
+            border: 0.5px solid #e5e7eb;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+          "
+        >
+          ✕
+        </button>
+        <div
+          style="
+            padding: 1.5rem 1.5rem 1rem;
+            border-bottom: 0.5px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+          "
+        >
+          <div
+            id="mp-avatar"
+            style="
+              width: 52px;
+              height: 52px;
+              border-radius: 50%;
+              background: #ff7a0022;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 20px;
+              font-weight: 600;
+              color: #ff7a00;
+              flex-shrink: 0;
+            "
+          >
+            U
+          </div>
+          <div>
+            <p
+              id="mp-disp-name"
+              style="font-size: 15px; font-weight: 600; margin: 0 0 2px"
+            >
+              —
+            </p>
+            <p
+              id="mp-disp-email"
+              style="font-size: 12px; color: #6b7280; margin: 0"
+            >
+              —
+            </p>
+          </div>
+        </div>
+        <div
+          style="
+            display: flex;
+            border-bottom: 0.5px solid #e5e7eb;
+            padding: 0 1.5rem;
+          "
+          id="mp-tabs"
+        >
+          <div
+            class="mp-tab active"
+            data-tab="overview"
+            style="
+              padding: 0.75rem 1rem;
+              font-size: 13px;
+              cursor: pointer;
+              color: #ff7a00;
+              border-bottom: 2px solid #ff7a00;
+              margin-bottom: -1px;
+              font-weight: 600;
+            "
+          >
+            Overview
+          </div>
+          <div
+            class="mp-tab"
+            data-tab="history"
+            style="
+              padding: 0.75rem 1rem;
+              font-size: 13px;
+              cursor: pointer;
+              color: #6b7280;
+              border-bottom: 2px solid transparent;
+              margin-bottom: -1px;
+            "
+          >
+            History
+          </div>
+          <div
+            class="mp-tab"
+            data-tab="pending"
+            style="
+              padding: 0.75rem 1rem;
+              font-size: 13px;
+              cursor: pointer;
+              color: #6b7280;
+              border-bottom: 2px solid transparent;
+              margin-bottom: -1px;
+            "
+          >
+            Pending
+          </div>
+          <div
+            class="mp-tab"
+            data-tab="account"
+            style="
+              padding: 0.75rem 1rem;
+              font-size: 13px;
+              cursor: pointer;
+              color: #6b7280;
+              border-bottom: 2px solid transparent;
+              margin-bottom: -1px;
+            "
+          >
+            Account
+          </div>
+        </div>
+        <div style="padding: 1.25rem 1.5rem">
+          <div id="mp-tab-overview">
+            <div
+              style="
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                margin-bottom: 1.5rem;
+              "
+            >
+              <div
+                style="
+                  background: #f9fafb;
+                  border-radius: 8px;
+                  padding: 0.75rem;
+                  text-align: center;
+                "
+              >
+                <div
+                  id="mp-stat-total"
+                  style="font-size: 20px; font-weight: 600"
+                >
+                  0
+                </div>
+                <div style="font-size: 11px; color: #6b7280; margin-top: 2px">
+                  Total orders
+                </div>
+              </div>
+              <div
+                style="
+                  background: #f9fafb;
+                  border-radius: 8px;
+                  padding: 0.75rem;
+                  text-align: center;
+                "
+              >
+                <div
+                  id="mp-stat-success"
+                  style="font-size: 20px; font-weight: 600"
+                >
+                  0
+                </div>
+                <div style="font-size: 11px; color: #6b7280; margin-top: 2px">
+                  Completed
+                </div>
+              </div>
+              <div
+                style="
+                  background: #f9fafb;
+                  border-radius: 8px;
+                  padding: 0.75rem;
+                  text-align: center;
+                "
+              >
+                <div
+                  id="mp-stat-pending"
+                  style="font-size: 20px; font-weight: 600"
+                >
+                  0
+                </div>
+                <div style="font-size: 11px; color: #6b7280; margin-top: 2px">
+                  Pending
+                </div>
+              </div>
+            </div>
+            <p
+              style="
+                font-size: 12px;
+                font-weight: 600;
+                color: #6b7280;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                margin: 0 0 0.75rem;
+              "
+            >
+              Recent activity
+            </p>
+            <div id="mp-recent-list"></div>
+          </div>
+          <div id="mp-tab-history" style="display: none">
+            <p
+              style="
+                font-size: 12px;
+                font-weight: 600;
+                color: #6b7280;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                margin: 0 0 0.75rem;
+              "
+            >
+              Completed orders
+            </p>
+            <div id="mp-history-list"></div>
+          </div>
+          <div id="mp-tab-pending" style="display: none">
+            <p
+              style="
+                font-size: 12px;
+                font-weight: 600;
+                color: #6b7280;
+                text-transform: uppercase;
+                letter-spacing: 0.06em;
+                margin: 0 0 0.75rem;
+              "
+            >
+              Pending orders
+            </p>
+            <div id="mp-pending-list"></div>
+          </div>
+          <div id="mp-tab-account" style="display: none">
+            <div style="margin-bottom: 1rem">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #6b7280;
+                  margin-bottom: 5px;
+                "
+                >Full name</label
+              >
+              <div
+                id="mp-acc-name"
+                style="
+                  font-size: 14px;
+                  background: #f9fafb;
+                  border: 0.5px solid #e5e7eb;
+                  border-radius: 8px;
+                  padding: 0.6rem 0.85rem;
+                "
+              ></div>
+            </div>
+            <div style="margin-bottom: 1rem">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #6b7280;
+                  margin-bottom: 5px;
+                "
+                >Email address</label
+              >
+              <div
+                id="mp-acc-email"
+                style="
+                  font-size: 14px;
+                  background: #f9fafb;
+                  border: 0.5px solid #e5e7eb;
+                  border-radius: 8px;
+                  padding: 0.6rem 0.85rem;
+                "
+              ></div>
+            </div>
+            <div style="margin-bottom: 1rem">
+              <label
+                style="
+                  display: block;
+                  font-size: 12px;
+                  font-weight: 600;
+                  color: #6b7280;
+                  margin-bottom: 5px;
+                "
+                >Member since</label
+              >
+              <div
+                id="mp-acc-since"
+                style="
+                  font-size: 14px;
+                  background: #f9fafb;
+                  border: 0.5px solid #e5e7eb;
+                  border-radius: 8px;
+                  padding: 0.6rem 0.85rem;
+                "
+              ></div>
+            </div>
+            <button
+              onclick="
+                document.getElementById('mp-overlay').style.display = 'none';
+                document
+                  .getElementById('shop')
+                  .scrollIntoView({ behavior: 'smooth' });
+              "
+              style="
+                background: #ff7a00;
+                color: #fff;
+                border: none;
+                border-radius: 20px;
+                padding: 0.55rem 1.2rem;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+              "
+            >
+              Browse products →
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- ===== JAVASCRIPT ===== -->
