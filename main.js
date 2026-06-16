@@ -741,13 +741,27 @@ document.getElementById("forgotBtn").addEventListener("click", async () => {
   }
   if (!sb) { showAlert("siError", "Feature unavailable right now."); return; }
   try {
-    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
+   // Find this existing block and update redirectTo:
+const { error } = await sb.auth.resetPasswordForEmail(email, {
+  redirectTo: "http://localhost:3000",  // ← change this to your real URL
+});
     if (error) throw error;
     showAlert("siSuccess", `Reset link sent to ${email}. Check your inbox.`);
   } catch (err) {
     showAlert("siError", err.message || "Could not send reset email.");
   }
 });
+
+// ── PASSWORD RESET HANDLER ────────────────────────────────
+// Detect if user arrived via a password-reset link
+if (sb) {
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === "PASSWORD_RECOVERY") {
+      // User clicked the reset link — show the new-password modal
+      showResetPasswordModal();
+    }
+  });
+}
 
 // ── ABOUT TOGGLE ──────────────────────────────────────────
 function toggleContent() {
@@ -843,6 +857,74 @@ async function loadProductsFromSupabase() {
 
 loadProductsFromSupabase();
 renderCart();
+
+// ── RESET PASSWORD MODAL ──────────────────────────────────
+function showResetPasswordModal() {
+  const ov = document.getElementById("resetOverlay");
+  ov.classList.remove("hidden");
+  ov.classList.add("flex");
+  // Clear any previous state
+  document.getElementById("rpPwd").value = "";
+  document.getElementById("rpPwdConfirm").value = "";
+  document.getElementById("rpError").classList.add("hidden");
+  document.getElementById("rpSuccess").classList.add("hidden");
+}
+
+document.getElementById("rpSubmitBtn").addEventListener("click", async () => {
+  const pwd = document.getElementById("rpPwd").value;
+  const confirm = document.getElementById("rpPwdConfirm").value;
+  const errEl = document.getElementById("rpError");
+  const okEl = document.getElementById("rpSuccess");
+  const btn = document.getElementById("rpSubmitBtn");
+
+  // Hide previous alerts
+  errEl.classList.add("hidden");
+  okEl.classList.add("hidden");
+
+  // Validate
+  if (!pwd || pwd.length < 6) {
+    errEl.textContent = "Password must be at least 6 characters.";
+    errEl.classList.remove("hidden");
+    return;
+  }
+  if (pwd !== confirm) {
+    errEl.textContent = "Passwords do not match.";
+    errEl.classList.remove("hidden");
+    return;
+  }
+
+  setBusy(btn, true, "Updating…", "Update Password");
+
+  try {
+    const { error } = await sb.auth.updateUser({ password: pwd });
+    if (error) throw error;
+
+    okEl.textContent = "Password updated successfully! You are now signed in.";
+    okEl.classList.remove("hidden");
+
+    // Auto close after 2 seconds
+    setTimeout(() => {
+      document.getElementById("resetOverlay").classList.add("hidden");
+      document.getElementById("resetOverlay").classList.remove("flex");
+      showToast("Password updated! Welcome back 🎉");
+    }, 2000);
+  } catch (err) {
+    errEl.textContent = err.message || "Failed to update password. Please try again.";
+    errEl.classList.remove("hidden");
+  } finally {
+    setBusy(btn, false, "", "Update Password");
+  }
+});
+
+// Also wire up toggle-pwd for the reset modal inputs
+// (your existing toggle-pwd listener uses querySelectorAll so it runs at page load —
+//  add this so dynamically-relevant ones still work if needed)
+document.getElementById("resetOverlay").querySelectorAll(".toggle-pwd").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const input = document.getElementById(btn.dataset.target);
+    input.type = input.type === "password" ? "text" : "password";
+  });
+});
 
 // ── CUSTOMER PROFILE MODAL ────────────────────────────────
 const mpOrders = JSON.parse(localStorage.getItem("mp_orders") || "[]");
