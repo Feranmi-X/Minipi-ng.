@@ -9,8 +9,6 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <!-- Paystack (needed for checkout on this page) -->
-    <script src="https://js.paystack.co/v1/inline.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -89,7 +87,6 @@
       .pill-inactive {
         background: transparent;
       }
-       
       @keyframes scrollRight {
         from {
           transform: translateX(-100%);
@@ -113,7 +110,7 @@
     class="font-sans bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-gray-100 transition-colors duration-300"
   >
     <!-- TOP BAR -->
- <div class="overflow-hidden bg-gradient-to-r from-brand to-brand/50 py-3">
+    <div class="overflow-hidden bg-gradient-to-r from-brand to-brand/50 py-3">
       <div class="scroll-right text-white font-bold text-lg">
         🚀 SHOP NOW!!! &nbsp; | &nbsp; 📱 Latest Gadgets &nbsp; | &nbsp; 🎧
         Premium Audio Gear &nbsp; | &nbsp; 💻 Tech Deals Daily &nbsp; | &nbsp;
@@ -121,6 +118,7 @@
         🛒 Best Prices Guaranteed &nbsp; | &nbsp; ✨ Upgrade Your Tech Today!
       </div>
     </div>
+
     <!-- HEADER -->
     <header
       class="sticky top-0 z-[100] bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-800 shadow-sm transition-colors duration-300"
@@ -134,8 +132,6 @@
             >.</span
           >
         </a>
-
-        <!-- Desktop search -->
         <div class="hidden md:block flex-1 max-w-[420px] mx-4 relative">
           <input
             id="searchDesktop"
@@ -161,8 +157,6 @@
             </svg>
           </button>
         </div>
-
-        <!-- Desktop nav -->
         <ul
           class="hidden md:flex items-center gap-6 text-sm font-medium shrink-0"
         >
@@ -299,8 +293,6 @@
             >
           </li>
         </ul>
-
-        <!-- Actions -->
         <div class="flex items-center gap-2 shrink-0 ml-auto">
           <button
             id="themeBtn"
@@ -377,8 +369,6 @@
           </button>
         </div>
       </div>
-
-      <!-- Mobile menu -->
       <div
         id="mobileMenu"
         class="hidden md:hidden px-5 py-4 border-t border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900"
@@ -636,7 +626,6 @@
           </select>
         </div>
       </div>
-
       <div
         id="loadingState"
         class="flex items-center justify-center py-20 gap-3 text-gray-400"
@@ -653,12 +642,10 @@
         </svg>
         <span class="text-sm">Loading products…</span>
       </div>
-
       <div
         id="productGrid"
         class="hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"
       ></div>
-
       <div id="emptyState" class="hidden text-center py-20 text-gray-400">
         <svg
           class="w-14 h-14 mx-auto mb-4 opacity-30"
@@ -712,7 +699,6 @@
         <div class="flex justify-between text-base font-bold mb-3.5">
           <span>Total</span><span id="cartTotal">₦0</span>
         </div>
-        <!-- ✅ FIXED: Real checkout button (was an <a> link before) -->
         <button
           id="checkoutBtn"
           class="w-full py-3 rounded-full bg-brand text-white text-sm font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
@@ -721,6 +707,141 @@
         </button>
       </div>
     </aside>
+
+    <!-- ★ PAYMENT MODAL -->
+    <div
+      id="paymentOverlay"
+      class="hidden fixed inset-0 bg-black/60 z-[600] items-center justify-center p-5"
+    >
+      <div
+        class="bg-white dark:bg-neutral-900 rounded-[20px] shadow-2xl relative max-h-[90vh] overflow-y-auto animate-fadeUp w-full max-w-[420px] p-7"
+        style="scrollbar-width: thin"
+      >
+        <button
+          id="paymentClose"
+          class="absolute top-3.5 right-3.5 w-[30px] h-[30px] flex items-center justify-center rounded-full text-gray-500 bg-gray-100 dark:bg-neutral-800 hover:text-gray-900 dark:hover:text-white transition-colors"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+        <div
+          class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-7 h-7 text-green-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+            />
+          </svg>
+        </div>
+        <h2 class="text-xl font-bold text-center mb-1">
+          Complete Your Payment
+        </h2>
+        <p
+          class="text-[13px] text-gray-500 dark:text-gray-400 text-center mb-5"
+        >
+          Transfer the total amount to the account below, then send your receipt
+          on WhatsApp.
+        </p>
+
+        <div class="bg-brand/10 rounded-2xl p-4 mb-5 text-center">
+          <p class="text-[12px] text-gray-500 dark:text-gray-400 mb-1">
+            Order Total
+          </p>
+          <p id="paymentTotal" class="text-2xl font-extrabold text-brand">₦0</p>
+        </div>
+
+        <div
+          class="bg-gray-50 dark:bg-neutral-800 rounded-2xl p-4 mb-5 space-y-3"
+        >
+          <h3
+            class="text-[12px] font-bold uppercase tracking-wide text-gray-400 mb-3"
+          >
+            Bank Transfer Details
+          </h3>
+          <div class="flex justify-between items-center">
+            <span class="text-[13px] text-gray-500 dark:text-gray-400"
+              >Bank</span
+            >
+            <span class="text-[13px] font-bold">Opay</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-[13px] text-gray-500 dark:text-gray-400"
+              >Account Name</span
+            >
+            <span class="text-[13px] font-bold">Oluwafemi</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-[13px] text-gray-500 dark:text-gray-400"
+              >Account Number</span
+            >
+            <div class="flex items-center gap-2">
+              <span class="text-[15px] font-extrabold text-brand tracking-wider"
+                >7089344370</span
+              >
+              <button
+                onclick="copyAcct()"
+                class="text-[11px] bg-brand/10 text-brand px-2 py-0.5 rounded-full hover:bg-brand/20 transition"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <ol
+          class="text-[12px] text-gray-500 dark:text-gray-400 space-y-2 mb-6 list-none"
+        >
+          <li class="flex items-start gap-2">
+            <span
+              class="w-5 h-5 rounded-full bg-brand text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5"
+              >1</span
+            >Transfer the exact amount to the account above.
+          </li>
+          <li class="flex items-start gap-2">
+            <span
+              class="w-5 h-5 rounded-full bg-brand text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5"
+              >2</span
+            >Take a screenshot of your payment receipt.
+          </li>
+          <li class="flex items-start gap-2">
+            <span
+              class="w-5 h-5 rounded-full bg-brand text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5"
+              >3</span
+            >Send the screenshot to us on WhatsApp to confirm your order.
+          </li>
+        </ol>
+
+        <a
+          id="whatsappPayLink"
+          href="#"
+          target="_blank"
+          class="w-full py-3 rounded-full bg-green-500 text-white text-sm font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+        >
+          <i class="fab fa-whatsapp text-lg"></i>
+          Send Receipt on WhatsApp
+        </a>
+        <p class="text-[11px] text-gray-400 text-center mt-3">
+          Your order will be confirmed once we receive your payment screenshot.
+        </p>
+      </div>
+    </div>
 
     <!-- PRODUCT DETAIL MODAL -->
     <div
@@ -806,8 +927,8 @@
       <span id="toastMsg"></span>
     </div>
 
+    <!-- FOOTER -->
     <footer
-     <footer
       id="contact"
       class="bg-white dark:bg-neutral-900 border-t border-gray-200 dark:border-neutral-800 transition-colors duration-300"
     >
@@ -919,22 +1040,17 @@
         class="text-center text-xs text-gray-400 dark:text-gray-500 py-4 px-5 border-t border-gray-200 dark:border-neutral-800 max-w-[1280px] mx-auto"
       >
         © 2026 Minipi NG. All rights reserved.
-
-
-      <a href="index.html" class="hover:text-brand transition-colors"
-        >Back to Home</a
-      ></div>
+        <a href="index.html" class="hover:text-brand transition-colors ml-3"
+          >Back to Home</a
+        >
+      </div>
     </footer>
 
-    <!-- ═══════════════════════════════════════════════════════════
-         SHOP PAGE SCRIPT
-    ════════════════════════════════════════════════════════════ -->
     <script>
-      // ── CONSTANTS ─────────────────────────────────────────────────
-      const CART_KEY = "minipi_cart"; // ✅ shared key with index/main.js
+      const CART_KEY = "minipi_cart";
       const ORDERS_KEY = "mp_orders";
 
-      // ── SUPABASE ─────────────────────────────────────────────────
+      // ── SUPABASE ──────────────────────────────────────────────────
       const SB_URL = "https://sygdrjmjjxwxuczcnxjr.supabase.co";
       const SB_KEY = "sb_publishable_lAqlBUViE_Jcq7PbVALyLg_b-X9YQvO";
       let sb = null;
@@ -982,7 +1098,7 @@
           mobileMenu.classList.add("hidden");
       });
 
-      // ── CATEGORIES DROPDOWN (desktop) ─────────────────────────────
+      // ── CATEGORIES DROPDOWN ───────────────────────────────────────
       (function () {
         const btn = document.getElementById("catNavBtn");
         const dd = document.getElementById("catNavDropdown");
@@ -1435,8 +1551,6 @@
       let pdCurrent = null,
         pdQty = 1;
 
-      // ── SHARED CART HELPERS ───────────────────────────────────────
-      // ✅ Cart is stored in localStorage so shop.html and index.html share it
       const fmt = (n) => "₦" + Number(n).toLocaleString("en-NG");
 
       function loadCart() {
@@ -1687,9 +1801,8 @@
         ov.classList.add("flex");
       }
       document.getElementById("pdClose").addEventListener("click", () => {
-        const ov = document.getElementById("pdOverlay");
-        ov.classList.add("hidden");
-        ov.classList.remove("flex");
+        document.getElementById("pdOverlay").classList.add("hidden");
+        document.getElementById("pdOverlay").classList.remove("flex");
       });
       document.getElementById("pdOverlay").addEventListener("click", (e) => {
         if (e.target === document.getElementById("pdOverlay")) {
@@ -1713,13 +1826,13 @@
         document.getElementById("pdOverlay").classList.remove("flex");
       });
 
-      // ── CART (shared via localStorage) ────────────────────────────
+      // ── CART ──────────────────────────────────────────────────────
       function addToCart(p, qty) {
-        const cart = loadCart();
-        const ex = cart.find((i) => String(i.id) === String(p.id));
+        const cartArr = loadCart();
+        const ex = cartArr.find((i) => String(i.id) === String(p.id));
         if (ex) ex.qty += qty;
         else
-          cart.push({
+          cartArr.push({
             id: p.id,
             name: p.name,
             price: p.price,
@@ -1727,29 +1840,29 @@
             cat: p.cat,
             qty,
           });
-        saveCart(cart);
+        saveCart(cartArr);
         renderCart();
         showToast(`${p.name} added to cart`);
       }
 
       function renderCart() {
-        const cart = loadCart();
+        const cartArr = loadCart();
         const badge = document.getElementById("cartBadge");
         const total = document.getElementById("cartTotal");
         const items = document.getElementById("cartItems");
-        const count = cart.reduce((s, i) => s + i.qty, 0);
-        const sum = cart.reduce((s, i) => s + i.price * i.qty, 0);
+        const count = cartArr.reduce((s, i) => s + i.qty, 0);
+        const sum = cartArr.reduce((s, i) => s + i.price * i.qty, 0);
         badge.textContent = count;
         total.textContent = fmt(sum);
 
-        if (!cart.length) {
+        if (!cartArr.length) {
           items.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-gray-300 dark:text-gray-600 gap-2.5 text-center p-10">
             <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="opacity-40"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Your cart is empty</p>
           </div>`;
           return;
         }
-        items.innerHTML = cart
+        items.innerHTML = cartArr
           .map(
             (item) => `
           <div class="flex gap-3 items-center p-2.5 bg-gray-100 dark:bg-neutral-800 rounded-[10px]">
@@ -1775,21 +1888,16 @@
         const btn = e.target.closest("[data-action]");
         if (!btn || !btn.dataset.id) return;
         const id = btn.dataset.id;
-        const cart = loadCart();
-        const item = cart.find((i) => String(i.id) === String(id));
+        const cartArr = loadCart();
+        const item = cartArr.find((i) => String(i.id) === String(id));
         if (!item) return;
         if (btn.dataset.action === "inc") item.qty++;
         else if (btn.dataset.action === "dec") {
           item.qty--;
-          if (item.qty <= 0) {
-            const idx = cart.indexOf(item);
-            cart.splice(idx, 1);
-          }
-        } else if (btn.dataset.action === "remove") {
-          const idx = cart.indexOf(item);
-          cart.splice(idx, 1);
-        }
-        saveCart(cart);
+          if (item.qty <= 0) cartArr.splice(cartArr.indexOf(item), 1);
+        } else if (btn.dataset.action === "remove")
+          cartArr.splice(cartArr.indexOf(item), 1);
+        saveCart(cartArr);
         renderCart();
       });
 
@@ -1809,90 +1917,50 @@
       document.getElementById("cartClose").addEventListener("click", closeCart);
       cartOverlay.addEventListener("click", closeCart);
 
-      // ── CHECKOUT (Paystack) ───────────────────────────────────────
-      // ✅ Real checkout — reads currentUser from Supabase session
-      let currentUser = null;
-
-      // Try to restore session from Supabase
-      if (sb) {
-        sb.auth.getSession().then(({ data }) => {
-          if (data?.session?.user) {
-            const u = data.session.user;
-            currentUser = {
-              name: u.user_metadata?.full_name || u.email.split("@")[0],
-              email: u.email,
-            };
-          }
-        });
+      // ── PAYMENT MODAL (no Paystack) ───────────────────────────────
+      function copyAcct() {
+        navigator.clipboard
+          .writeText("7089344370")
+          .then(() => showToast("Account number copied!"));
       }
 
       document.getElementById("checkoutBtn").addEventListener("click", () => {
-        const cart = loadCart();
-        if (!cart.length) {
+        const cartArr = loadCart();
+        if (!cartArr.length) {
           showToast("Your cart is empty");
           return;
         }
 
-        if (!currentUser) {
-          showToast("Please sign in on the home page to checkout");
-          closeCart();
-          // Give them 1.5s to read the toast then redirect to index with a hint
-          setTimeout(() => {
-            window.location.href = "index.html#checkout-prompt";
-          }, 1500);
-          return;
-        }
+        const total = cartArr.reduce((s, i) => s + i.price * i.qty, 0);
+        const itemNames = cartArr.map((i) => `${i.name} x${i.qty}`).join(", ");
+        const totalFmt = fmt(total);
 
-        const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-        const orderId = "ORD-" + Date.now();
-        const orderItems = cart.map((i) => i.name).join(", ");
+        document.getElementById("paymentTotal").textContent = totalFmt;
+
+        const msg = encodeURIComponent(
+          `Hello Minipi NG! 👋\n\nI just made a payment for my order:\n\n${itemNames}\n\nTotal: ${totalFmt}\n\nPlease find my payment receipt attached. Kindly confirm my order. Thank you!`,
+        );
+        document.getElementById("whatsappPayLink").href =
+          `https://wa.me/2348034970248?text=${msg}`;
 
         closeCart();
-
-        const handler = PaystackPop.setup({
-          key: "pk_test_73bc91943a47d7b63b92e1be863495563806be50",
-          email: currentUser.email,
-          amount: total * 100,
-          currency: "NGN",
-          ref: orderId,
-          metadata: {
-            custom_fields: [
-              {
-                display_name: "Customer Name",
-                variable_name: "customer_name",
-                value: currentUser.name,
-              },
-              {
-                display_name: "Items",
-                variable_name: "items",
-                value: orderItems,
-              },
-            ],
-          },
-          onClose() {
-            showToast("Payment cancelled");
-          },
-          callback(response) {
-            const order = {
-              id: orderId,
-              ref: response.reference,
-              items: orderItems,
-              price: total,
-              status: "success",
-              date: new Date().toISOString().slice(0, 10),
-            };
-            const saved = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
-            saved.unshift(order);
-            localStorage.setItem(ORDERS_KEY, JSON.stringify(saved));
-
-            // Clear the shared cart after successful payment
-            saveCart([]);
-            renderCart();
-            showToast(`Payment successful! Ref: ${response.reference} 🎉`);
-          },
-        });
-        handler.openIframe();
+        const ov = document.getElementById("paymentOverlay");
+        ov.classList.remove("hidden");
+        ov.classList.add("flex");
       });
+
+      document.getElementById("paymentClose").addEventListener("click", () => {
+        document.getElementById("paymentOverlay").classList.add("hidden");
+        document.getElementById("paymentOverlay").classList.remove("flex");
+      });
+      document
+        .getElementById("paymentOverlay")
+        .addEventListener("click", function (e) {
+          if (e.target === this) {
+            this.classList.add("hidden");
+            this.classList.remove("flex");
+          }
+        });
 
       // ── TOAST ─────────────────────────────────────────────────────
       let toastT = null;
@@ -1907,6 +1975,26 @@
           t.classList.remove("opacity-100", "translate-y-0");
         }, 2500);
       }
+
+      // ── INFO MODAL ────────────────────────────────────────────────
+      const infoContent = {
+        about: {
+          title: "About Gadgets.",
+          body: `<p>Gadgets is Nigeria's go-to online store for the latest phones, tablets, laptops and gaming gear.</p><p>We source authentic devices directly from trusted brands and deliver them to your doorstep, with prices always listed in Naira.</p><p>Founded with one goal: make great technology accessible to everyone in Nigeria.</p>`,
+        },
+        faqs: {
+          title: "Frequently Asked Questions",
+          body: `<div class="faq-item"><div class="faq-q">Do products come with warranty?</div><p>Yes — all products carry a minimum 1-year manufacturer warranty.</p></div><div class="faq-item"><div class="faq-q">How long does delivery take?</div><p>2–5 business days within Nigeria depending on your location.</p></div><div class="faq-item"><div class="faq-q">Can I pay on delivery?</div><p>Yes, pay-on-delivery is available in select cities.</p></div><div class="faq-item"><div class="faq-q">Do you ship outside Nigeria?</div><p>Currently we only ship within Nigeria.</p></div><div class="faq-item"><div class="faq-q">Can I return a product?</div><p>Yes — within 7 days of delivery for any defective item.</p></div>`,
+        },
+      };
+      document.querySelectorAll(".info-link").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const d = infoContent[btn.dataset.info];
+          if (!d) return;
+          // Simple inline display since no infoOverlay on this page — show toast or create on-the-fly
+          alert(d.title + "\n\n" + d.body.replace(/<[^>]+>/g, ""));
+        });
+      });
 
       // ── REALTIME ──────────────────────────────────────────────────
       function subscribeToProducts() {
@@ -1944,14 +2032,9 @@
 
       // ── INIT ──────────────────────────────────────────────────────
       loadProducts().then(() => {
-        renderCart(); // loads persisted cart from localStorage
+        renderCart();
         subscribeToProducts();
       });
-
-      
-      
     </script>
   </body>
 </html>
-
-

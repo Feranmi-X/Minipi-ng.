@@ -381,83 +381,115 @@ document.getElementById("cartBtn").addEventListener("click", openCart);
 document.getElementById("cartClose").addEventListener("click", closeCart);
 cartOverlay.addEventListener("click", closeCart);
 
-// ── ADMIN EMAIL NOTIFICATION ──────────────────────────────
-async function notifyAdminEmail(order) {
-  try {
-    await emailjs.send("service_or50hnb", "template_34c24y4", {
-      order_id: order.id,
-      paystack_ref: order.ref || order.id,
-      customer_name: currentUser.name,
-      customer_email: currentUser.email,
-      items: order.items,
-      total: "₦" + order.price.toLocaleString("en-NG"),
-      date: order.date,
-      to_email: "minipiNG5575@gmail.com",
-    });
-    console.log("Admin notified by email");
-  } catch (e) {
-    console.warn("Email notification failed", e);
-  }
-}
 
-// ── CHECKOUT ──────────────────────────────────────────────
-document.getElementById("checkoutBtn").addEventListener("click", () => {
-  if (!cart.length) {
-    showToast("Your cart is empty");
-    return;
-  }
-  if (!currentUser) {
-    closeCart();
-    showToast("Please sign in to checkout");
-    setTimeout(() => showAuthModal("signIn"), 300);
-    return;
-  }
 
-  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  const orderId = "ORD-" + Date.now();
-  const orderItems = cart.map((i) => i.name).join(", ");
+// ── NEW ARRIVALS on index page ────────────────────────────────
+      (function () {
+        const newArrivalIds = [25, 26, 27, 31, 35, 39, 41, 43];
+        // Wait for products to be defined by main.js
+        function tryRenderArrivals() {
+          if (typeof products === "undefined") {
+            setTimeout(tryRenderArrivals, 100);
+            return;
+          }
+          const arrivals = products.filter((p) => newArrivalIds.includes(p.id));
+          const track = document.getElementById("arrivalsTrack");
+          if (!track) return;
+          if (!arrivals.length) {
+            document.getElementById("newArrivals").style.display = "none";
+            return;
+          }
+          const fmt = (n) => "₦" + Number(n).toLocaleString("en-NG");
+          track.innerHTML = arrivals
+            .map(
+              (p) => `
+          <div class="bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col group cursor-pointer hover:border-brand hover:shadow-lg transition-all"
+               onclick='openProductDetail(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
+            <div class="relative aspect-square overflow-hidden bg-gray-100 dark:bg-neutral-800">
+              <img src="${p.img}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105" />
+              <span class="absolute top-2 left-2 bg-brand text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">New</span>
+            </div>
+            <div class="p-3 flex-1 flex flex-col">
+              <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-0.5">${p.cat}</div>
+              <div class="text-[12px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">${p.name}</div>
+              <div class="text-[13px] font-bold text-brand mt-auto pt-2">${fmt(p.price)}</div>
+            </div>
+          </div>`,
+            )
+            .join("");
+        }
+        tryRenderArrivals();
 
-  closeCart();
+        document.getElementById("arrLeft").addEventListener("click", () => {
+          document
+            .getElementById("arrivalsTrack")
+            .scrollBy({ left: -250, behavior: "smooth" });
+        });
+        document.getElementById("arrRight").addEventListener("click", () => {
+          document
+            .getElementById("arrivalsTrack")
+            .scrollBy({ left: 250, behavior: "smooth" });
+        });
+      })();
 
-  const handler = PaystackPop.setup({
-    key: "pk_test_73bc91943a47d7b63b92e1be863495563806be50",
-    email: currentUser.email,
-    amount: total * 100,
-    currency: "NGN",
-    ref: orderId,
-    metadata: {
-      custom_fields: [
-        { display_name: "Customer Name", variable_name: "customer_name", value: currentUser.name },
-        { display_name: "Items", variable_name: "items", value: orderItems },
-      ],
-    },
-    onClose() {
-      showToast("Payment cancelled");
-    },
-    callback(response) {
-      const order = {
-        id: orderId,
-        ref: response.reference,
-        items: orderItems,
-        price: total,
-        status: "success",
-        date: new Date().toISOString().slice(0, 10),
-      };
+      // ── PAYMENT MODAL (replaces Paystack) ────────────────────────
+      function copyAcct() {
+        navigator.clipboard.writeText("7089344370").then(() => {
+          if (typeof showToast === "function")
+            showToast("Account number copied!");
+        });
+      }
 
-      const saved = JSON.parse(localStorage.getItem("mp_orders") || "[]");
-      saved.unshift(order);
-      localStorage.setItem("mp_orders", JSON.stringify(saved));
+      // Override checkoutBtn after main.js loads
+      window.addEventListener("load", function () {
+        const btn = document.getElementById("checkoutBtn");
+        if (!btn) return;
+        // Clone to remove old listeners
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        newBtn.addEventListener("click", openPaymentModal);
+      });
 
-      notifyAdminEmail(order);
+      function openPaymentModal() {
+        // Use cart from main.js
+        const cartArr = typeof cart !== "undefined" ? cart : [];
+        if (!cartArr.length) {
+          if (typeof showToast === "function") showToast("Your cart is empty");
+          return;
+        }
+        const total = cartArr.reduce((s, i) => s + i.price * i.qty, 0);
+        const fmt = (n) => "₦" + Number(n).toLocaleString("en-NG");
+        const itemNames = cartArr.map((i) => `${i.name} x${i.qty}`).join(", ");
+        const totalFmt = fmt(total);
 
-      showToast(`Payment successful! Ref: ${response.reference} 🎉`);
-      cart = [];
-      renderCart();
-    },
-  });
+        document.getElementById("paymentTotal").textContent = totalFmt;
 
-  handler.openIframe();
-});
+        // Build WhatsApp message
+        const msg = encodeURIComponent(
+          `Hello Minipi NG! 👋\n\nI just made a payment for my order:\n\n${itemNames}\n\nTotal: ${totalFmt}\n\nPlease find my payment receipt attached. Kindly confirm my order. Thank you!`,
+        );
+        document.getElementById("whatsappPayLink").href =
+          `https://wa.me/2348034970248?text=${msg}`;
+
+        // Close cart, open payment modal
+        if (typeof closeCart === "function") closeCart();
+        const ov = document.getElementById("paymentOverlay");
+        ov.classList.remove("hidden");
+        ov.classList.add("flex");
+      }
+
+      document.getElementById("paymentClose").addEventListener("click", () => {
+        document.getElementById("paymentOverlay").classList.add("hidden");
+        document.getElementById("paymentOverlay").classList.remove("flex");
+      });
+      document
+        .getElementById("paymentOverlay")
+        .addEventListener("click", function (e) {
+          if (e.target === this) {
+            this.classList.add("hidden");
+            this.classList.remove("flex");
+          }
+        });
 
 // ── SCROLL ANIMATION ──────────────────────────────────────
 const sections = document.querySelectorAll(".fade-section");

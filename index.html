@@ -9,7 +9,6 @@
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <script src="https://js.paystack.co/v1/inline.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -124,6 +123,35 @@
         animation: scrollRight 15s linear infinite;
         white-space: nowrap;
       }
+      /* New Arrivals track */
+      .arrivals-track {
+        display: flex;
+        gap: 1.25rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 0.75rem;
+        scrollbar-width: none;
+      }
+      .arrivals-track::-webkit-scrollbar {
+        display: none;
+      }
+      .arrivals-track > * {
+        scroll-snap-align: start;
+        flex-shrink: 0;
+        width: 220px;
+      }
+      @keyframes badgePop {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.25);
+        }
+      }
+      .badge-new {
+        animation: badgePop 1.8s ease infinite;
+      }
     </style>
     <link
       rel="stylesheet"
@@ -156,8 +184,6 @@
             >.</span
           >
         </a>
-
-        <!-- Desktop search -->
         <div class="hidden md:block flex-1 max-w-[420px] mx-4 relative">
           <input
             id="searchDesktop"
@@ -183,8 +209,6 @@
             </svg>
           </button>
         </div>
-
-        <!-- Desktop nav -->
         <ul
           class="hidden md:flex items-center gap-6 text-sm font-medium shrink-0"
         >
@@ -196,8 +220,6 @@
               >Shop</a
             >
           </li>
-
-          <!-- ── CATEGORIES DROPDOWN ── -->
           <li class="relative group" id="catNavItem">
             <button
               id="catNavBtn"
@@ -217,17 +239,13 @@
                 <path d="M6 9l6 6 6-6" />
               </svg>
             </button>
-
-            <!-- Dropdown panel -->
             <div
               id="catNavDropdown"
               class="absolute left-1/2 -translate-x-1/2 top-[calc(100%+10px)] bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl shadow-xl min-w-[200px] z-[200] overflow-hidden opacity-0 pointer-events-none translate-y-[-6px] transition-all duration-200 ease-out"
             >
-              <!-- Arrow tip -->
               <div
                 class="absolute -top-[7px] left-1/2 -translate-x-1/2 w-3 h-3 bg-white dark:bg-neutral-900 border-l-[1.5px] border-t-[1.5px] border-gray-200 dark:border-neutral-800 rotate-45"
               ></div>
-
               <a
                 href="shop.html?cat=phone"
                 class="cat-nav-link flex items-center gap-3 px-4 py-3 text-[13px] font-medium hover:bg-gray-50 dark:hover:bg-neutral-800 hover:text-brand border-b border-gray-100 dark:border-neutral-800 transition-colors"
@@ -241,9 +259,8 @@
                   class="w-5 h-5 text-brand shrink-0"
                 >
                   <rect x="7" y="2" width="10" height="20" rx="2" />
-                  <line x1="11" y1="18" x2="13" y2="18" />
-                </svg>
-                Phones
+                  <line x1="11" y1="18" x2="13" y2="18" /></svg
+                >Phones
               </a>
               <a
                 href="shop.html?cat=tablet"
@@ -258,9 +275,8 @@
                   class="w-5 h-5 text-brand shrink-0"
                 >
                   <rect x="4" y="3" width="16" height="18" rx="2" />
-                  <line x1="10" y1="18" x2="14" y2="18" />
-                </svg>
-                Tablets
+                  <line x1="10" y1="18" x2="14" y2="18" /></svg
+                >Tablets
               </a>
               <a
                 href="shop.html?cat=laptop"
@@ -275,9 +291,8 @@
                   class="w-5 h-5 text-brand shrink-0"
                 >
                   <rect x="3" y="4" width="18" height="12" rx="1" />
-                  <line x1="2" y1="20" x2="22" y2="20" />
-                </svg>
-                Laptops
+                  <line x1="2" y1="20" x2="22" y2="20" /></svg
+                >Laptops
               </a>
               <a
                 href="shop.html?cat=gaming"
@@ -323,24 +338,18 @@
                     y2="12"
                     stroke-linecap="round"
                     stroke-width="2.5"
-                  />
-                </svg>
-                Gaming
+                  /></svg
+                >Gaming
               </a>
             </div>
           </li>
-          <!-- ── END CATEGORIES DROPDOWN ── -->
-
           <li>
             <a href="#contact" class="hover:text-brand transition-colors"
               >Contact</a
             >
           </li>
         </ul>
-
-        <!-- Actions -->
         <div class="flex items-center gap-2 shrink-0 ml-auto">
-          <!-- Dark mode -->
           <button
             id="themeBtn"
             aria-label="Toggle dark mode"
@@ -373,8 +382,6 @@
               <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
             </svg>
           </button>
-
-          <!-- Cart -->
           <button
             id="cartBtn"
             aria-label="Open cart"
@@ -398,8 +405,6 @@
               >0</span
             >
           </button>
-
-          <!-- Account -->
           <div class="relative">
             <button
               id="accountBtn"
@@ -418,7 +423,6 @@
                 <circle cx="12" cy="7" r="4" />
               </svg>
             </button>
-            <!-- Logged out -->
             <div
               id="authDropdown"
               class="hidden absolute right-0 top-[calc(100%+8px)] bg-white dark:bg-neutral-800 border-[1.5px] border-gray-200 dark:border-neutral-700 rounded-2xl shadow-xl overflow-hidden min-w-[180px] z-[200] animate-dropIn"
@@ -436,7 +440,6 @@
                 Create Account
               </button>
             </div>
-            <!-- Logged in -->
             <div
               id="userDropdown"
               class="hidden absolute right-0 top-[calc(100%+8px)] bg-white dark:bg-neutral-800 border-[1.5px] border-gray-200 dark:border-neutral-700 rounded-2xl shadow-xl overflow-hidden min-w-[180px] z-[200] animate-dropIn"
@@ -457,8 +460,6 @@
               </button>
             </div>
           </div>
-
-          <!-- Hamburger -->
           <button
             id="hamburger"
             aria-label="Menu"
@@ -479,9 +480,6 @@
           </button>
         </div>
       </div>
-
-      <!-- Mobile menu -->
-
       <div
         id="mobileMenu"
         class="hidden md:hidden px-5 py-4 border-t border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900"
@@ -663,9 +661,8 @@
               class="w-8 h-8 text-brand"
             >
               <rect x="7" y="2" width="10" height="20" rx="2" />
-              <line x1="11" y1="18" x2="13" y2="18" />
-            </svg>
-            Phones
+              <line x1="11" y1="18" x2="13" y2="18" /></svg
+            >Phones
           </button>
           <button
             class="cat-card flex flex-col items-center gap-3 bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl py-7 px-4 text-[13px] font-medium hover:border-brand hover:shadow-[0_4px_20px_rgba(255,122,0,0.12)] transition-all"
@@ -679,9 +676,8 @@
               class="w-8 h-8 text-brand"
             >
               <rect x="4" y="3" width="16" height="18" rx="2" />
-              <line x1="10" y1="18" x2="14" y2="18" />
-            </svg>
-            Tablets
+              <line x1="10" y1="18" x2="14" y2="18" /></svg
+            >Tablets
           </button>
           <button
             class="cat-card flex flex-col items-center gap-3 bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl py-7 px-4 text-[13px] font-medium hover:border-brand hover:shadow-[0_4px_20px_rgba(255,122,0,0.12)] transition-all"
@@ -695,9 +691,8 @@
               class="w-8 h-8 text-brand"
             >
               <rect x="3" y="4" width="18" height="12" rx="1" />
-              <line x1="2" y1="20" x2="22" y2="20" />
-            </svg>
-            Laptops
+              <line x1="2" y1="20" x2="22" y2="20" /></svg
+            >Laptops
           </button>
           <button
             class="cat-card flex flex-col items-center gap-3 bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl py-7 px-4 text-[13px] font-medium hover:border-brand hover:shadow-[0_4px_20px_rgba(255,122,0,0.12)] transition-all"
@@ -742,12 +737,62 @@
                 y2="12"
                 stroke-linecap="round"
                 stroke-width="2.5"
-              />
-            </svg>
-            Gaming
+              /></svg
+            >Gaming
           </button>
         </div>
       </div>
+    </section>
+
+    <!-- ★ NEW ARRIVALS (added from shop page) -->
+    <section id="newArrivals" class="max-w-[1280px] mx-auto px-5 pt-12 pb-0">
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span
+              class="badge-new inline-flex items-center gap-1 bg-brand text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide"
+              >🔥 New</span
+            >
+            <h2 class="text-xl font-bold">New Arrivals</h2>
+          </div>
+          <p class="text-[13px] text-gray-500 dark:text-gray-400">
+            The freshest gadgets just landed
+          </p>
+        </div>
+        <div class="flex gap-2">
+          <button
+            id="arrLeft"
+            class="w-9 h-9 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 flex items-center justify-center hover:border-brand transition-colors"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <button
+            id="arrRight"
+            class="w-9 h-9 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 flex items-center justify-center hover:border-brand transition-colors"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div id="arrivalsTrack" class="arrivals-track pb-2"></div>
     </section>
 
     <!-- SHOP -->
@@ -926,12 +971,10 @@
       >
         About Us
       </h2>
-
       <p class="text-gray-300 text-sm leading-relaxed mb-6 text-center">
         Mini Pi NG is a trusted gadget store offering quality laptops, tablets,
         smartphones, gaming consoles, and accessories at affordable prices.
       </p>
-
       <div id="moreContent" class="hidden mt-6 p-6 rounded-lg shadow">
         <p class="text-gray-300 text-sm leading-relaxed text-center mb-6">
           Minipi is Nigeria's go-to online store for the latest phones, tablets,
@@ -941,7 +984,6 @@
           accessible to everyone in Nigeria.
         </p>
       </div>
-
       <div class="text-center mt-6">
         <button
           id="toggleBtn"
@@ -952,6 +994,7 @@
         </button>
       </div>
     </section>
+
     <!-- BANNER -->
     <div
       class="bg-gray-800 dark:bg-neutral-900 dark:border-y dark:border-neutral-800 transition-colors duration-300"
@@ -1167,6 +1210,145 @@
       </div>
     </aside>
 
+    <!-- ★ PAYMENT MODAL -->
+    <div
+      id="paymentOverlay"
+      class="hidden fixed inset-0 bg-black/60 z-[600] items-center justify-center p-5"
+    >
+      <div
+        class="modal-scroll bg-white dark:bg-neutral-900 rounded-[20px] shadow-2xl relative max-h-[90vh] overflow-y-auto animate-fadeUp w-full max-w-[420px] p-7"
+      >
+        <button
+          id="paymentClose"
+          class="absolute top-3.5 right-3.5 w-[30px] h-[30px] flex items-center justify-center rounded-full text-gray-500 bg-gray-100 dark:bg-neutral-800 hover:text-gray-900 dark:hover:text-white transition-colors"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+        <!-- Icon -->
+        <div
+          class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-7 h-7 text-green-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+            />
+          </svg>
+        </div>
+        <h2 class="text-xl font-bold text-center mb-1">
+          Complete Your Payment
+        </h2>
+        <p
+          class="text-[13px] text-gray-500 dark:text-gray-400 text-center mb-5"
+        >
+          Transfer the total amount to the account below, then send your receipt
+          on WhatsApp.
+        </p>
+
+        <!-- Order summary -->
+        <div class="bg-brand/10 rounded-2xl p-4 mb-5 text-center">
+          <p class="text-[12px] text-gray-500 dark:text-gray-400 mb-1">
+            Order Total
+          </p>
+          <p id="paymentTotal" class="text-2xl font-extrabold text-brand">₦0</p>
+        </div>
+
+        <!-- Bank details -->
+        <div
+          class="bg-gray-50 dark:bg-neutral-800 rounded-2xl p-4 mb-5 space-y-3"
+        >
+          <h3
+            class="text-[12px] font-bold uppercase tracking-wide text-gray-400 mb-3"
+          >
+            Bank Transfer Details
+          </h3>
+          <div class="flex justify-between items-center">
+            <span class="text-[13px] text-gray-500 dark:text-gray-400"
+              >Bank</span
+            >
+            <span class="text-[13px] font-bold">Opay</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-[13px] text-gray-500 dark:text-gray-400"
+              >Account Name</span
+            >
+            <span class="text-[13px] font-bold">Oluwafemi</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-[13px] text-gray-500 dark:text-gray-400"
+              >Account Number</span
+            >
+            <div class="flex items-center gap-2">
+              <span class="text-[15px] font-extrabold text-brand tracking-wider"
+                >7089344370</span
+              >
+              <button
+                onclick="copyAcct()"
+                class="text-[11px] bg-brand/10 text-brand px-2 py-0.5 rounded-full hover:bg-brand/20 transition"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Steps -->
+        <ol
+          class="text-[12px] text-gray-500 dark:text-gray-400 space-y-2 mb-6 list-none"
+        >
+          <li class="flex items-start gap-2">
+            <span
+              class="w-5 h-5 rounded-full bg-brand text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5"
+              >1</span
+            >Transfer the exact amount to the account above.
+          </li>
+          <li class="flex items-start gap-2">
+            <span
+              class="w-5 h-5 rounded-full bg-brand text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5"
+              >2</span
+            >Take a screenshot of your payment receipt.
+          </li>
+          <li class="flex items-start gap-2">
+            <span
+              class="w-5 h-5 rounded-full bg-brand text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5"
+              >3</span
+            >Send the screenshot to us on WhatsApp to confirm your order.
+          </li>
+        </ol>
+
+        <!-- WhatsApp button -->
+        <a
+          id="whatsappPayLink"
+          href="#"
+          target="_blank"
+          class="w-full py-3 rounded-full bg-green-500 text-white text-sm font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+        >
+          <i class="fab fa-whatsapp text-lg"></i>
+          Send Receipt on WhatsApp
+        </a>
+        <p class="text-[11px] text-gray-400 text-center mt-3">
+          Your order will be confirmed once we receive your payment screenshot.
+        </p>
+      </div>
+    </div>
+
     <!-- AUTH OVERLAY -->
     <div
       id="authOverlay"
@@ -1287,7 +1469,6 @@
           </button>
         </div>
       </div>
-
       <!-- Sign Up -->
       <div
         id="signUpModal"
@@ -1533,12 +1714,7 @@
       </div>
     </div>
 
-    <!-- =====================================================
-         RESET PASSWORD MODAL
-         Shows automatically when user clicks the reset link
-         in their email. Supabase fires PASSWORD_RECOVERY event
-         which triggers openResetModal() in main.js
-    ====================================================== -->
+    <!-- RESET PASSWORD MODAL -->
     <div
       id="resetOverlay"
       class="hidden fixed inset-0 bg-black/60 z-[600] items-center justify-center p-5"
@@ -1546,7 +1722,6 @@
       <div
         class="modal-scroll bg-white dark:bg-neutral-900 rounded-[20px] shadow-2xl relative max-h-[90vh] overflow-y-auto animate-fadeUp w-full max-w-[380px] p-7"
       >
-        <!-- Close button -->
         <button
           id="rpClose"
           class="absolute top-3.5 right-3.5 w-[30px] h-[30px] flex items-center justify-center rounded-full text-gray-500 bg-gray-100 dark:bg-neutral-800 hover:text-gray-900 dark:hover:text-white transition-colors"
@@ -1562,8 +1737,6 @@
             <path d="M18 6L6 18M6 6l12 12" />
           </svg>
         </button>
-
-        <!-- Icon -->
         <div
           class="w-12 h-12 rounded-full bg-brand/10 flex items-center justify-center mx-auto mb-3.5 text-brand"
         >
@@ -1579,26 +1752,20 @@
             <path d="M7 11V7a5 5 0 0110 0v4" />
           </svg>
         </div>
-
         <div class="text-xl font-bold text-center mb-1">Set New Password</div>
         <div
           class="text-[13px] text-gray-500 dark:text-gray-400 text-center mb-6"
         >
           Enter and confirm your new password below.
         </div>
-
-        <!-- Error alert -->
         <div
           id="rpError"
           class="hidden auth-alert px-3.5 py-2.5 rounded-[10px] text-xs mb-3.5 leading-relaxed bg-red-50 border-[1.5px] border-red-200 text-red-600 dark:bg-red-500/10 dark:border-red-500/30 dark:text-red-400"
         ></div>
-        <!-- Success alert -->
         <div
           id="rpSuccess"
           class="hidden auth-alert px-3.5 py-2.5 rounded-[10px] text-xs mb-3.5 leading-relaxed bg-green-50 border-[1.5px] border-green-200 text-green-600 dark:bg-green-500/10 dark:border-green-500/30 dark:text-green-400"
         ></div>
-
-        <!-- New password field -->
         <div class="mb-4">
           <label class="block text-xs font-semibold mb-1.5">New Password</label>
           <div class="relative">
@@ -1627,8 +1794,6 @@
             </button>
           </div>
         </div>
-
-        <!-- Confirm password field -->
         <div class="mb-5">
           <label class="block text-xs font-semibold mb-1.5"
             >Confirm Password</label
@@ -1659,7 +1824,6 @@
             </button>
           </div>
         </div>
-
         <button
           id="rpSubmitBtn"
           class="w-full py-3 rounded-full bg-brand text-white text-sm font-semibold flex items-center justify-center gap-2 hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-opacity"
