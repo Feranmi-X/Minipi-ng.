@@ -481,9 +481,10 @@
       </div>
 
       <!-- Mobile menu -->
+
       <div
         id="mobileMenu"
-        class="hidden md:hidden px-5 py-4 border-t border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 transition-colors duration-300"
+        class="hidden md:hidden px-5 py-4 border-t border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900"
       >
         <div class="relative mb-3.5">
           <input
@@ -512,37 +513,56 @@
         </div>
         <ul class="flex flex-col gap-3 text-sm font-medium">
           <li>
-            <a
-              href="#home"
-              class="mobile-link hover:text-brand transition-colors"
+            <a href="index.html" class="hover:text-brand transition-colors"
               >Home</a
             >
           </li>
           <li>
-            <a
-              href="/shop.html"
-              class="mobile-link hover:text-brand transition-colors"
-              >Shop</a
+            <a href="/shop.html" class="text-brand font-semibold">Shop</a>
+          </li>
+          <li>
+            <p
+              class="font-semibold mb-1.5 text-gray-400 text-xs uppercase tracking-wide"
             >
+              Categories
+            </p>
+            <div class="flex flex-wrap gap-2 mb-1">
+              <button
+                class="mob-cat-btn px-3 py-1.5 rounded-full border-[1.5px] text-xs font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"
+                data-cat="all"
+              >
+                All
+              </button>
+              <button
+                class="mob-cat-btn px-3 py-1.5 rounded-full border-[1.5px] text-xs font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"
+                data-cat="phone"
+              >
+                Phones
+              </button>
+              <button
+                class="mob-cat-btn px-3 py-1.5 rounded-full border-[1.5px] text-xs font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"
+                data-cat="tablet"
+              >
+                Tablets
+              </button>
+              <button
+                class="mob-cat-btn px-3 py-1.5 rounded-full border-[1.5px] text-xs font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"
+                data-cat="laptop"
+              >
+                Laptops
+              </button>
+              <button
+                class="mob-cat-btn px-3 py-1.5 rounded-full border-[1.5px] text-xs font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"
+                data-cat="gaming"
+              >
+                Gaming
+              </button>
+            </div>
           </li>
           <li>
             <a
-              href="#categories"
-              class="mobile-link hover:text-brand transition-colors"
-              >Categories</a
-            >
-          </li>
-          <li>
-            <a
-              href="#about"
-              class="mobile-link hover:text-brand transition-colors"
-              >About</a
-            >
-          </li>
-          <li>
-            <a
-              href="#contact"
-              class="mobile-link hover:text-brand transition-colors"
+              href="index.html#contact"
+              class="hover:text-brand transition-colors"
               >Contact</a
             >
           </li>
@@ -2013,63 +2033,6 @@
         </div>
       </div>
     </div>
-    <script>
-      (function () {
-        const btn = document.getElementById("catNavBtn");
-        const dd = document.getElementById("catNavDropdown");
-        const chv = document.getElementById("catNavChevron");
-        if (!btn || !dd) return;
-
-        function openDd() {
-          dd.classList.remove(
-            "opacity-0",
-            "pointer-events-none",
-            "-translate-y-[6px]",
-          );
-          dd.classList.add("opacity-100", "translate-y-0");
-          chv.style.transform = "rotate(180deg)";
-        }
-        function closeDd() {
-          dd.classList.add("opacity-0", "pointer-events-none");
-          dd.classList.remove("opacity-100", "translate-y-0");
-          chv.style.transform = "";
-        }
-
-        // hover (desktop)
-        const li = document.getElementById("catNavItem");
-        li.addEventListener("mouseenter", openDd);
-        li.addEventListener("mouseleave", closeDd);
-
-        // click toggle (keyboard / touch)
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          dd.classList.contains("opacity-0") ? openDd() : closeDd();
-        });
-
-        // close on outside click
-        document.addEventListener("click", (e) => {
-          if (!li.contains(e.target)) closeDd();
-        });
-
-        // if on index page, category links filter in-place instead of navigating
-        if (!window.location.pathname.includes("shop.html")) {
-          document.querySelectorAll(".cat-nav-link").forEach((a) => {
-            a.addEventListener("click", (e) => {
-              e.preventDefault();
-              const cat = a.dataset.cat;
-              closeDd();
-              // call setFilter if main.js is loaded
-              if (typeof setFilter === "function") {
-                setFilter(cat);
-                document
-                  .getElementById("shop")
-                  .scrollIntoView({ behavior: "smooth" });
-              }
-            });
-          });
-        }
-      })();
-    </script>
 
     <script src="/main.js"></script>
   </body>

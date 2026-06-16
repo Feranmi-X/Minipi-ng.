@@ -89,6 +89,19 @@
       .pill-inactive {
         background: transparent;
       }
+       
+      @keyframes scrollRight {
+        from {
+          transform: translateX(-100%);
+        }
+        to {
+          transform: translateX(100%);
+        }
+      }
+      .scroll-right {
+        animation: scrollRight 15s linear infinite;
+        white-space: nowrap;
+      }
     </style>
     <link
       rel="stylesheet"
@@ -863,7 +876,7 @@
             </li>
             <li>
               <a
-                href="#contact"
+                href="/index.html#contact"
                 class="text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
                 >Contact</a
               >
@@ -1933,6 +1946,10 @@
         renderCart(); // loads persisted cart from localStorage
         subscribeToProducts();
       });
+
+      
     </script>
   </body>
 </html>
+
+

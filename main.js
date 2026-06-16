@@ -41,27 +41,61 @@ themeBtn.addEventListener("click", () => {
 });
 
 // ── MOBILE MENU ───────────────────────────────────────────
-const hamburger = document.getElementById("hamburger");
-const mobileMenu = document.getElementById("mobileMenu");
+ const hamburger = document.getElementById("hamburger");
+      const mobileMenu = document.getElementById("mobileMenu");
+      hamburger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        mobileMenu.classList.toggle("hidden");
+      });
+      document.addEventListener("click", (e) => {
+        if (!mobileMenu.contains(e.target) && e.target !== hamburger)
+          mobileMenu.classList.add("hidden");
+      });
 
-hamburger.addEventListener("click", (e) => {
-  e.stopPropagation();
-  mobileMenu.classList.toggle("hidden");
-});
-
-document.querySelectorAll(".mobile-link").forEach((a) => {
-  a.addEventListener("click", () => mobileMenu.classList.add("hidden"));
-});
-
-document.addEventListener("click", (e) => {
-  if (
-    !mobileMenu.contains(e.target) &&
-    e.target !== hamburger &&
-    !hamburger.contains(e.target)
-  ) {
-    mobileMenu.classList.add("hidden");
-  }
-});
+      // ── CATEGORIES DROPDOWN (desktop) ─────────────────────────────
+      (function () {
+        const btn = document.getElementById("catNavBtn");
+        const dd = document.getElementById("catNavDropdown");
+        const chv = document.getElementById("catNavChevron");
+        const li = document.getElementById("catNavItem");
+        if (!btn || !dd) return;
+        function openDd() {
+          dd.classList.remove(
+            "opacity-0",
+            "pointer-events-none",
+            "-translate-y-1.5",
+          );
+          dd.classList.add("opacity-100", "translate-y-0");
+          chv.style.transform = "rotate(180deg)";
+        }
+        function closeDd() {
+          dd.classList.add("opacity-0", "pointer-events-none");
+          dd.classList.remove("opacity-100", "translate-y-0");
+          chv.style.transform = "";
+        }
+        li.addEventListener("mouseenter", openDd);
+        li.addEventListener("mouseleave", closeDd);
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          dd.classList.contains("opacity-0") ? openDd() : closeDd();
+        });
+        document.addEventListener("click", (e) => {
+          if (!li.contains(e.target)) closeDd();
+        });
+        document.querySelectorAll(".dd-cat-link").forEach((b) => {
+          b.addEventListener("click", () => {
+            setFilter(b.dataset.cat);
+            closeDd();
+            mobileMenu.classList.add("hidden");
+          });
+        });
+        document.querySelectorAll(".mob-cat-btn").forEach((b) => {
+          b.addEventListener("click", () => {
+            setFilter(b.dataset.cat);
+            mobileMenu.classList.add("hidden");
+          });
+        });
+      })();
 
 // ── PRODUCTS DATA ─────────────────────────────────────────
 const products = [
@@ -1027,4 +1061,60 @@ document.querySelectorAll(".mp-tab").forEach((tab) => {
     });
   });
 });
+
+(function () {
+        const btn = document.getElementById("catNavBtn");
+        const dd = document.getElementById("catNavDropdown");
+        const chv = document.getElementById("catNavChevron");
+        if (!btn || !dd) return;
+
+        function openDd() {
+          dd.classList.remove(
+            "opacity-0",
+            "pointer-events-none",
+            "-translate-y-[6px]",
+          );
+          dd.classList.add("opacity-100", "translate-y-0");
+          chv.style.transform = "rotate(180deg)";
+        }
+        function closeDd() {
+          dd.classList.add("opacity-0", "pointer-events-none");
+          dd.classList.remove("opacity-100", "translate-y-0");
+          chv.style.transform = "";
+        }
+
+        // hover (desktop)
+        const li = document.getElementById("catNavItem");
+        li.addEventListener("mouseenter", openDd);
+        li.addEventListener("mouseleave", closeDd);
+
+        // click toggle (keyboard / touch)
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          dd.classList.contains("opacity-0") ? openDd() : closeDd();
+        });
+
+        // close on outside click
+        document.addEventListener("click", (e) => {
+          if (!li.contains(e.target)) closeDd();
+        });
+
+        // if on index page, category links filter in-place instead of navigating
+        if (!window.location.pathname.includes("shop.html")) {
+          document.querySelectorAll(".cat-nav-link").forEach((a) => {
+            a.addEventListener("click", (e) => {
+              e.preventDefault();
+              const cat = a.dataset.cat;
+              closeDd();
+              // call setFilter if main.js is loaded
+              if (typeof setFilter === "function") {
+                setFilter(cat);
+                document
+                  .getElementById("shop")
+                  .scrollIntoView({ behavior: "smooth" });
+              }
+            });
+          });
+        }
+      })();
 
