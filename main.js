@@ -383,55 +383,43 @@ cartOverlay.addEventListener("click", closeCart);
 
 
 
-// ── NEW ARRIVALS on index page ────────────────────────────────
-      (function () {
-        const newArrivalIds = [25, 26, 27, 31, 35, 39, 41, 43];
-        // Wait for products to be defined by main.js
-        function tryRenderArrivals() {
-          if (typeof products === "undefined") {
-            setTimeout(tryRenderArrivals, 100);
-            return;
-          }
-          const arrivals = products.filter((p) => newArrivalIds.includes(p.id));
-          const track = document.getElementById("arrivalsTrack");
-          if (!track) return;
-          if (!arrivals.length) {
-            document.getElementById("newArrivals").style.display = "none";
-            return;
-          }
-          const fmt = (n) => "₦" + Number(n).toLocaleString("en-NG");
-          track.innerHTML = arrivals
-            .map(
-              (p) => `
-          <div class="bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col group cursor-pointer hover:border-brand hover:shadow-lg transition-all"
-               onclick='openProductDetail(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
-            <div class="relative aspect-square overflow-hidden bg-gray-100 dark:bg-neutral-800">
-              <img src="${p.img}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105" />
-              <span class="absolute top-2 left-2 bg-brand text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">New</span>
-            </div>
-            <div class="p-3 flex-1 flex flex-col">
-              <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-0.5">${p.cat}</div>
-              <div class="text-[12px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">${p.name}</div>
-              <div class="text-[13px] font-bold text-brand mt-auto pt-2">${fmt(p.price)}</div>
-            </div>
-          </div>`,
-            )
-            .join("");
-        }
-        tryRenderArrivals();
+// ── NEW ARRIVALS on index page (reads new_arrival flag from Supabase) ──
+function renderHomeArrivals() {
+  const track = document.getElementById("arrivalsTrack");
+  if (!track) return;
+  // Prefer products with new_arrival=true, fallback to last 8 by id
+  let arrivals = products.filter((p) => p.new_arrival);
+  if (!arrivals.length) arrivals = [...products].slice(-8);
+  if (!arrivals.length) {
+    const sec = document.getElementById("newArrivals");
+    if (sec) sec.style.display = "none";
+    return;
+  }
+  track.innerHTML = arrivals
+    .map(
+      (p) => `
+    <div class="bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col group cursor-pointer hover:border-brand hover:shadow-lg transition-all"
+         onclick='openProductDetail(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
+      <div class="relative aspect-square overflow-hidden bg-gray-100 dark:bg-neutral-800">
+        <img src="${p.img}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105" />
+        <span class="absolute top-2 left-2 bg-brand text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">New</span>
+      </div>
+      <div class="p-3 flex-1 flex flex-col">
+        <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-0.5">${p.cat}</div>
+        <div class="text-[12px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">${p.name}</div>
+        <div class="text-[13px] font-bold text-brand mt-auto pt-2">${fmt(p.price)}</div>
+      </div>
+    </div>`,
+    )
+    .join("");
+}
 
-        document.getElementById("arrLeft").addEventListener("click", () => {
-          document
-            .getElementById("arrivalsTrack")
-            .scrollBy({ left: -250, behavior: "smooth" });
-        });
-        document.getElementById("arrRight").addEventListener("click", () => {
-          document
-            .getElementById("arrivalsTrack")
-            .scrollBy({ left: 250, behavior: "smooth" });
-        });
-      })();
-
+document.getElementById("arrLeft")?.addEventListener("click", () => {
+  document.getElementById("arrivalsTrack")?.scrollBy({ left: -250, behavior: "smooth" });
+});
+document.getElementById("arrRight")?.addEventListener("click", () => {
+  document.getElementById("arrivalsTrack")?.scrollBy({ left: 250, behavior: "smooth" });
+});
       // ── PAYMENT MODAL (replaces Paystack) ────────────────────────
       function copyAcct() {
         navigator.clipboard.writeText("7089344370").then(() => {
@@ -466,8 +454,12 @@ cartOverlay.addEventListener("click", closeCart);
 
         // Build WhatsApp message
         const msg = encodeURIComponent(
-          `Hello Minipi NG! 👋\n\nI just made a payment for my order:\n\n${itemNames}\n\nTotal: ${totalFmt}\n\nPlease find my payment receipt attached. Kindly confirm my order. Thank you!`,
-        );
+  `Hello Minipi NG! 👋\n\n` +
+  `I just made a payment for my order:\n\n` +
+  `🛒 *Items Ordered:*\n${cartArr.map((i) => `• ${i.name} x${i.qty} — ${fmt(i.price * i.qty)}`).join("\n")}\n\n` +
+  `💰 *Total Paid: ${totalFmt}*\n\n` +
+  `Please find my payment receipt attached. Kindly confirm my order. Thank you!`
+);
         document.getElementById("whatsappPayLink").href =
           `https://wa.me/2348034970248?text=${msg}`;
 
@@ -1002,18 +994,42 @@ setInterval(renderTestimonials, 60000);
 styleFilterPills();
 
 async function loadProductsFromSupabase() {
-  if (!sb) { renderProducts(); return; }
+  if (!sb) {
+    renderProducts();
+    renderHomeArrivals();
+    return;
+  }
   const { data, error } = await sb.from("products").select("*");
   if (!error && data && data.length) {
     products.length = 0;
     products.push(...data);
   }
   renderProducts();
+  renderHomeArrivals();
+
+  // Realtime: re-render arrivals when admin adds/edits products
+  sb.channel("home-products")
+    .on("postgres_changes", { event: "*", schema: "public", table: "products" }, (payload) => {
+      if (payload.eventType === "INSERT") {
+        products.unshift(payload.new);
+        showToast(`New product: ${payload.new.name}`);
+      } else if (payload.eventType === "UPDATE") {
+        const idx = products.findIndex((p) => p.id === payload.new.id);
+        if (idx !== -1) products[idx] = payload.new;
+      } else if (payload.eventType === "DELETE") {
+        const idx = products.findIndex((p) => p.id === payload.old.id);
+        if (idx !== -1) products.splice(idx, 1);
+      }
+      renderProducts();
+      renderHomeArrivals();
+    })
+    .subscribe();
 }
 
-loadProductsFromSupabase();
-renderCart();
 
+// Show filter row (was hidden in HTML)
+const filterRowEl = document.getElementById("filterRow");
+if (filterRowEl) filterRowEl.classList.remove("hidden");
 // ── CUSTOMER PROFILE MODAL ────────────────────────────────
 function mpFmt(n) { return "₦" + Number(n).toLocaleString("en-NG"); }
 
