@@ -1,0 +1,1827 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop — Minipi NG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Paystack (needed for checkout on this page) -->
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: { sans: ["Poppins", "sans-serif"] },
+            colors: { brand: { DEFAULT: "#ff7a00", hover: "#e06d00" } },
+            keyframes: {
+              fadeUp: {
+                "0%": { opacity: "0", transform: "translateY(12px)" },
+                "100%": { opacity: "1", transform: "translateY(0)" },
+              },
+              dropIn: {
+                "0%": { opacity: "0", transform: "translateY(-6px)" },
+                "100%": { opacity: "1", transform: "translateY(0)" },
+              },
+              spin: { to: { transform: "rotate(360deg)" } },
+            },
+            animation: {
+              fadeUp: "fadeUp 0.35s ease both",
+              dropIn: "dropIn 0.15s ease",
+              spin: "spin 0.7s linear infinite",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        overflow-x: hidden;
+      }
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .arrivals-track {
+        display: flex;
+        gap: 1.25rem;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 0.75rem;
+        scrollbar-width: none;
+      }
+      .arrivals-track::-webkit-scrollbar {
+        display: none;
+      }
+      .arrivals-track > * {
+        scroll-snap-align: start;
+        flex-shrink: 0;
+        width: 220px;
+      }
+      @keyframes badgePop {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.25);
+        }
+      }
+      .badge-new {
+        animation: badgePop 1.8s ease infinite;
+      }
+      .pill-active {
+        background: #ff7a00;
+        color: #fff;
+        border-color: #ff7a00;
+      }
+      .pill-inactive {
+        background: transparent;
+      }
+    </style>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+  </head>
+
+  <body
+    class="font-sans bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-gray-100 transition-colors duration-300"
+  >
+    <!-- TOP BAR -->
+    <div class="overflow-hidden bg-gradient-to-r from-brand to-brand/50 py-2.5">
+      <div class="text-white font-semibold text-sm text-center tracking-wide">
+        🚀 SHOP NOW! &nbsp;|&nbsp; ⚡ Fast Delivery &nbsp;|&nbsp; 🔥 Best Prices
+        in Naira &nbsp;|&nbsp; 🛒 Authentic Gadgets
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <header
+      class="sticky top-0 z-[100] bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-800 shadow-sm transition-colors duration-300"
+    >
+      <div class="max-w-[1280px] mx-auto px-5 py-3 flex items-center gap-3">
+        <a
+          href="index.html"
+          class="text-[22px] font-extrabold tracking-tight shrink-0"
+        >
+          <span class="text-brand">mini</span>pi NG<span class="text-brand"
+            >.</span
+          >
+        </a>
+
+        <!-- Desktop search -->
+        <div class="hidden md:block flex-1 max-w-[420px] mx-4 relative">
+          <input
+            id="searchDesktop"
+            type="text"
+            placeholder="Search phones, laptops, tablets…"
+            class="w-full pl-4 pr-11 py-2.5 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-sm outline-none focus:border-brand placeholder:text-gray-400 transition-colors"
+          />
+          <button
+            id="searchBtnD"
+            aria-label="Search"
+            class="absolute right-[5px] top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center hover:bg-brand-hover transition-colors shrink-0"
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Desktop nav -->
+        <ul
+          class="hidden md:flex items-center gap-6 text-sm font-medium shrink-0"
+        >
+          <li>
+            <a href="index.html" class="hover:text-brand transition-colors"
+              >Home</a
+            >
+          </li>
+          <li><a href="shop.html" class="text-brand font-semibold">Shop</a></li>
+          <li class="relative" id="catNavItem">
+            <button
+              id="catNavBtn"
+              class="flex items-center gap-1 hover:text-brand transition-colors focus:outline-none"
+            >
+              Categories
+              <svg
+                id="catNavChevron"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                class="transition-transform duration-200"
+              >
+                <path d="M6 9l6 6 6-6" />
+              </svg>
+            </button>
+            <div
+              id="catNavDropdown"
+              class="absolute left-1/2 -translate-x-1/2 top-[calc(100%+10px)] bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl shadow-xl min-w-[200px] z-[200] overflow-hidden opacity-0 pointer-events-none -translate-y-1.5 transition-all duration-200"
+            >
+              <div
+                class="absolute -top-[7px] left-1/2 -translate-x-1/2 w-3 h-3 bg-white dark:bg-neutral-900 border-l-[1.5px] border-t-[1.5px] border-gray-200 dark:border-neutral-800 rotate-45"
+              ></div>
+              <button
+                class="dd-cat-link w-full flex items-center gap-3 px-4 py-3 text-[13px] font-medium hover:bg-gray-50 dark:hover:bg-neutral-800 hover:text-brand border-b border-gray-100 dark:border-neutral-800 transition-colors"
+                data-cat="phone"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  class="w-5 h-5 text-brand shrink-0"
+                >
+                  <rect x="7" y="2" width="10" height="20" rx="2" />
+                  <line x1="11" y1="18" x2="13" y2="18" /></svg
+                >Phones
+              </button>
+              <button
+                class="dd-cat-link w-full flex items-center gap-3 px-4 py-3 text-[13px] font-medium hover:bg-gray-50 dark:hover:bg-neutral-800 hover:text-brand border-b border-gray-100 dark:border-neutral-800 transition-colors"
+                data-cat="tablet"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  class="w-5 h-5 text-brand shrink-0"
+                >
+                  <rect x="4" y="3" width="16" height="18" rx="2" />
+                  <line x1="10" y1="18" x2="14" y2="18" /></svg
+                >Tablets
+              </button>
+              <button
+                class="dd-cat-link w-full flex items-center gap-3 px-4 py-3 text-[13px] font-medium hover:bg-gray-50 dark:hover:bg-neutral-800 hover:text-brand border-b border-gray-100 dark:border-neutral-800 transition-colors"
+                data-cat="laptop"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  class="w-5 h-5 text-brand shrink-0"
+                >
+                  <rect x="3" y="4" width="18" height="12" rx="1" />
+                  <line x1="2" y1="20" x2="22" y2="20" /></svg
+                >Laptops
+              </button>
+              <button
+                class="dd-cat-link w-full flex items-center gap-3 px-4 py-3 text-[13px] font-medium hover:bg-gray-50 dark:hover:bg-neutral-800 hover:text-brand transition-colors"
+                data-cat="gaming"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  class="w-5 h-5 text-brand shrink-0"
+                >
+                  <rect x="2" y="7" width="20" height="10" rx="4" />
+                  <line
+                    x1="7"
+                    y1="12"
+                    x2="7"
+                    y2="12"
+                    stroke-linecap="round"
+                    stroke-width="2.5"
+                  />
+                  <line
+                    x1="6"
+                    y1="11"
+                    x2="6"
+                    y2="13"
+                    stroke-linecap="round"
+                    stroke-width="2.5"
+                  />
+                  <line
+                    x1="17"
+                    y1="11"
+                    x2="17"
+                    y2="13"
+                    stroke-linecap="round"
+                    stroke-width="2.5"
+                  />
+                  <line
+                    x1="15"
+                    y1="12"
+                    x2="19"
+                    y2="12"
+                    stroke-linecap="round"
+                    stroke-width="2.5"
+                  /></svg
+                >Gaming
+              </button>
+            </div>
+          </li>
+          <li>
+            <a
+              href="index.html#contact"
+              class="hover:text-brand transition-colors"
+              >Contact</a
+            >
+          </li>
+        </ul>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-2 shrink-0 ml-auto">
+          <button
+            id="themeBtn"
+            aria-label="Toggle dark mode"
+            class="w-[38px] h-[38px] rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 flex items-center justify-center hover:border-brand transition-colors shrink-0"
+          >
+            <svg
+              id="iconSun"
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="5" />
+              <path
+                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+              />
+            </svg>
+            <svg
+              id="iconMoon"
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              class="hidden"
+            >
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+            </svg>
+          </button>
+          <button
+            id="cartBtn"
+            aria-label="Open cart"
+            class="relative w-[38px] h-[38px] rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 flex items-center justify-center hover:border-brand transition-colors shrink-0"
+          >
+            <svg
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <path d="M16 10a4 4 0 01-8 0" />
+            </svg>
+            <span
+              id="cartBadge"
+              class="absolute -top-1 -right-1 bg-brand text-white text-[10px] font-bold w-[18px] h-[18px] rounded-full flex items-center justify-center"
+              >0</span
+            >
+          </button>
+          <button
+            id="hamburger"
+            aria-label="Menu"
+            class="md:hidden w-[38px] h-[38px] rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 flex items-center justify-center hover:border-brand transition-colors shrink-0"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile menu -->
+      <div
+        id="mobileMenu"
+        class="hidden md:hidden px-5 py-4 border-t border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900"
+      >
+        <div class="relative mb-3.5">
+          <input
+            id="searchMobile"
+            type="text"
+            placeholder="Search gadgets…"
+            class="w-full pl-4 pr-11 py-2.5 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-sm outline-none focus:border-brand placeholder:text-gray-400"
+          />
+          <button
+            id="searchBtnM"
+            aria-label="Search"
+            class="absolute right-[5px] top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+          </button>
+        </div>
+        <ul class="flex flex-col gap-3 text-sm font-medium">
+          <li>
+            <a href="index.html" class="hover:text-brand transition-colors"
+              >Home</a
+            >
+          </li>
+          <li><a href="shop.html" class="text-brand font-semibold">Shop</a></li>
+          <li>
+            <p
+              class="font-semibold mb-1.5 text-gray-400 text-xs uppercase tracking-wide"
+            >
+              Categories
+            </p>
+            <div class="flex flex-wrap gap-2 mb-1">
+              <button
+                class="mob-cat-btn px-3 py-1.5 rounded-full border-[1.5px] text-xs font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"
+                data-cat="all"
+              >
+                All
+              </button>
+              <button
+                class="mob-cat-btn px-3 py-1.5 rounded-full border-[1.5px] text-xs font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"
+                data-cat="phone"
+              >
+                Phones
+              </button>
+              <button
+                class="mob-cat-btn px-3 py-1.5 rounded-full border-[1.5px] text-xs font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"
+                data-cat="tablet"
+              >
+                Tablets
+              </button>
+              <button
+                class="mob-cat-btn px-3 py-1.5 rounded-full border-[1.5px] text-xs font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"
+                data-cat="laptop"
+              >
+                Laptops
+              </button>
+              <button
+                class="mob-cat-btn px-3 py-1.5 rounded-full border-[1.5px] text-xs font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"
+                data-cat="gaming"
+              >
+                Gaming
+              </button>
+            </div>
+          </li>
+          <li>
+            <a
+              href="index.html#contact"
+              class="hover:text-brand transition-colors"
+              >Contact</a
+            >
+          </li>
+        </ul>
+      </div>
+    </header>
+
+    <!-- HERO BANNER -->
+    <section
+      class="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-[#1a1a2e] dark:to-neutral-900 py-10 px-5"
+    >
+      <div
+        class="max-w-[1280px] mx-auto flex flex-col md:flex-row items-center gap-8"
+      >
+        <div class="flex-1">
+          <p
+            class="text-xs font-semibold uppercase tracking-[0.08em] text-brand mb-2"
+          >
+            Minipi NG — All Products
+          </p>
+          <h1
+            class="text-[28px] sm:text-[36px] font-extrabold leading-tight mb-3"
+          >
+            Shop the Best <span class="text-brand">Gadgets</span> in Nigeria
+          </h1>
+          <p
+            class="text-sm text-gray-500 dark:text-gray-400 max-w-[400px] leading-relaxed"
+          >
+            Browse phones, tablets, laptops and gaming gear — all at the best
+            Naira prices.
+          </p>
+        </div>
+        <div class="flex gap-3 flex-wrap">
+          <button
+            class="hero-cat-btn px-5 py-2.5 rounded-full bg-brand text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+            data-cat="all"
+          >
+            All Products
+          </button>
+          <button
+            class="hero-cat-btn px-5 py-2.5 rounded-full border-[1.5px] border-gray-300 dark:border-neutral-700 text-sm font-medium hover:border-brand hover:text-brand transition-all"
+            data-cat="phone"
+          >
+            Phones
+          </button>
+          <button
+            class="hero-cat-btn px-5 py-2.5 rounded-full border-[1.5px] border-gray-300 dark:border-neutral-700 text-sm font-medium hover:border-brand hover:text-brand transition-all"
+            data-cat="tablet"
+          >
+            Tablets
+          </button>
+          <button
+            class="hero-cat-btn px-5 py-2.5 rounded-full border-[1.5px] border-gray-300 dark:border-neutral-700 text-sm font-medium hover:border-brand hover:text-brand transition-all"
+            data-cat="laptop"
+          >
+            Laptops
+          </button>
+          <button
+            class="hero-cat-btn px-5 py-2.5 rounded-full border-[1.5px] border-gray-300 dark:border-neutral-700 text-sm font-medium hover:border-brand hover:text-brand transition-all"
+            data-cat="gaming"
+          >
+            Gaming
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEW ARRIVALS -->
+    <section id="newArrivals" class="max-w-[1280px] mx-auto px-5 pt-10 pb-0">
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span
+              class="badge-new inline-flex items-center gap-1 bg-brand text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wide"
+              >🔥 New</span
+            >
+            <h2 class="text-xl font-bold">New Arrivals</h2>
+          </div>
+          <p class="text-[13px] text-gray-500 dark:text-gray-400">
+            The freshest gadgets just landed
+          </p>
+        </div>
+        <div class="flex gap-2">
+          <button
+            id="arrLeft"
+            class="w-9 h-9 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 flex items-center justify-center hover:border-brand transition-colors"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <button
+            id="arrRight"
+            class="w-9 h-9 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 flex items-center justify-center hover:border-brand transition-colors"
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+            >
+              <path d="M9 18l6-6-6-6" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div id="arrivalsTrack" class="arrivals-track pb-2"></div>
+    </section>
+
+    <div class="max-w-[1280px] mx-auto px-5 my-10">
+      <hr class="border-gray-200 dark:border-neutral-800" />
+    </div>
+
+    <!-- MAIN SHOP -->
+    <section id="shop" class="max-w-[1280px] mx-auto px-5 pb-16">
+      <div
+        class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 flex-wrap"
+      >
+        <div>
+          <h2 class="text-xl font-bold" id="shopHeading">All Products</h2>
+          <p
+            id="shopCount"
+            class="text-[13px] text-gray-500 dark:text-gray-400 mt-0.5"
+          ></p>
+        </div>
+        <div class="flex items-center gap-3 flex-wrap">
+          <div class="flex gap-2 flex-wrap" id="filterRow">
+            <button
+              class="filter-pill px-[15px] py-2 rounded-full border-[1.5px] text-[12px] font-medium transition-all whitespace-nowrap pill-active border-brand"
+              data-cat="all"
+            >
+              All
+            </button>
+            <button
+              class="filter-pill px-[15px] py-2 rounded-full border-[1.5px] text-[12px] font-medium transition-all whitespace-nowrap pill-inactive border-gray-200 dark:border-neutral-700"
+              data-cat="phone"
+            >
+              Phones
+            </button>
+            <button
+              class="filter-pill px-[15px] py-2 rounded-full border-[1.5px] text-[12px] font-medium transition-all whitespace-nowrap pill-inactive border-gray-200 dark:border-neutral-700"
+              data-cat="tablet"
+            >
+              Tablets
+            </button>
+            <button
+              class="filter-pill px-[15px] py-2 rounded-full border-[1.5px] text-[12px] font-medium transition-all whitespace-nowrap pill-inactive border-gray-200 dark:border-neutral-700"
+              data-cat="laptop"
+            >
+              Laptops
+            </button>
+            <button
+              class="filter-pill px-[15px] py-2 rounded-full border-[1.5px] text-[12px] font-medium transition-all whitespace-nowrap pill-inactive border-gray-200 dark:border-neutral-700"
+              data-cat="gaming"
+            >
+              Gaming
+            </button>
+          </div>
+          <select
+            id="sortSelect"
+            class="px-3 py-2 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-[12px] font-medium outline-none focus:border-brand transition-colors cursor-pointer"
+          >
+            <option value="default">Sort: Default</option>
+            <option value="price-asc">Price: Low → High</option>
+            <option value="price-desc">Price: High → Low</option>
+            <option value="name-asc">Name: A → Z</option>
+          </select>
+        </div>
+      </div>
+
+      <div
+        id="loadingState"
+        class="flex items-center justify-center py-20 gap-3 text-gray-400"
+      >
+        <svg
+          class="w-6 h-6 animate-spin text-brand"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+        >
+          <circle cx="12" cy="12" r="10" stroke-opacity=".25" />
+          <path d="M12 2a10 10 0 0110 10" stroke="#ff7a00" />
+        </svg>
+        <span class="text-sm">Loading products…</span>
+      </div>
+
+      <div
+        id="productGrid"
+        class="hidden grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5"
+      ></div>
+
+      <div id="emptyState" class="hidden text-center py-20 text-gray-400">
+        <svg
+          class="w-14 h-14 mx-auto mb-4 opacity-30"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="M21 21l-4.35-4.35" />
+        </svg>
+        <p class="text-sm font-medium">No products found</p>
+        <p class="text-xs mt-1">Try a different search or category</p>
+      </div>
+    </section>
+
+    <!-- CART OVERLAY + DRAWER -->
+    <div
+      id="cartOverlay"
+      class="hidden fixed inset-0 bg-black/55 z-[300]"
+    ></div>
+    <aside
+      id="cartDrawer"
+      class="fixed top-0 right-0 w-full max-w-[400px] h-full bg-white dark:bg-neutral-900 z-[400] flex flex-col translate-x-full transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] shadow-2xl"
+    >
+      <div
+        class="flex items-center justify-between px-5 py-[18px] border-b border-gray-200 dark:border-neutral-800"
+      >
+        <h3 class="text-base font-bold">Your Cart</h3>
+        <button
+          id="cartClose"
+          class="w-8 h-8 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 flex items-center justify-center hover:border-brand transition-colors"
+        >
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div
+        id="cartItems"
+        class="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-4"
+      ></div>
+      <div class="px-5 py-4 border-t border-gray-200 dark:border-neutral-800">
+        <div class="flex justify-between text-base font-bold mb-3.5">
+          <span>Total</span><span id="cartTotal">₦0</span>
+        </div>
+        <!-- ✅ FIXED: Real checkout button (was an <a> link before) -->
+        <button
+          id="checkoutBtn"
+          class="w-full py-3 rounded-full bg-brand text-white text-sm font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+        >
+          Proceed to Checkout
+        </button>
+      </div>
+    </aside>
+
+    <!-- PRODUCT DETAIL MODAL -->
+    <div
+      id="pdOverlay"
+      class="hidden fixed inset-0 bg-black/60 z-[500] items-center justify-center p-5"
+    >
+      <div
+        class="bg-white dark:bg-neutral-900 rounded-[20px] shadow-2xl relative max-h-[90vh] overflow-y-auto animate-fadeUp w-full max-w-[560px] p-6"
+      >
+        <button
+          id="pdClose"
+          class="absolute top-3.5 right-3.5 w-[30px] h-[30px] flex items-center justify-center rounded-full text-gray-500 bg-gray-100 dark:bg-neutral-800 hover:text-gray-900 dark:hover:text-white transition-colors"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <img
+            id="pdImg"
+            src=""
+            alt=""
+            class="w-full aspect-square object-cover rounded-2xl bg-gray-100 dark:bg-neutral-800"
+          />
+          <div class="flex flex-col">
+            <div
+              id="pdCat"
+              class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-1.5"
+            ></div>
+            <div id="pdName" class="text-base font-bold mb-2"></div>
+            <div
+              id="pdDesc"
+              class="text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed mb-4 flex-1"
+            ></div>
+            <div
+              id="pdPrice"
+              class="text-xl font-extrabold text-brand mb-4"
+            ></div>
+            <div id="pdBadgeRow" class="mb-4"></div>
+            <div class="flex items-center gap-3 mb-4">
+              <button
+                id="pdDec"
+                class="w-[34px] h-[34px] rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 flex items-center justify-center text-base hover:border-brand transition-colors"
+              >
+                −
+              </button>
+              <span
+                id="pdQty"
+                class="text-base font-bold min-w-[24px] text-center"
+                >1</span
+              >
+              <button
+                id="pdInc"
+                class="w-[34px] h-[34px] rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 flex items-center justify-center text-base hover:border-brand transition-colors"
+              >
+                +
+              </button>
+            </div>
+            <button
+              id="pdAddCart"
+              class="w-full py-3 rounded-full bg-brand text-white text-sm font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+            >
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div
+      id="toast"
+      class="fixed bottom-7 left-1/2 -translate-x-1/2 translate-y-20 bg-neutral-900 text-white text-[13px] font-medium px-5 py-[11px] rounded-full shadow-2xl z-[9999] flex items-center gap-2 transition-all duration-300 opacity-0 whitespace-nowrap pointer-events-none"
+    >
+      <div class="w-2 h-2 rounded-full bg-brand shrink-0"></div>
+      <span id="toastMsg"></span>
+    </div>
+
+    <footer
+      class="bg-white dark:bg-neutral-900 border-t border-gray-200 dark:border-neutral-800 py-6 text-center text-xs text-gray-400 dark:text-gray-500"
+    >
+      © 2026 Minipi NG. All rights reserved. &nbsp;·&nbsp;
+      <a href="index.html" class="hover:text-brand transition-colors"
+        >Back to Home</a
+      >
+    </footer>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SHOP PAGE SCRIPT
+    ════════════════════════════════════════════════════════════ -->
+    <script>
+      // ── CONSTANTS ─────────────────────────────────────────────────
+      const CART_KEY = "minipi_cart"; // ✅ shared key with index/main.js
+      const ORDERS_KEY = "mp_orders";
+
+      // ── SUPABASE ─────────────────────────────────────────────────
+      const SB_URL = "https://sygdrjmjjxwxuczcnxjr.supabase.co";
+      const SB_KEY = "sb_publishable_lAqlBUViE_Jcq7PbVALyLg_b-X9YQvO";
+      let sb = null;
+      try {
+        if (
+          window.supabase &&
+          typeof window.supabase.createClient === "function"
+        ) {
+          sb = window.supabase.createClient(SB_URL, SB_KEY);
+        }
+      } catch (e) {
+        console.warn("Supabase init failed", e);
+      }
+
+      // ── DARK MODE ─────────────────────────────────────────────────
+      const html = document.documentElement;
+      const iconSun = document.getElementById("iconSun");
+      const iconMoon = document.getElementById("iconMoon");
+      function applyTheme(dark) {
+        dark ? html.classList.add("dark") : html.classList.remove("dark");
+        iconSun.classList.toggle("hidden", dark);
+        iconMoon.classList.toggle("hidden", !dark);
+      }
+      const saved = localStorage.getItem("gTheme");
+      applyTheme(
+        saved
+          ? saved === "dark"
+          : window.matchMedia("(prefers-color-scheme: dark)").matches,
+      );
+      document.getElementById("themeBtn").addEventListener("click", () => {
+        const isDark = html.classList.contains("dark");
+        applyTheme(!isDark);
+        localStorage.setItem("gTheme", !isDark ? "dark" : "light");
+      });
+
+      // ── MOBILE MENU ───────────────────────────────────────────────
+      const hamburger = document.getElementById("hamburger");
+      const mobileMenu = document.getElementById("mobileMenu");
+      hamburger.addEventListener("click", (e) => {
+        e.stopPropagation();
+        mobileMenu.classList.toggle("hidden");
+      });
+      document.addEventListener("click", (e) => {
+        if (!mobileMenu.contains(e.target) && e.target !== hamburger)
+          mobileMenu.classList.add("hidden");
+      });
+
+      // ── CATEGORIES DROPDOWN (desktop) ─────────────────────────────
+      (function () {
+        const btn = document.getElementById("catNavBtn");
+        const dd = document.getElementById("catNavDropdown");
+        const chv = document.getElementById("catNavChevron");
+        const li = document.getElementById("catNavItem");
+        if (!btn || !dd) return;
+        function openDd() {
+          dd.classList.remove(
+            "opacity-0",
+            "pointer-events-none",
+            "-translate-y-1.5",
+          );
+          dd.classList.add("opacity-100", "translate-y-0");
+          chv.style.transform = "rotate(180deg)";
+        }
+        function closeDd() {
+          dd.classList.add("opacity-0", "pointer-events-none");
+          dd.classList.remove("opacity-100", "translate-y-0");
+          chv.style.transform = "";
+        }
+        li.addEventListener("mouseenter", openDd);
+        li.addEventListener("mouseleave", closeDd);
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          dd.classList.contains("opacity-0") ? openDd() : closeDd();
+        });
+        document.addEventListener("click", (e) => {
+          if (!li.contains(e.target)) closeDd();
+        });
+        document.querySelectorAll(".dd-cat-link").forEach((b) => {
+          b.addEventListener("click", () => {
+            setFilter(b.dataset.cat);
+            closeDd();
+            mobileMenu.classList.add("hidden");
+          });
+        });
+        document.querySelectorAll(".mob-cat-btn").forEach((b) => {
+          b.addEventListener("click", () => {
+            setFilter(b.dataset.cat);
+            mobileMenu.classList.add("hidden");
+          });
+        });
+      })();
+
+      // ── FALLBACK PRODUCTS ─────────────────────────────────────────
+      const fallbackProducts = [
+        {
+          id: 1,
+          name: "iPhone 15 Pro Max",
+          cat: "phone",
+          price: 1845000,
+          img: "https://images.unsplash.com/photo-1696446702183-cbd13d3c1e0e?auto=format&fit=crop&w=400&q=80",
+          desc: "A17 Pro chip, titanium design, 256GB storage, 48MP camera.",
+          new_arrival: false,
+        },
+        {
+          id: 2,
+          name: "iPhone 15 Pro",
+          cat: "phone",
+          price: 1650000,
+          img: "https://images.unsplash.com/photo-1592286927505-1def25115481?auto=format&fit=crop&w=400&q=80",
+          desc: "Pro camera system with Dynamic Island, 128GB storage.",
+          new_arrival: false,
+        },
+        {
+          id: 3,
+          name: "Samsung Galaxy S24 Ultra",
+          cat: "phone",
+          price: 1720000,
+          img: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=400&q=80",
+          desc: "200MP camera, built-in S Pen, 256GB storage.",
+          new_arrival: false,
+        },
+        {
+          id: 4,
+          name: "Google Pixel 9 Pro",
+          cat: "phone",
+          price: 1380000,
+          img: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=400&q=80",
+          desc: "AI-powered camera, clean Android, 7 years of updates.",
+          new_arrival: false,
+        },
+        {
+          id: 5,
+          name: "Samsung Galaxy S23",
+          cat: "phone",
+          price: 980000,
+          img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80",
+          desc: "Snapdragon 8 Gen 2, 50MP camera, 128GB.",
+          new_arrival: false,
+        },
+        {
+          id: 6,
+          name: "iPhone 14",
+          cat: "phone",
+          price: 1050000,
+          img: "https://images.unsplash.com/photo-1574170609519-3e82a8fa1aad?auto=format&fit=crop&w=400&q=80",
+          desc: "A15 Bionic chip, dual camera, 128GB storage.",
+          new_arrival: false,
+        },
+        {
+          id: 25,
+          name: "iPhone 15",
+          cat: "phone",
+          price: 1180000,
+          img: "https://images.unsplash.com/photo-1697284960823-2a5e5e1bb524?auto=format&fit=crop&w=400&q=80",
+          desc: "A16 Bionic chip, Dynamic Island, 48MP main camera, 128GB.",
+          new_arrival: true,
+        },
+        {
+          id: 26,
+          name: "Samsung Galaxy A55",
+          cat: "phone",
+          price: 520000,
+          img: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=400&q=80",
+          desc: "Exynos 1480, 50MP OIS camera, 256GB, 5000mAh battery.",
+          new_arrival: true,
+        },
+        {
+          id: 27,
+          name: "Xiaomi 14 Pro",
+          cat: "phone",
+          price: 980000,
+          img: "https://images.unsplash.com/photo-1598965402089-897ce52e8355?auto=format&fit=crop&w=400&q=80",
+          desc: "Snapdragon 8 Gen 3, Leica optics, 120W fast charging.",
+          new_arrival: true,
+        },
+        {
+          id: 28,
+          name: "OnePlus 12",
+          cat: "phone",
+          price: 890000,
+          img: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=400&q=80",
+          desc: "Snapdragon 8 Gen 3, 50MP Hasselblad camera, 256GB.",
+          new_arrival: false,
+        },
+        {
+          id: 29,
+          name: "Tecno Phantom V Fold",
+          cat: "phone",
+          price: 1290000,
+          img: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=400&q=80",
+          desc: "Foldable AMOLED display, 50MP triple camera, 256GB.",
+          new_arrival: false,
+        },
+        {
+          id: 30,
+          name: "Infinix Zero 30",
+          cat: "phone",
+          price: 380000,
+          img: "https://images.unsplash.com/photo-1574170609519-3e82a8fa1aad?auto=format&fit=crop&w=400&q=80",
+          desc: "Curved AMOLED display, 108MP OIS camera, 256GB.",
+          new_arrival: false,
+        },
+        {
+          id: 7,
+          name: "iPad Pro M4 11-inch",
+          cat: "tablet",
+          price: 1450000,
+          img: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=400&q=80",
+          desc: "M4 chip, Liquid Retina XDR display, 256GB Wi-Fi.",
+          new_arrival: false,
+        },
+        {
+          id: 8,
+          name: "Samsung Galaxy Tab S9",
+          cat: "tablet",
+          price: 980000,
+          img: "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=400&q=80",
+          desc: "AMOLED display, S Pen included, 128GB storage.",
+          new_arrival: false,
+        },
+        {
+          id: 9,
+          name: "iPad Air 11-inch M2",
+          cat: "tablet",
+          price: 850000,
+          img: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=400&q=80",
+          desc: "M2 chip, all-day battery, 128GB Wi-Fi, Touch ID.",
+          new_arrival: false,
+        },
+        {
+          id: 10,
+          name: "Lenovo Tab P12",
+          cat: "tablet",
+          price: 540000,
+          img: "https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?auto=format&fit=crop&w=400&q=80",
+          desc: "12.7-inch display, LTPS, perfect for entertainment.",
+          new_arrival: false,
+        },
+        {
+          id: 11,
+          name: "Microsoft Surface Pro 9",
+          cat: "tablet",
+          price: 1250000,
+          img: "https://images.unsplash.com/photo-1593642533144-3d62aa4783ec?auto=format&fit=crop&w=400&q=80",
+          desc: "Intel Core i5, 8GB RAM, 2-in-1 Windows tablet.",
+          new_arrival: false,
+        },
+        {
+          id: 12,
+          name: "Xiaomi Pad 6 Pro",
+          cat: "tablet",
+          price: 620000,
+          img: "https://images.unsplash.com/photo-1587033411391-5d9e51cce126?auto=format&fit=crop&w=400&q=80",
+          desc: "Snapdragon 8+, 144Hz display, 256GB storage.",
+          new_arrival: false,
+        },
+        {
+          id: 31,
+          name: "iPad Mini 7",
+          cat: "tablet",
+          price: 720000,
+          img: "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=400&q=80",
+          desc: "A17 Pro chip, 8.3-inch Liquid Retina display, 128GB.",
+          new_arrival: true,
+        },
+        {
+          id: 32,
+          name: "Samsung Galaxy Tab A9+",
+          cat: "tablet",
+          price: 290000,
+          img: "https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?auto=format&fit=crop&w=400&q=80",
+          desc: "11-inch display, quad speakers, 64GB storage, budget pick.",
+          new_arrival: false,
+        },
+        {
+          id: 33,
+          name: "Huawei MatePad 11.5",
+          cat: "tablet",
+          price: 480000,
+          img: "https://images.unsplash.com/photo-1593642533144-3d62aa4783ec?auto=format&fit=crop&w=400&q=80",
+          desc: "144Hz PaperMatte display, Snapdragon chipset, 128GB.",
+          new_arrival: false,
+        },
+        {
+          id: 34,
+          name: "Amazon Fire Max 11",
+          cat: "tablet",
+          price: 240000,
+          img: "https://images.unsplash.com/photo-1587033411391-5d9e51cce126?auto=format&fit=crop&w=400&q=80",
+          desc: "11-inch display, octa-core processor, 64GB, great for media.",
+          new_arrival: false,
+        },
+        {
+          id: 13,
+          name: 'MacBook Pro 14" M4',
+          cat: "laptop",
+          price: 3450000,
+          img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80",
+          desc: "M4 chip, 16GB RAM, 512GB SSD, Liquid Retina XDR.",
+          new_arrival: false,
+        },
+        {
+          id: 14,
+          name: "Dell XPS 13",
+          cat: "laptop",
+          price: 1980000,
+          img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=400&q=80",
+          desc: "Intel Core Ultra 7, 16GB RAM, 512GB SSD, OLED display.",
+          new_arrival: false,
+        },
+        {
+          id: 15,
+          name: "HP Spectre x360",
+          cat: "laptop",
+          price: 2150000,
+          img: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=400&q=80",
+          desc: "2-in-1 convertible, OLED touchscreen, 1TB SSD.",
+          new_arrival: false,
+        },
+        {
+          id: 16,
+          name: "ASUS ROG Zephyrus G14",
+          cat: "laptop",
+          price: 2890000,
+          img: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=400&q=80",
+          desc: "RTX 4060, Ryzen 9, 16GB RAM, 165Hz display.",
+          new_arrival: false,
+        },
+        {
+          id: 17,
+          name: "MacBook Air M2 15-inch",
+          cat: "laptop",
+          price: 2250000,
+          img: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=400&q=80",
+          desc: "M2 chip, 8GB RAM, 256GB SSD, fanless design.",
+          new_arrival: false,
+        },
+        {
+          id: 18,
+          name: "Lenovo ThinkPad X1 Carbon",
+          cat: "laptop",
+          price: 2400000,
+          img: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=400&q=80",
+          desc: "Intel Core i7, 16GB RAM, 512GB SSD, business-grade.",
+          new_arrival: false,
+        },
+        {
+          id: 35,
+          name: "MacBook Air M3 13-inch",
+          cat: "laptop",
+          price: 1980000,
+          img: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=400&q=80",
+          desc: "M3 chip, 8GB RAM, 256GB SSD, all-day battery life.",
+          new_arrival: true,
+        },
+        {
+          id: 36,
+          name: "Acer Swift Go 14",
+          cat: "laptop",
+          price: 1150000,
+          img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=400&q=80",
+          desc: "Intel Core i5, 16GB RAM, 512GB SSD, OLED display.",
+          new_arrival: false,
+        },
+        {
+          id: 37,
+          name: "Microsoft Surface Laptop 6",
+          cat: "laptop",
+          price: 2050000,
+          img: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=400&q=80",
+          desc: "Intel Core Ultra 5, 16GB RAM, touchscreen, 512GB SSD.",
+          new_arrival: false,
+        },
+        {
+          id: 38,
+          name: "ASUS VivoBook 16",
+          cat: "laptop",
+          price: 850000,
+          img: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=400&q=80",
+          desc: "AMD Ryzen 5, 8GB RAM, 512GB SSD, 16-inch FHD+ display.",
+          new_arrival: false,
+        },
+        {
+          id: 39,
+          name: "Lenovo Legion Pro 5",
+          cat: "laptop",
+          price: 3150000,
+          img: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=400&q=80",
+          desc: "RTX 4070, Ryzen 7, 32GB RAM, 240Hz display.",
+          new_arrival: true,
+        },
+        {
+          id: 19,
+          name: "PlayStation 5 Slim",
+          cat: "gaming",
+          price: 720000,
+          img: "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?auto=format&fit=crop&w=400&q=80",
+          desc: "1TB SSD, 4K gaming, ultra-high-speed console.",
+          new_arrival: false,
+        },
+        {
+          id: 20,
+          name: "Xbox Series X",
+          cat: "gaming",
+          price: 695000,
+          img: "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&w=400&q=80",
+          desc: "4K gaming, 1TB SSD, Game Pass compatible.",
+          new_arrival: false,
+        },
+        {
+          id: 21,
+          name: "Nintendo Switch OLED",
+          cat: "gaming",
+          price: 410000,
+          img: "https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?auto=format&fit=crop&w=400&q=80",
+          desc: "7-inch OLED screen, enhanced audio, 64GB storage.",
+          new_arrival: false,
+        },
+        {
+          id: 22,
+          name: "Logitech G Pro Wireless",
+          cat: "gaming",
+          price: 95000,
+          img: "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=400&q=80",
+          desc: "Ultra-lightweight wireless gaming mouse, HERO sensor.",
+          new_arrival: false,
+        },
+        {
+          id: 23,
+          name: "Razer BlackShark V2 Pro",
+          cat: "gaming",
+          price: 185000,
+          img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80",
+          desc: "Wireless gaming headset, THX spatial audio, 70hr battery.",
+          new_arrival: false,
+        },
+        {
+          id: 24,
+          name: "PS5 DualSense Controller",
+          cat: "gaming",
+          price: 85000,
+          img: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=400&q=80",
+          desc: "Haptic feedback, adaptive triggers, built-in mic.",
+          new_arrival: false,
+        },
+        {
+          id: 40,
+          name: "Xbox Series S",
+          cat: "gaming",
+          price: 420000,
+          img: "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&w=400&q=80",
+          desc: "All-digital 1440p gaming console, 512GB SSD.",
+          new_arrival: false,
+        },
+        {
+          id: 41,
+          name: "Steam Deck OLED",
+          cat: "gaming",
+          price: 850000,
+          img: "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?auto=format&fit=crop&w=400&q=80",
+          desc: "7.4-inch HDR OLED, 1TB SSD, handheld PC gaming.",
+          new_arrival: true,
+        },
+        {
+          id: 42,
+          name: "Corsair K70 RGB Keyboard",
+          cat: "gaming",
+          price: 165000,
+          img: "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=400&q=80",
+          desc: "Mechanical RGB keyboard, PBT keycaps, hyper-polling.",
+          new_arrival: false,
+        },
+        {
+          id: 43,
+          name: "Meta Quest 3",
+          cat: "gaming",
+          price: 980000,
+          img: "https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?auto=format&fit=crop&w=400&q=80",
+          desc: "Mixed reality VR headset, 128GB storage, Snapdragon XR2.",
+          new_arrival: true,
+        },
+        {
+          id: 44,
+          name: "SteelSeries Arctis Nova Pro",
+          cat: "gaming",
+          price: 295000,
+          img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80",
+          desc: "Active noise cancelling wireless gaming headset.",
+          new_arrival: false,
+        },
+      ];
+
+      // ── STATE ─────────────────────────────────────────────────────
+      let allProducts = [];
+      let activeCat = "all";
+      let searchTerm = "";
+      let sortMode = "default";
+      let pdCurrent = null,
+        pdQty = 1;
+
+      // ── SHARED CART HELPERS ───────────────────────────────────────
+      // ✅ Cart is stored in localStorage so shop.html and index.html share it
+      const fmt = (n) => "₦" + Number(n).toLocaleString("en-NG");
+
+      function loadCart() {
+        try {
+          return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+        } catch {
+          return [];
+        }
+      }
+      function saveCart(c) {
+        localStorage.setItem(CART_KEY, JSON.stringify(c));
+      }
+
+      // ── LOAD PRODUCTS ─────────────────────────────────────────────
+      async function loadProducts() {
+        if (sb) {
+          try {
+            const { data, error } = await sb.from("products").select("*");
+            if (!error && data && data.length) allProducts = data;
+            else allProducts = fallbackProducts;
+          } catch {
+            allProducts = fallbackProducts;
+          }
+        } else {
+          allProducts = fallbackProducts;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+        const catParam = params.get("cat");
+        if (
+          catParam &&
+          ["phone", "tablet", "laptop", "gaming"].includes(catParam)
+        )
+          activeCat = catParam;
+
+        document.getElementById("loadingState").classList.add("hidden");
+        document.getElementById("productGrid").classList.remove("hidden");
+
+        styleFilterPills();
+        renderArrivals();
+        renderProducts();
+      }
+
+      // ── NEW ARRIVALS ──────────────────────────────────────────────
+      function renderArrivals() {
+        const track = document.getElementById("arrivalsTrack");
+        let arrivals = allProducts.filter((p) => p.new_arrival);
+        if (!arrivals.length) arrivals = allProducts.slice(-12);
+        if (!arrivals.length) {
+          document.getElementById("newArrivals").classList.add("hidden");
+          return;
+        }
+        track.innerHTML = arrivals
+          .map(
+            (p) => `
+          <div class="bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col group cursor-pointer hover:border-brand hover:shadow-lg transition-all"
+               onclick='openProductDetail(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
+            <div class="relative aspect-square overflow-hidden bg-gray-100 dark:bg-neutral-800">
+              <img src="${p.img}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105" />
+              <span class="absolute top-2 left-2 bg-brand text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">New</span>
+            </div>
+            <div class="p-3 flex-1 flex flex-col">
+              <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-0.5">${p.cat}</div>
+              <div class="text-[12px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">${p.name}</div>
+              <div class="text-[13px] font-bold text-brand mt-auto pt-2">${fmt(p.price)}</div>
+            </div>
+          </div>`,
+          )
+          .join("");
+      }
+
+      document.getElementById("arrLeft").addEventListener("click", () => {
+        document
+          .getElementById("arrivalsTrack")
+          .scrollBy({ left: -250, behavior: "smooth" });
+      });
+      document.getElementById("arrRight").addEventListener("click", () => {
+        document
+          .getElementById("arrivalsTrack")
+          .scrollBy({ left: 250, behavior: "smooth" });
+      });
+
+      // ── RENDER PRODUCTS ───────────────────────────────────────────
+      function renderProducts() {
+        const grid = document.getElementById("productGrid");
+        const empty = document.getElementById("emptyState");
+        const count = document.getElementById("shopCount");
+
+        let list = allProducts.filter((p) => {
+          const okCat = activeCat === "all" || p.cat === activeCat;
+          const q = searchTerm.toLowerCase();
+          const okQ =
+            !q ||
+            (p.name || "").toLowerCase().includes(q) ||
+            (p.cat || "").toLowerCase().includes(q) ||
+            (p.desc || "").toLowerCase().includes(q);
+          return okCat && okQ;
+        });
+
+        if (sortMode === "price-asc")
+          list = [...list].sort((a, b) => a.price - b.price);
+        if (sortMode === "price-desc")
+          list = [...list].sort((a, b) => b.price - a.price);
+        if (sortMode === "name-asc")
+          list = [...list].sort((a, b) =>
+            (a.name || "").localeCompare(b.name || ""),
+          );
+
+        const catLabels = {
+          all: "All Products",
+          phone: "Phones",
+          tablet: "Tablets",
+          laptop: "Laptops",
+          gaming: "Gaming",
+        };
+        document.getElementById("shopHeading").textContent = searchTerm
+          ? `Search: "${searchTerm}"`
+          : catLabels[activeCat] || "Products";
+        count.textContent = `${list.length} product${list.length !== 1 ? "s" : ""} found`;
+
+        if (!list.length) {
+          grid.classList.add("hidden");
+          empty.classList.remove("hidden");
+          return;
+        }
+        empty.classList.add("hidden");
+        grid.classList.remove("hidden");
+
+        grid.innerHTML = list
+          .map(
+            (p, i) => `
+          <div class="product-card bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col transition-all hover:shadow-xl hover:border-brand animate-fadeUp group" style="animation-delay:${i * 0.03}s">
+            <div class="relative aspect-square overflow-hidden bg-gray-100 dark:bg-neutral-800">
+              <img src="${p.img}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105" />
+              ${p.new_arrival ? '<span class="absolute top-2 left-2 bg-brand text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">New</span>' : ""}
+            </div>
+            <div class="p-3.5 flex-1 flex flex-col">
+              <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-1">${p.cat}</div>
+              <div class="text-[13px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis" title="${p.name}">${p.name}</div>
+              <div class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed mb-2.5 line-clamp-2 flex-1">${p.desc || ""}</div>
+              <div class="text-[15px] font-bold text-brand mb-3">${fmt(p.price)}</div>
+              <div class="flex gap-2">
+                <button class="flex-1 px-1 py-2 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 text-[12px] font-semibold hover:border-brand hover:text-brand transition-colors" data-id="${p.id}" data-action="details">Details</button>
+                <button class="flex-1 px-1 py-2 rounded-full bg-brand text-white text-[12px] font-semibold hover:opacity-85 transition-opacity" data-id="${p.id}" data-action="cart">Add to Cart</button>
+              </div>
+            </div>
+          </div>`,
+          )
+          .join("");
+      }
+
+      document.getElementById("productGrid").addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-action]");
+        if (!btn) return;
+        const id = btn.dataset.id;
+        const p = allProducts.find((x) => String(x.id) === String(id));
+        if (!p) return;
+        if (btn.dataset.action === "cart") addToCart(p, 1);
+        else if (btn.dataset.action === "details") openProductDetail(p);
+      });
+
+      // ── FILTERS ───────────────────────────────────────────────────
+      function styleFilterPills() {
+        document.querySelectorAll(".filter-pill").forEach((b) => {
+          const active = b.dataset.cat === activeCat;
+          b.classList.toggle("pill-active", active);
+          b.classList.toggle("border-brand", active);
+          b.classList.toggle("pill-inactive", !active);
+          b.classList.toggle("border-gray-200", !active);
+          b.classList.toggle("dark:border-neutral-700", !active);
+        });
+        document.querySelectorAll(".hero-cat-btn").forEach((b) => {
+          const active = b.dataset.cat === activeCat;
+          b.className = active
+            ? "hero-cat-btn px-5 py-2.5 rounded-full bg-brand text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+            : "hero-cat-btn px-5 py-2.5 rounded-full border-[1.5px] border-gray-300 dark:border-neutral-700 text-sm font-medium hover:border-brand hover:text-brand transition-all";
+        });
+      }
+
+      function setFilter(cat) {
+        activeCat = cat;
+        styleFilterPills();
+        renderProducts();
+        window.scrollTo({
+          top: document.getElementById("shop").offsetTop - 80,
+          behavior: "smooth",
+        });
+      }
+
+      document.getElementById("filterRow").addEventListener("click", (e) => {
+        const btn = e.target.closest(".filter-pill");
+        if (btn) setFilter(btn.dataset.cat);
+      });
+      document
+        .querySelectorAll(".hero-cat-btn")
+        .forEach((b) =>
+          b.addEventListener("click", () => setFilter(b.dataset.cat)),
+        );
+      document.getElementById("sortSelect").addEventListener("change", (e) => {
+        sortMode = e.target.value;
+        renderProducts();
+      });
+
+      // ── SEARCH ────────────────────────────────────────────────────
+      function doSearch(val) {
+        searchTerm = val.trim();
+        renderProducts();
+      }
+      document
+        .getElementById("searchDesktop")
+        .addEventListener("input", (e) => doSearch(e.target.value));
+      document
+        .getElementById("searchDesktop")
+        .addEventListener("keydown", (e) => {
+          if (e.key === "Enter") doSearch(e.target.value);
+        });
+      document
+        .getElementById("searchBtnD")
+        .addEventListener("click", () =>
+          doSearch(document.getElementById("searchDesktop").value),
+        );
+      document
+        .getElementById("searchMobile")
+        .addEventListener("input", (e) => doSearch(e.target.value));
+      document.getElementById("searchBtnM").addEventListener("click", () => {
+        doSearch(document.getElementById("searchMobile").value);
+        mobileMenu.classList.add("hidden");
+      });
+
+      // ── PRODUCT DETAIL ────────────────────────────────────────────
+      function openProductDetail(p) {
+        pdCurrent = p;
+        pdQty = 1;
+        document.getElementById("pdImg").src = p.img;
+        document.getElementById("pdImg").alt = p.name;
+        document.getElementById("pdCat").textContent = (
+          p.cat || ""
+        ).toUpperCase();
+        document.getElementById("pdName").textContent = p.name;
+        document.getElementById("pdDesc").textContent = p.desc || "";
+        document.getElementById("pdPrice").textContent = fmt(p.price);
+        document.getElementById("pdQty").textContent = 1;
+        document.getElementById("pdBadgeRow").innerHTML = p.new_arrival
+          ? '<span class="inline-block bg-brand text-white text-[10px] font-bold px-2.5 py-1 rounded-full mb-2">🔥 New Arrival</span>'
+          : "";
+        const ov = document.getElementById("pdOverlay");
+        ov.classList.remove("hidden");
+        ov.classList.add("flex");
+      }
+      document.getElementById("pdClose").addEventListener("click", () => {
+        const ov = document.getElementById("pdOverlay");
+        ov.classList.add("hidden");
+        ov.classList.remove("flex");
+      });
+      document.getElementById("pdOverlay").addEventListener("click", (e) => {
+        if (e.target === document.getElementById("pdOverlay")) {
+          document.getElementById("pdOverlay").classList.add("hidden");
+          document.getElementById("pdOverlay").classList.remove("flex");
+        }
+      });
+      document.getElementById("pdInc").addEventListener("click", () => {
+        pdQty++;
+        document.getElementById("pdQty").textContent = pdQty;
+      });
+      document.getElementById("pdDec").addEventListener("click", () => {
+        if (pdQty > 1) {
+          pdQty--;
+          document.getElementById("pdQty").textContent = pdQty;
+        }
+      });
+      document.getElementById("pdAddCart").addEventListener("click", () => {
+        addToCart(pdCurrent, pdQty);
+        document.getElementById("pdOverlay").classList.add("hidden");
+        document.getElementById("pdOverlay").classList.remove("flex");
+      });
+
+      // ── CART (shared via localStorage) ────────────────────────────
+      function addToCart(p, qty) {
+        const cart = loadCart();
+        const ex = cart.find((i) => String(i.id) === String(p.id));
+        if (ex) ex.qty += qty;
+        else
+          cart.push({
+            id: p.id,
+            name: p.name,
+            price: p.price,
+            img: p.img,
+            cat: p.cat,
+            qty,
+          });
+        saveCart(cart);
+        renderCart();
+        showToast(`${p.name} added to cart`);
+      }
+
+      function renderCart() {
+        const cart = loadCart();
+        const badge = document.getElementById("cartBadge");
+        const total = document.getElementById("cartTotal");
+        const items = document.getElementById("cartItems");
+        const count = cart.reduce((s, i) => s + i.qty, 0);
+        const sum = cart.reduce((s, i) => s + i.price * i.qty, 0);
+        badge.textContent = count;
+        total.textContent = fmt(sum);
+
+        if (!cart.length) {
+          items.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-gray-300 dark:text-gray-600 gap-2.5 text-center p-10">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="opacity-40"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Your cart is empty</p>
+          </div>`;
+          return;
+        }
+        items.innerHTML = cart
+          .map(
+            (item) => `
+          <div class="flex gap-3 items-center p-2.5 bg-gray-100 dark:bg-neutral-800 rounded-[10px]">
+            <img src="${item.img}" alt="${item.name}" class="w-[52px] h-[52px] object-cover rounded-lg shrink-0" />
+            <div class="flex-1 min-w-0">
+              <div class="text-xs font-semibold whitespace-nowrap overflow-hidden text-ellipsis mb-0.5">${item.name}</div>
+              <div class="text-xs text-brand font-semibold mb-1.5">${fmt(item.price)}</div>
+              <div class="flex items-center gap-2">
+                <button class="qty-btn w-6 h-6 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm flex items-center justify-center hover:border-brand transition-colors" data-id="${item.id}" data-action="dec">−</button>
+                <span class="text-[13px] font-semibold min-w-[16px] text-center">${item.qty}</span>
+                <button class="qty-btn w-6 h-6 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm flex items-center justify-center hover:border-brand transition-colors" data-id="${item.id}" data-action="inc">+</button>
+              </div>
+            </div>
+            <button class="text-gray-300 dark:text-gray-600 w-7 h-7 flex items-center justify-center rounded-full hover:text-red-500 transition-colors" data-id="${item.id}" data-action="remove">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+          </div>`,
+          )
+          .join("");
+      }
+
+      document.getElementById("cartItems").addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-action]");
+        if (!btn || !btn.dataset.id) return;
+        const id = btn.dataset.id;
+        const cart = loadCart();
+        const item = cart.find((i) => String(i.id) === String(id));
+        if (!item) return;
+        if (btn.dataset.action === "inc") item.qty++;
+        else if (btn.dataset.action === "dec") {
+          item.qty--;
+          if (item.qty <= 0) {
+            const idx = cart.indexOf(item);
+            cart.splice(idx, 1);
+          }
+        } else if (btn.dataset.action === "remove") {
+          const idx = cart.indexOf(item);
+          cart.splice(idx, 1);
+        }
+        saveCart(cart);
+        renderCart();
+      });
+
+      const cartDrawer = document.getElementById("cartDrawer");
+      const cartOverlay = document.getElementById("cartOverlay");
+      function openCart() {
+        cartOverlay.classList.remove("hidden");
+        requestAnimationFrame(() =>
+          cartDrawer.classList.remove("translate-x-full"),
+        );
+      }
+      function closeCart() {
+        cartDrawer.classList.add("translate-x-full");
+        cartOverlay.classList.add("hidden");
+      }
+      document.getElementById("cartBtn").addEventListener("click", openCart);
+      document.getElementById("cartClose").addEventListener("click", closeCart);
+      cartOverlay.addEventListener("click", closeCart);
+
+      // ── CHECKOUT (Paystack) ───────────────────────────────────────
+      // ✅ Real checkout — reads currentUser from Supabase session
+      let currentUser = null;
+
+      // Try to restore session from Supabase
+      if (sb) {
+        sb.auth.getSession().then(({ data }) => {
+          if (data?.session?.user) {
+            const u = data.session.user;
+            currentUser = {
+              name: u.user_metadata?.full_name || u.email.split("@")[0],
+              email: u.email,
+            };
+          }
+        });
+      }
+
+      document.getElementById("checkoutBtn").addEventListener("click", () => {
+        const cart = loadCart();
+        if (!cart.length) {
+          showToast("Your cart is empty");
+          return;
+        }
+
+        if (!currentUser) {
+          showToast("Please sign in on the home page to checkout");
+          closeCart();
+          // Give them 1.5s to read the toast then redirect to index with a hint
+          setTimeout(() => {
+            window.location.href = "index.html#checkout-prompt";
+          }, 1500);
+          return;
+        }
+
+        const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+        const orderId = "ORD-" + Date.now();
+        const orderItems = cart.map((i) => i.name).join(", ");
+
+        closeCart();
+
+        const handler = PaystackPop.setup({
+          key: "pk_test_73bc91943a47d7b63b92e1be863495563806be50",
+          email: currentUser.email,
+          amount: total * 100,
+          currency: "NGN",
+          ref: orderId,
+          metadata: {
+            custom_fields: [
+              {
+                display_name: "Customer Name",
+                variable_name: "customer_name",
+                value: currentUser.name,
+              },
+              {
+                display_name: "Items",
+                variable_name: "items",
+                value: orderItems,
+              },
+            ],
+          },
+          onClose() {
+            showToast("Payment cancelled");
+          },
+          callback(response) {
+            const order = {
+              id: orderId,
+              ref: response.reference,
+              items: orderItems,
+              price: total,
+              status: "success",
+              date: new Date().toISOString().slice(0, 10),
+            };
+            const saved = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
+            saved.unshift(order);
+            localStorage.setItem(ORDERS_KEY, JSON.stringify(saved));
+
+            // Clear the shared cart after successful payment
+            saveCart([]);
+            renderCart();
+            showToast(`Payment successful! Ref: ${response.reference} 🎉`);
+          },
+        });
+        handler.openIframe();
+      });
+
+      // ── TOAST ─────────────────────────────────────────────────────
+      let toastT = null;
+      function showToast(msg) {
+        const t = document.getElementById("toast");
+        document.getElementById("toastMsg").textContent = msg;
+        t.classList.remove("opacity-0", "translate-y-20");
+        t.classList.add("opacity-100", "translate-y-0");
+        if (toastT) clearTimeout(toastT);
+        toastT = setTimeout(() => {
+          t.classList.add("opacity-0", "translate-y-20");
+          t.classList.remove("opacity-100", "translate-y-0");
+        }, 2500);
+      }
+
+      // ── REALTIME ──────────────────────────────────────────────────
+      function subscribeToProducts() {
+        if (!sb) return;
+        sb.channel("products-channel")
+          .on(
+            "postgres_changes",
+            { event: "*", schema: "public", table: "products" },
+            (payload) => {
+              if (payload.eventType === "INSERT") {
+                allProducts.unshift(payload.new);
+                renderArrivals();
+                renderProducts();
+                showToast(`New product added: ${payload.new.name}`);
+              } else if (payload.eventType === "UPDATE") {
+                const idx = allProducts.findIndex(
+                  (p) => p.id === payload.new.id,
+                );
+                if (idx !== -1) {
+                  allProducts[idx] = payload.new;
+                  renderArrivals();
+                  renderProducts();
+                }
+              } else if (payload.eventType === "DELETE") {
+                allProducts = allProducts.filter(
+                  (p) => p.id !== payload.old.id,
+                );
+                renderArrivals();
+                renderProducts();
+              }
+            },
+          )
+          .subscribe();
+      }
+
+      // ── INIT ──────────────────────────────────────────────────────
+      loadProducts().then(() => {
+        renderCart(); // loads persisted cart from localStorage
+        subscribeToProducts();
+      });
+    </script>
+  </body>
+</html>

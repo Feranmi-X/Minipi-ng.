@@ -758,7 +758,7 @@ document.getElementById("forgotBtn").addEventListener("click", async () => {
 });
 
 // ── ABOUT TOGGLE ──────────────────────────────────────────
-function toggleContent() {
+  function toggleContent() {
     const content = document.getElementById("moreContent");
     const button = document.getElementById("toggleBtn");
 
@@ -1027,3 +1027,4 @@ document.querySelectorAll(".mp-tab").forEach((tab) => {
     });
   });
 });
+
