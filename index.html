@@ -11,7 +11,6 @@
     />
     <script src="https://js.paystack.co/v1/inline.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -51,7 +50,6 @@
       };
     </script>
     <style>
-      /* Minimal custom CSS — only for things Tailwind utilities can't express cleanly */
       html {
         scroll-behavior: smooth;
       }
@@ -64,7 +62,6 @@
         -webkit-box-orient: vertical;
         overflow: hidden;
       }
-      /* Custom scrollbar for modals (optional, subtle) */
       .modal-scroll::-webkit-scrollbar {
         width: 6px;
       }
@@ -72,7 +69,6 @@
         background: #d1d5db;
         border-radius: 4px;
       }
-
       .fade-section {
         opacity: 0;
         transform: translateY(50px);
@@ -80,12 +76,10 @@
           opacity 0.8s ease,
           transform 0.8s ease;
       }
-
       .fade-section.show {
         opacity: 1;
         transform: translateY(0);
       }
-
       .testimonial-card {
         transition: all 0.4s ease;
         animation: float 4s ease-in-out infinite;
@@ -94,7 +88,6 @@
         transform: translateY(-10px) scale(1.03);
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
       }
-
       @keyframes float {
         0%,
         100% {
@@ -104,13 +97,11 @@
           transform: translateY(-8px);
         }
       }
-
       .item {
         opacity: 0;
         transform: translateX(-100px);
         animation: slideInLeft 0.9s ease-out forwards;
       }
-
       @keyframes slideInLeft {
         from {
           opacity: 0;
@@ -129,7 +120,6 @@
           transform: translateX(100%);
         }
       }
-
       .scroll-right {
         animation: scrollRight 15s linear infinite;
         white-space: nowrap;
@@ -406,7 +396,6 @@
               >Categories</a
             >
           </li>
-
           <li>
             <a
               href="#about"
@@ -478,29 +467,21 @@
           <div
             class="mt-5 justify-center md:justify-start rounded-2xl flex gap-6"
           >
-            <!-- WhatsApp -->
             <a
               href="https://wa.me/2348034970248"
               class="w-14 h-14 flex items-center justify-center rounded-full bg-green-500 text-white text-2xl hover:scale-110 transition"
-            >
-              <i class="fab fa-whatsapp"></i>
-            </a>
-
-            <!-- Facebook -->
+              ><i class="fab fa-whatsapp"></i
+            ></a>
             <a
               href="https://facebook.com"
               class="w-14 h-14 flex items-center justify-center rounded-full bg-blue-600 text-white text-2xl hover:scale-110 transition"
-            >
-              <i class="fab fa-facebook-f"></i>
-            </a>
-
-            <!-- Instagram -->
+              ><i class="fab fa-facebook-f"></i
+            ></a>
             <a
               href="https://instagram.com"
               class="w-14 h-14 flex items-center justify-center rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 text-white text-2xl hover:scale-110 transition"
-            >
-              <i class="fab fa-instagram"></i>
-            </a>
+              ><i class="fab fa-instagram"></i
+            ></a>
           </div>
         </div>
         <img
@@ -663,7 +644,7 @@
             </button>
             <button
               class="filter-pill px-[18px] py-2 rounded-full border-[1.5px] text-[13px] font-medium transition-all whitespace-nowrap"
-              data-cat="tablet"
+              data-cat="gaming"
             >
               Gaming
             </button>
@@ -677,7 +658,6 @@
     </section>
 
     <!-- TESTIMONY -->
-
     <section class="py-20 px-6">
       <div class="testimonial-card max-w-7xl mx-auto">
         <div class="text-center mb-14">
@@ -692,7 +672,6 @@
             unbeatable customer service.
           </p>
         </div>
-
         <div id="testimonialContainer" class="grid md:grid-cols-3 gap-8"></div>
       </div>
     </section>
@@ -702,12 +681,10 @@
         <div
           class="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8 text-center"
         >
-          <!-- Delivery -->
           <div class="flex flex-col items-center">
             <div
               class="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-6"
             >
-              <!-- Truck Icon -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="w-10 h-10 text-black"
@@ -723,24 +700,19 @@
                 />
               </svg>
             </div>
-
             <h3
               class="text-xl md:text-2xl font-bold uppercase text-black dark:text-white mb-3"
             >
               Free and Fast Delivery
             </h3>
-
             <p class="text-gray-500 text-base md:text-lg">
               Free delivery for all orders over ₦1,150,000
             </p>
           </div>
-
-          <!-- Customer Service -->
           <div class="flex flex-col items-center">
             <div
               class="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-6"
             >
-              <!-- Phone Icon -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="w-10 h-10 text-black"
@@ -756,24 +728,19 @@
                 />
               </svg>
             </div>
-
             <h3
               class="text-xl md:text-2xl font-bold uppercase text-black dark:text-white mb-3"
             >
               24/7 Customer Service
             </h3>
-
             <p class="text-gray-500 text-base md:text-lg">
               Friendly 24/7 customer support
             </p>
           </div>
-
-          <!-- Money Back -->
           <div class="flex flex-col items-center">
             <div
               class="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-6"
             >
-              <!-- Shield Icon -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="w-10 h-10 text-black"
@@ -789,13 +756,11 @@
                 />
               </svg>
             </div>
-
             <h3
               class="text-xl md:text-2xl font-bold uppercase text-black dark:text-white mb-3"
             >
               Money Back Guarantee
             </h3>
-
             <p class="text-gray-500 text-base md:text-lg">
               We return money within 30 days
             </p>
@@ -803,7 +768,8 @@
         </div>
       </div>
     </section>
-    <!-- BANNER -->
+
+    <!-- ABOUT -->
     <section
       id="about"
       class="bg-gray-800 dark:bg-neutral-900 dark:border-y container mx-auto py-16 px-6"
@@ -813,24 +779,19 @@
       >
         About
       </h2>
-
       <p class="text-gray-300 text-sm leading-relaxed mb-6 text-center">
         Mini Pi NG is a trusted gadget store offering quality laptops, tablets,
         smartphones, gaming consoles, and accessories at affordable prices.
       </p>
-
-      <!-- Hidden Content -->
       <div id="moreContent" class="hidden mt-6 p-6 rounded-lg shadow">
         <p class="text-gray-300 text-sm leading-relaxed text-center mb-6">
           Minipi is Nigeria's go-to online store for the latest phones, tablets,
           laptops and gaming gear. We source authentic devices directly from
           trusted brands and deliver them to your doorstep, with prices always
           listed in Naira. Founded with one goal: make great technology
-          accessible to everyone in Nigeria..
+          accessible to everyone in Nigeria.
         </p>
       </div>
-
-      <!-- See More Button -->
       <div class="text-center mt-6">
         <button
           onclick="toggleContent()"
@@ -868,32 +829,23 @@
           <div
             class="justify-center md:justify-start mt-5 rounded-2xl flex gap-6"
           >
-            <!-- WhatsApp -->
             <a
               href="https://wa.me/2348034970248"
               class="w-14 h-14 flex items-center justify-center rounded-full bg-green-500 text-white text-2xl hover:scale-110 transition"
-            >
-              <i class="fab fa-whatsapp"></i>
-            </a>
-
-            <!-- Facebook -->
+              ><i class="fab fa-whatsapp"></i
+            ></a>
             <a
               href="https://facebook.com"
               class="w-14 h-14 flex items-center justify-center rounded-full bg-blue-600 text-white text-2xl hover:scale-110 transition"
-            >
-              <i class="fab fa-facebook-f"></i>
-            </a>
-
-            <!-- Instagram -->
+              ><i class="fab fa-facebook-f"></i
+            ></a>
             <a
               href="https://instagram.com"
               class="w-14 h-14 flex items-center justify-center rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 text-white text-2xl hover:scale-110 transition"
-            >
-              <i class="fab fa-instagram"></i>
-            </a>
+              ><i class="fab fa-instagram"></i
+            ></a>
           </div>
         </div>
-
         <img
           src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=700&q=80"
           alt="Smartphones"
@@ -1054,8 +1006,7 @@
       ></div>
       <div class="px-5 py-4 border-t border-gray-200 dark:border-neutral-800">
         <div class="flex justify-between text-base font-bold mb-3.5">
-          <span>Total</span>
-          <span id="cartTotal">₦0</span>
+          <span>Total</span><span id="cartTotal">₦0</span>
         </div>
         <button
           id="checkoutBtn"
@@ -1431,14 +1382,38 @@
         ></div>
       </div>
     </div>
-    <!-- RESET PASSWORD MODAL -->
+
+    <!-- =====================================================
+         RESET PASSWORD MODAL
+         Shows automatically when user clicks the reset link
+         in their email. Supabase fires PASSWORD_RECOVERY event
+         which triggers openResetModal() in main.js
+    ====================================================== -->
     <div
       id="resetOverlay"
-      class="hidden fixed inset-0 bg-black/60 z-[500] items-center justify-center p-5"
+      class="hidden fixed inset-0 bg-black/60 z-[600] items-center justify-center p-5"
     >
       <div
         class="modal-scroll bg-white dark:bg-neutral-900 rounded-[20px] shadow-2xl relative max-h-[90vh] overflow-y-auto animate-fadeUp w-full max-w-[380px] p-7"
       >
+        <!-- Close button -->
+        <button
+          id="rpClose"
+          class="absolute top-3.5 right-3.5 w-[30px] h-[30px] flex items-center justify-center rounded-full text-gray-500 bg-gray-100 dark:bg-neutral-800 hover:text-gray-900 dark:hover:text-white transition-colors"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+
+        <!-- Icon -->
         <div
           class="w-12 h-12 rounded-full bg-brand/10 flex items-center justify-center mx-auto mb-3.5 text-brand"
         >
@@ -1454,20 +1429,26 @@
             <path d="M7 11V7a5 5 0 0110 0v4" />
           </svg>
         </div>
+
         <div class="text-xl font-bold text-center mb-1">Set New Password</div>
         <div
           class="text-[13px] text-gray-500 dark:text-gray-400 text-center mb-6"
         >
           Enter and confirm your new password below.
         </div>
+
+        <!-- Error alert -->
         <div
           id="rpError"
           class="hidden auth-alert px-3.5 py-2.5 rounded-[10px] text-xs mb-3.5 leading-relaxed bg-red-50 border-[1.5px] border-red-200 text-red-600 dark:bg-red-500/10 dark:border-red-500/30 dark:text-red-400"
         ></div>
+        <!-- Success alert -->
         <div
           id="rpSuccess"
           class="hidden auth-alert px-3.5 py-2.5 rounded-[10px] text-xs mb-3.5 leading-relaxed bg-green-50 border-[1.5px] border-green-200 text-green-600 dark:bg-green-500/10 dark:border-green-500/30 dark:text-green-400"
         ></div>
+
+        <!-- New password field -->
         <div class="mb-4">
           <label class="block text-xs font-semibold mb-1.5">New Password</label>
           <div class="relative">
@@ -1478,7 +1459,7 @@
               class="w-full px-4 py-[11px] pr-10 rounded-[10px] border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-[13px] outline-none focus:border-brand placeholder:text-gray-400 transition-colors"
             />
             <button
-              class="toggle-pwd absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+              class="toggle-pwd absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
               data-target="rpPwd"
               type="button"
             >
@@ -1496,6 +1477,8 @@
             </button>
           </div>
         </div>
+
+        <!-- Confirm password field -->
         <div class="mb-5">
           <label class="block text-xs font-semibold mb-1.5"
             >Confirm Password</label
@@ -1508,7 +1491,7 @@
               class="w-full px-4 py-[11px] pr-10 rounded-[10px] border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-[13px] outline-none focus:border-brand placeholder:text-gray-400 transition-colors"
             />
             <button
-              class="toggle-pwd absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+              class="toggle-pwd absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
               data-target="rpPwdConfirm"
               type="button"
             >
@@ -1526,6 +1509,7 @@
             </button>
           </div>
         </div>
+
         <button
           id="rpSubmitBtn"
           class="w-full py-3 rounded-full bg-brand text-white text-sm font-semibold flex items-center justify-center gap-2 hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-opacity"
@@ -1900,7 +1884,6 @@
       </div>
     </div>
 
-    <!-- ===== JAVASCRIPT ===== -->
     <script src="/main.js"></script>
   </body>
 </html>
