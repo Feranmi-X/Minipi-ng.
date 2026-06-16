@@ -743,7 +743,7 @@ document.getElementById("forgotBtn").addEventListener("click", async () => {
   try {
    // Find this existing block and update redirectTo:
 const { error } = await sb.auth.resetPasswordForEmail(email, {
-  redirectTo: "http://localhost:3000",  // ← change this to your real URL
+  redirectTo: "http://127.0.0.1:5500",  // or http://localhost:5500
 });
     if (error) throw error;
     showAlert("siSuccess", `Reset link sent to ${email}. Check your inbox.`);
