@@ -759,9 +759,17 @@ document.getElementById("forgotBtn").addEventListener("click", async () => {
 
 // ── ABOUT TOGGLE ──────────────────────────────────────────
 function toggleContent() {
-  const content = document.getElementById("moreContent");
-  content.classList.toggle("hidden");
-}
+    const content = document.getElementById("moreContent");
+    const button = document.getElementById("toggleBtn");
+
+    content.classList.toggle("hidden");
+
+    if (content.classList.contains("hidden")) {
+      button.textContent = "See More";
+    } else {
+      button.textContent = "See Less";
+    }
+  }
 
 // ── SIGN OUT ──────────────────────────────────────────────
 document.getElementById("logoutBtn").addEventListener("click", async () => {

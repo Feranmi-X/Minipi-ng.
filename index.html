@@ -134,9 +134,13 @@
     class="font-sans bg-gray-50 dark:bg-neutral-950 text-gray-900 dark:text-gray-100 transition-colors duration-300"
   >
     <!-- TOP BAR -->
-    <div class="bg-neutral-900 text-white text-center text-xs py-1.5 px-4">
-      🚚 Free Shipping on Orders Over ₦1, 150,000 &nbsp;·&nbsp; Authentic
-      Products &nbsp;·&nbsp; Lagos, Nigeria
+    <div class="overflow-hidden bg-gradient-to-r from-brand to-brand/50 py-3">
+      <div class="scroll-right text-white font-bold text-lg">
+        🚀 SHOP NOW!!! &nbsp; | &nbsp; 📱 Latest Gadgets &nbsp; | &nbsp; 🎧
+        Premium Audio Gear &nbsp; | &nbsp; 💻 Tech Deals Daily &nbsp; | &nbsp;
+        ⚡ Fast Delivery &nbsp; | &nbsp; 🔥 Limited Time Offers &nbsp; | &nbsp;
+        🛒 Best Prices Guaranteed &nbsp; | &nbsp; ✨ Upgrade Your Tech Today!
+      </div>
     </div>
 
     <!-- HEADER -->
@@ -413,15 +417,6 @@
         </ul>
       </div>
     </header>
-
-    <div class="overflow-hidden bg-gradient-to-r from-brand to-brand/50 py-3">
-      <div class="scroll-right text-white font-bold text-lg">
-        🚀 SHOP NOW!!! &nbsp; | &nbsp; 📱 Latest Gadgets &nbsp; | &nbsp; 🎧
-        Premium Audio Gear &nbsp; | &nbsp; 💻 Tech Deals Daily &nbsp; | &nbsp;
-        ⚡ Fast Delivery &nbsp; | &nbsp; 🔥 Limited Time Offers &nbsp; | &nbsp;
-        🛒 Best Prices Guaranteed &nbsp; | &nbsp; ✨ Upgrade Your Tech Today!
-      </div>
-    </div>
 
     <!-- HERO -->
     <section
@@ -777,12 +772,14 @@
       <h2
         class="text-xl text-center sm:text-2xl md:text-[30px] font-bold text-white mb-3"
       >
-        About
+        About Us
       </h2>
+
       <p class="text-gray-300 text-sm leading-relaxed mb-6 text-center">
         Mini Pi NG is a trusted gadget store offering quality laptops, tablets,
         smartphones, gaming consoles, and accessories at affordable prices.
       </p>
+
       <div id="moreContent" class="hidden mt-6 p-6 rounded-lg shadow">
         <p class="text-gray-300 text-sm leading-relaxed text-center mb-6">
           Minipi is Nigeria's go-to online store for the latest phones, tablets,
@@ -792,8 +789,10 @@
           accessible to everyone in Nigeria.
         </p>
       </div>
+
       <div class="text-center mt-6">
         <button
+          id="toggleBtn"
           onclick="toggleContent()"
           class="bg-brand text-white px-6 py-3 rounded-full hover:opacity-90 transition-opacity"
         >
@@ -801,7 +800,6 @@
         </button>
       </div>
     </section>
-
     <!-- BANNER -->
     <div
       class="bg-gray-800 dark:bg-neutral-900 dark:border-y dark:border-neutral-800 transition-colors duration-300"
