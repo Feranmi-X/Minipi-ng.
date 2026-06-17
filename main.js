@@ -924,41 +924,149 @@ if (sb) {
 
 // ── TESTIMONIALS ──────────────────────────────────────────
 const testimonials = [
-  { name: "Iwari",        role: "Business Woman",  text: "I ordered an iPhone from Minipi and received it within 24 hours. The device was original, sealed, and exactly as advertised." },
-  { name: "Ayofe",        role: "Content Creator", text: "Minipi saved me from buying fake gadgets online. Their customer support guided me perfectly and my MacBook arrived safely." },
-  { name: "Charles",      role: "Business Man",    text: "The prices are amazing. I've purchased accessories, headphones, and a laptop. Every product exceeded expectations." },
-  { name: "Chidi Monday", role: "Business Owner",  text: "Their delivery speed shocked me. Ordered in the morning and got my smartwatch before evening." },
-  { name: "Daniel Wilson",role: "Photographer",    text: "Bought a camera and accessories from Minipi. Everything was genuine and packaged professionally." },
-  { name: "Amanda Okon",  role: "Student",         text: "Best gadget store I've used. Affordable prices, secure payment, and excellent after-sales support." },
+  { name: "Iwari",         role: "Business Woman",  text: "I ordered an iPhone from Minipi and received it within 24 hours. The device was original, sealed, and exactly as advertised." },
+  { name: "Ayofe",         role: "Content Creator", text: "Minipi saved me from buying fake gadgets online. Their customer support guided me perfectly and my MacBook arrived safely." },
+  { name: "Charles",       role: "Business Man",    text: "The prices are amazing. I've purchased accessories, headphones, and a laptop. Every product exceeded expectations." },
+  { name: "Chidi Monday",  role: "Business Owner",  text: "Their delivery speed shocked me. Ordered in the morning and got my smartwatch before evening." },
+  { name: "Daniel Wilson", role: "Photographer",    text: "Bought a camera and accessories from Minipi. Everything was genuine and packaged professionally." },
+  { name: "Amanda Okon",   role: "Student",         text: "Best gadget store I've used. Affordable prices, secure payment, and excellent after-sales support." },
 ];
 
-let currentIndex = 0;
-const testimonialContainer = document.getElementById("testimonialContainer");
+const PAGE_SIZE = 3;
+const AUTOPLAY_MS = 6000;
 
-function renderTestimonials() {
-  if (!testimonialContainer) return;
-  testimonialContainer.innerHTML = "";
-  const set = testimonials.slice(currentIndex, currentIndex + 3);
-  set.forEach((item) => {
-    testimonialContainer.innerHTML += `
-      <div class="bg-brand/60 border border-gray-800 rounded-3xl p-8 hover:border-cyan-500 transition duration-500 hover:-translate-y-2">
-        <div class="flex mb-5 text-yellow-400 text-xl">★★★★★</div>
-        <p class="text-black dark:text-white leading-relaxed mb-6">"${item.text}"</p>
-        <div class="flex items-center gap-4">
-          <div class="w-14 h-14 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-lg text-white">${item.name.charAt(0)}</div>
-          <div>
-            <h4 class="font-semibold text-lg">${item.name}</h4>
-            <p class="text-sm text-gray-400">${item.role}</p>
-          </div>
-        </div>
-      </div>`;
-  });
-  currentIndex += 3;
-  if (currentIndex >= testimonials.length) currentIndex = 0;
+const container = document.getElementById("testimonialContainer");
+const wrap = document.getElementById("testimonialWrap");
+const dotsContainer = document.getElementById("testimonialDots");
+const progressFill = document.getElementById("testimonialProgress");
+const prevBtn = document.getElementById("testimonialPrev");
+const nextBtn = document.getElementById("testimonialNext");
+
+const pages = [];
+for (let i = 0; i < testimonials.length; i += PAGE_SIZE) {
+  pages.push(testimonials.slice(i, i + PAGE_SIZE));
 }
 
-renderTestimonials();
-setInterval(renderTestimonials, 6000);
+let currentPage = 0;
+let timer = null;
+
+function cardMarkup(item) {
+  return `
+    <div class="relative bg-white/5 dark:bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl shadow-black/30 hover:shadow-brand/70 hover:border-brand hover:-translate-y-2 transition-all duration-500">
+      <span class="absolute top-3 right-5 text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-brand to-brand opacity-10 select-none">&rdquo;</span>
+      <div class="flex mb-5 text-yellow-400 text-xl drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]">★★★★★</div>
+      <p class="text-black dark:text-white/90 leading-relaxed mb-6 text-sm md:text-base">"${item.text}"</p>
+      <div class="flex items-center gap-4">
+        <div class="w-14 h-14 rounded-full bg-gradient-to-r from-white to-brand/40 flex items-center justify-center font-bold text-lg text-white shadow-lg shadow-brand/50">${item.name.charAt(0)}</div>
+        <div>
+          <h4 class="font-semibold text-lg text-black dark:text-white">${item.name}</h4>
+          <p class="text-sm text-gray-030 dark:text-gray-400">${item.role}</p>
+        </div>
+      </div>
+    </div>`;
+}
+
+function paint(index) {
+  if (!container) return;
+  container.innerHTML = pages[index].map(cardMarkup).join("");
+}
+
+function renderPage(index, animate = true) {
+  if (!container) return;
+  if (animate) {
+    container.classList.add("opacity-0", "translate-y-2");
+    setTimeout(() => {
+      paint(index);
+      container.classList.remove("opacity-0", "translate-y-2");
+    }, 260);
+  } else {
+    paint(index);
+  }
+  updateDots(index);
+  restartProgress();
+}
+
+function buildDots() {
+  if (!dotsContainer) return;
+  dotsContainer.innerHTML = pages
+    .map(
+      (_, i) => `
+      <button
+        class="h-2 rounded-full transition-all duration-300 ${
+          i === 0 ? "w-6 bg-gradient-to-r from-cyan-400 to-brand" : "w-2 bg-white/20 hover:bg-white/40"
+        }"
+        data-index="${i}"
+        aria-label="Show testimonials page ${i + 1}"
+        aria-current="${i === 0 ? "true" : "false"}"
+      ></button>`
+    )
+    .join("");
+
+  dotsContainer.querySelectorAll("button").forEach((dot) => {
+    dot.addEventListener("click", () => {
+      currentPage = parseInt(dot.dataset.index, 10);
+      renderPage(currentPage);
+      restartAutoplay();
+    });
+  });
+}
+
+function updateDots(index) {
+  if (!dotsContainer) return;
+  dotsContainer.querySelectorAll("button").forEach((dot, i) => {
+    dot.setAttribute("aria-current", i === index ? "true" : "false");
+    dot.className = `h-2 rounded-full transition-all duration-300 ${
+      i === index ? "w-6 bg-gradient-to-r from-cyan-400 to-blue-600" : "w-2 bg-white/20 hover:bg-white/40"
+    }`;
+  });
+}
+
+function restartProgress() {
+  if (!progressFill) return;
+  progressFill.style.animation = "none";
+  void progressFill.offsetHeight;
+  progressFill.style.animation = `fillProgress ${AUTOPLAY_MS}ms linear`;
+}
+
+function goTo(index) {
+  currentPage = (index + pages.length) % pages.length;
+  renderPage(currentPage);
+}
+
+function restartAutoplay() {
+  clearInterval(timer);
+  timer = setInterval(() => goTo(currentPage + 1), AUTOPLAY_MS);
+}
+
+if (prevBtn) {
+  prevBtn.addEventListener("click", () => {
+    goTo(currentPage - 1);
+    restartAutoplay();
+  });
+}
+
+if (nextBtn) {
+  nextBtn.addEventListener("click", () => {
+    goTo(currentPage + 1);
+    restartAutoplay();
+  });
+}
+
+if (wrap) {
+  wrap.addEventListener("mouseenter", () => {
+    clearInterval(timer);
+    if (progressFill) progressFill.style.animationPlayState = "paused";
+  });
+  wrap.addEventListener("mouseleave", () => {
+    if (progressFill) progressFill.style.animationPlayState = "running";
+    restartAutoplay();
+  });
+}
+
+buildDots();
+paint(0);
+restartProgress();
+restartAutoplay();
 
 
 
