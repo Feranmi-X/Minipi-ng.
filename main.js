@@ -2,7 +2,7 @@ emailjs.init("iPxqCrlDaf1OsTw3J");
 
 // ── SUPABASE ──────────────────────────────────────────────
 const SB_URL = "https://sygdrjmjjxwxuczcnxjr.supabase.co";
-const SB_KEY = "sb_publishable_lAqlBUViE_Jcq7PbVALyLg_b-X9YQvO";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN5Z2Ryam1qanh3eHVjemNueGpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzODI0MDIsImV4cCI6MjA5Njk1ODQwMn0.xp-zwipa_l-1JeYzyTqSNxeK1dwqGH-ilK35jIXSncg";
 let sb = null;
 try {
   if (window.supabase && typeof window.supabase.createClient === "function") {
@@ -81,7 +81,6 @@ document.addEventListener("click", (e) => {
     if (!li.contains(e.target)) closeDd();
   });
 
-  // On index page: filter in place, don't navigate
   if (!window.location.pathname.includes("shop.html")) {
     document.querySelectorAll(".cat-nav-link").forEach((a) => {
       a.addEventListener("click", (e) => {
@@ -244,7 +243,6 @@ function setFilter(cat) {
 
 const filterRowEl = document.getElementById("filterRow");
 if (filterRowEl) {
-  // FIX: remove 'hidden' so pills are always visible
   filterRowEl.classList.remove("hidden");
   filterRowEl.addEventListener("click", (e) => {
     const btn = e.target.closest(".filter-pill");
@@ -271,7 +269,6 @@ document.querySelectorAll(".footer-cat").forEach((a) => {
 });
 
 // ── SEARCH ────────────────────────────────────────────────
-// FIX: clear search inputs on page load so email never pre-fills
 window.addEventListener("DOMContentLoaded", () => {
   const sd = document.getElementById("searchDesktop");
   const sm = document.getElementById("searchMobile");
@@ -454,7 +451,6 @@ async function openPaymentModal() {
   ov.classList.add("flex");
 }
 
-// FIX: single clean listener on checkoutBtn — no cloning needed
 document.getElementById("checkoutBtn").addEventListener("click", openPaymentModal);
 
 document.getElementById("paymentClose").addEventListener("click", () => {
@@ -473,7 +469,6 @@ function renderHomeArrivals() {
   const track = document.getElementById("arrivalsTrack");
   if (!track) return;
 
-  // Use new_arrival flag from Supabase; fallback to last 8 products
   let arrivals = products.filter((p) => p.new_arrival);
   if (!arrivals.length) arrivals = [...products].slice(-8);
   if (!arrivals.length) {
@@ -622,18 +617,34 @@ function toggleContent() {
 
 // ── AUTH STATE ────────────────────────────────────────────
 let currentUser = null;
+const ADMIN_EMAILS = ["admin@minipi.ng", "maxwellikiriko@yahoo.co.uk"];
 
-function refreshAuthUI() {
+// ── FIX: refreshAuthUI — correctly shows/hides dropdowns ──
+async function refreshAuthUI() {
   const authDd = document.getElementById("authDropdown");
   const userDd = document.getElementById("userDropdown");
+  const adminLink = document.getElementById("adminNavLink");
+
+  // Always hide dropdowns — they open on explicit click only
+  authDd.classList.add("hidden");
+  userDd.classList.add("hidden");
+
   if (currentUser) {
     document.getElementById("userName").textContent = currentUser.name;
     document.getElementById("userEmail").textContent = currentUser.email;
-    authDd.classList.add("hidden");
-    userDd.classList.add("hidden");
+
+    if (adminLink) {
+      const isAdmin = ADMIN_EMAILS.map(e => e.toLowerCase()).includes(currentUser.email.toLowerCase());
+      adminLink.classList.toggle("hidden", !isAdmin);
+      adminLink.classList.toggle("flex", isAdmin);
+    }
   } else {
-    authDd.classList.add("hidden");
-    userDd.classList.add("hidden");
+    document.getElementById("userName").textContent = "—";
+    document.getElementById("userEmail").textContent = "—";
+    if (adminLink) {
+      adminLink.classList.add("hidden");
+      adminLink.classList.remove("flex");
+    }
   }
 }
 
@@ -642,12 +653,16 @@ const accountBtn = document.getElementById("accountBtn");
 const authDd = document.getElementById("authDropdown");
 const userDd = document.getElementById("userDropdown");
 
+// FIX: show auth dropdown when logged out, open profile modal when logged in
 accountBtn.addEventListener("click", (e) => {
   e.stopPropagation();
   if (currentUser) {
+    authDd.classList.add("hidden");
+    userDd.classList.add("hidden");
     openMpModal();
   } else {
-    authDd.classList.toggle("hidden");
+    const isHidden = authDd.classList.contains("hidden");
+    authDd.classList.toggle("hidden", !isHidden);
     userDd.classList.add("hidden");
   }
 });
@@ -770,7 +785,7 @@ document.getElementById("signUpBtn").addEventListener("click", async () => {
       document.getElementById("suEmail").value = "";
       document.getElementById("suPwd").value = "";
     } else if (data.session) {
-      currentUser = { name, email: data.user.email };
+      currentUser = { id: data.user.id, name, email: data.user.email };
       refreshAuthUI();
       closeAuthModal();
       showToast(`Welcome, ${name}! 🎉`);
@@ -785,7 +800,7 @@ document.getElementById("signUpBtn").addEventListener("click", async () => {
   }
 });
 
-// ── SIGN IN ───────────────────────────────────────────────
+// ── SIGN IN ─── FIX: removed broken duplicate assignment ──
 document.getElementById("signInBtn").addEventListener("click", async () => {
   clearAuthAlerts();
   const email = document.getElementById("siEmail").value.trim().toLowerCase();
@@ -800,8 +815,9 @@ document.getElementById("signInBtn").addEventListener("click", async () => {
   try {
     const { data, error } = await sb.auth.signInWithPassword({ email, password: pwd });
     if (error) throw error;
-    const name = data.user.user_metadata?.full_name || data.user.email.split("@")[0];
-    currentUser = { name, email: data.user.email };
+    const u = data.user;
+    const name = u.user_metadata?.full_name || u.email.split("@")[0];
+    currentUser = { id: u.id, name, email: u.email };
     refreshAuthUI();
     closeAuthModal();
     showToast(`Welcome back, ${name}!`);
@@ -840,11 +856,19 @@ document.getElementById("forgotBtn").addEventListener("click", async () => {
   }
 });
 
-// ── SIGN OUT ──────────────────────────────────────────────
+// ── SIGN OUT — FIX: closes profile modal and cart ─────────
 document.getElementById("logoutBtn").addEventListener("click", async () => {
   userDd.classList.add("hidden");
   if (sb) { try { await sb.auth.signOut(); } catch (e) {} }
   currentUser = null;
+
+  // Close profile modal if open
+  const mpOverlay = document.getElementById("mp-overlay");
+  if (mpOverlay) mpOverlay.style.display = "none";
+
+  // Close cart if open
+  closeCart();
+
   refreshAuthUI();
   showToast("Signed out successfully");
 });
@@ -913,7 +937,7 @@ if (sb) {
     if (event === "PASSWORD_RECOVERY") { openResetModal(); return; }
     if (session?.user) {
       const u = session.user;
-      currentUser = { name: u.user_metadata?.full_name || u.email.split("@")[0], email: u.email };
+      currentUser = { id: u.id, name: u.user_metadata?.full_name || u.email.split("@")[0], email: u.email };
       refreshAuthUI();
       if (event === "SIGNED_IN") closeAuthModal();
     } else if (event === "SIGNED_OUT") {
@@ -925,7 +949,7 @@ if (sb) {
   sb.auth.getSession().then(({ data }) => {
     if (data?.session?.user) {
       const u = data.session.user;
-      currentUser = { name: u.user_metadata?.full_name || u.email.split("@")[0], email: u.email };
+      currentUser = { id: u.id, name: u.user_metadata?.full_name || u.email.split("@")[0], email: u.email };
       refreshAuthUI();
     }
   });
@@ -1077,9 +1101,6 @@ paint(0);
 restartProgress();
 restartAutoplay();
 
-
-
-
 // ── SUPABASE LOAD + REALTIME ──────────────────────────────
 async function loadProductsFromSupabase() {
   if (sb) {
@@ -1093,7 +1114,6 @@ async function loadProductsFromSupabase() {
       console.warn("Could not load products from Supabase", e);
     }
 
-    // FIX: Realtime subscription so admin changes reflect instantly
     sb.channel("home-products-live")
       .on("postgres_changes", { event: "*", schema: "public", table: "products" }, (payload) => {
         if (payload.eventType === "INSERT") {
@@ -1112,7 +1132,6 @@ async function loadProductsFromSupabase() {
       .subscribe();
   }
 
-  // Always render after load attempt
   styleFilterPills();
   renderProducts();
   renderHomeArrivals();
@@ -1121,55 +1140,6 @@ async function loadProductsFromSupabase() {
 
 // ── CUSTOMER PROFILE MODAL ────────────────────────────────
 function mpFmt(n) { return "₦" + Number(n).toLocaleString("en-NG"); }
-
-function mpOrderCard(o) {
-  const colors = {
-    success: { bg: "#eaf3de", color: "#3B6D11", icon: "✓", label: "Delivered" },
-    pending:  { bg: "#faeeda", color: "#854F0B", icon: "⏳", label: "Pending" },
-  };
-  const c = colors[o.status] || colors.pending;
-  return `<div style="background:#f9fafb;border-radius:10px;border:.5px solid #e5e7eb;padding:.9rem 1rem;margin-bottom:.65rem;display:flex;align-items:flex-start;gap:12px;">
-    <div style="width:38px;height:38px;border-radius:8px;background:${c.bg};color:${c.color};display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">${c.icon}</div>
-    <div style="flex:1;min-width:0;">
-      <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.items}</div>
-      <div style="font-size:11px;color:#6b7280;margin-top:1px;">${o.id} · ${o.date}</div>
-    </div>
-    <div style="text-align:right;flex-shrink:0;">
-      <div style="font-size:13px;font-weight:600;">${mpFmt(o.price)}</div>
-      <span style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;margin-top:3px;font-weight:600;background:${c.bg};color:${c.color};">${c.label}</span>
-    </div>
-  </div>`;
-}
-
-async function openMpModal() {
-  const overlay = document.getElementById("mp-overlay");
-  overlay.style.display = "flex";
- currentUser = { id: data.user.id, name, email: data.user.email };
- 
-  document.getElementById("mp-avatar").textContent = (user.name || "U")[0].toUpperCase();
-  document.getElementById("mp-disp-name").textContent = user.name || "—";
-  document.getElementById("mp-disp-email").textContent = user.email || "—";
-  document.getElementById("mp-acc-name").textContent = user.name || "—";
-  document.getElementById("mp-acc-email").textContent = user.email || "—";
-
-  let orders = [];
-  if (sb && currentUser?.id) {
-    const { data } = await sb.from("orders").select("*").eq("user_id", currentUser.id).order("created_at", { ascending: false });
-    orders = data || [];
-  }
-  const done = orders.filter(o => o.status === "success");
-  const pending = orders.filter(o => o.status !== "success");
-
-  document.getElementById("mp-stat-total").textContent = orders.length;
-  document.getElementById("mp-stat-success").textContent = done.length;
-  document.getElementById("mp-stat-pending").textContent = pending.length;
-
-  const empty = (m) => `<div style="text-align:center;padding:2rem;color:#6b7280;font-size:13px;">${m}</div>`;
-  document.getElementById("mp-recent-list").innerHTML = orders.slice(0,3).length ? orders.slice(0,3).map(mpOrderCard).join("") : empty("No activity yet");
-  document.getElementById("mp-history-list").innerHTML = done.length ? done.map(mpOrderCard).join("") : empty("No completed orders yet");
-  document.getElementById("mp-pending-list").innerHTML = pending.length ? pending.map(mpOrderCard).join("") : empty("No pending orders");
-  // tab reset code stays the same
-}
 
 function mpOrderCard(o) {
   const c = o.status === "success"
@@ -1188,6 +1158,75 @@ function mpOrderCard(o) {
     </div>
   </div>`;
 }
+
+async function openMpModal() {
+  if (!currentUser) return;
+  const overlay = document.getElementById("mp-overlay");
+  overlay.style.display = "flex";
+  const user = currentUser;
+
+  document.querySelectorAll(".mp-tab").forEach((t) => {
+    const isOverview = t.dataset.tab === "overview";
+    t.style.color = isOverview ? "#ff7a00" : "#6b7280";
+    t.style.borderBottom = isOverview ? "2px solid #ff7a00" : "2px solid transparent";
+    t.style.fontWeight = isOverview ? "600" : "400";
+  });
+  ["overview", "history", "pending", "account"].forEach((id) => {
+    document.getElementById("mp-tab-" + id).style.display = id === "overview" ? "block" : "none";
+  });
+
+  document.getElementById("mp-avatar").textContent = (user.name || user.email || "U").charAt(0).toUpperCase();
+  document.getElementById("mp-disp-name").textContent = user.name || "—";
+  document.getElementById("mp-disp-email").textContent = user.email || "—";
+  document.getElementById("mp-acc-name").textContent = user.name || "—";
+  document.getElementById("mp-acc-email").textContent = user.email || "—";
+
+  if (sb && currentUser.id) {
+    const { data: prof } = await sb.from("profiles").select("created_at").eq("id", currentUser.id).single();
+    document.getElementById("mp-acc-since").textContent = prof?.created_at
+      ? new Date(prof.created_at).toLocaleDateString("en-NG", { day: "numeric", month: "long", year: "numeric" })
+      : "—";
+  } else {
+    document.getElementById("mp-acc-since").textContent = "—";
+  }
+
+  let orders = [];
+  if (sb && currentUser.id) {
+    try {
+      const { data, error } = await sb
+        .from("orders")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .order("created_at", { ascending: false });
+      if (!error && data) orders = data;
+    } catch (e) {
+      console.warn("Could not load orders", e);
+    }
+  }
+
+  const successOrders = orders.filter((o) => o.status === "success");
+  const pendingOrders = orders.filter((o) => o.status === "pending");
+
+  document.getElementById("mp-stat-total").textContent = orders.length;
+  document.getElementById("mp-stat-success").textContent = successOrders.length;
+  document.getElementById("mp-stat-pending").textContent = pendingOrders.length;
+
+  const emptyMsg = (text) =>
+    `<div style="text-align:center;padding:1.5rem 0;font-size:12px;color:#9ca3af;">${text}</div>`;
+
+  document.getElementById("mp-recent-list").innerHTML = orders.length
+    ? orders.slice(0, 5).map(mpOrderCard).join("")
+    : emptyMsg("No orders yet");
+
+  document.getElementById("mp-history-list").innerHTML = successOrders.length
+    ? successOrders.map(mpOrderCard).join("")
+    : emptyMsg("No completed orders yet");
+
+  document.getElementById("mp-pending-list").innerHTML = pendingOrders.length
+    ? pendingOrders.map(mpOrderCard).join("")
+    : emptyMsg("No pending orders");
+}
+
 document.getElementById("mp-close-btn").addEventListener("click", () => {
   document.getElementById("mp-overlay").style.display = "none";
 });

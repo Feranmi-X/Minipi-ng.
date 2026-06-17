@@ -56,13 +56,38 @@
       textarea:focus {
         outline: none;
       }
-      .tab-btn.active {
+
+      /* FIX 1: Tab active styles via CSS only — JS just toggles data-active attr */
+      .tab-btn {
+        transition: all 0.18s;
+      }
+      .tab-btn[data-active="true"] {
+        background: #ff7a00 !important;
+        color: #fff !important;
+        border-color: #ff7a00 !important;
+        font-weight: 600;
+      }
+
+      /* FIX 2: Order filter active */
+      .order-filter-btn[data-active="true"] {
         background: #ff7a00;
         color: #fff;
         border-color: #ff7a00;
       }
-      .tab-btn {
-        transition: all 0.18s;
+
+      /* FIX 3: Modal overlay — ensure pointer events work on backdrop */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 500;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 1.25rem;
+      }
+      .modal-backdrop.open {
+        display: flex;
       }
     </style>
   </head>
@@ -169,9 +194,11 @@
         <div
           class="max-w-[1400px] mx-auto px-5 flex gap-1 py-2 overflow-x-auto"
         >
+          <!-- FIX 1: Use data-active instead of .active class to avoid className overwrite conflicts -->
           <button
-            class="tab-btn active px-4 py-2 rounded-full border border-transparent text-[13px] font-semibold whitespace-nowrap"
+            class="tab-btn px-4 py-2 rounded-full border border-transparent text-[13px] font-medium whitespace-nowrap"
             data-tab="overview"
+            data-active="true"
           >
             <i class="fas fa-chart-pie mr-1.5 text-[11px]"></i>Overview
           </button>
@@ -352,10 +379,10 @@
             </div>
           </div>
 
-          <!-- Pending orders alert -->
+          <!-- FIX 3: pendingAlert — removed hardcoded "flex" class; toggled via JS only -->
           <div
             id="pendingAlert"
-            class="hidden mb-6 px-5 py-4 rounded-2xl bg-amber-50 border border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/30 flex items-center gap-3"
+            class="hidden mb-6 px-5 py-4 rounded-2xl bg-amber-50 border border-amber-200 dark:bg-amber-500/10 dark:border-amber-500/30 items-center gap-3"
           >
             <i class="fas fa-clock text-amber-500 text-lg shrink-0"></i>
             <div class="flex-1">
@@ -405,7 +432,6 @@
 
         <!-- ── PRODUCTS TAB ── -->
         <div id="tab-products" class="hidden">
-          <!-- Toolbar -->
           <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
             <h2 class="text-lg font-bold">Products</h2>
             <div class="flex flex-wrap items-center gap-2">
@@ -501,7 +527,7 @@
           </div>
           <div
             id="pagination"
-            class="flex items-center justify-between mt-4 text-xs text-gray-500 dark:text-gray-400 hidden"
+            class="hidden flex items-center justify-between mt-4 text-xs text-gray-500 dark:text-gray-400"
           >
             <span id="pageInfo"></span>
             <div class="flex gap-2">
@@ -526,20 +552,22 @@
           <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
             <h2 class="text-lg font-bold">Orders</h2>
             <div class="flex gap-2 flex-wrap">
+              <!-- FIX 2: order filter uses data-active too -->
               <button
-                class="order-filter-btn active px-4 py-2 rounded-full border text-[13px] font-medium transition-all border-brand bg-brand text-white"
+                class="order-filter-btn px-4 py-2 rounded-full border text-[13px] font-medium transition-all"
                 data-status="all"
+                data-active="true"
               >
                 All
               </button>
               <button
-                class="order-filter-btn px-4 py-2 rounded-full border text-[13px] font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand"
+                class="order-filter-btn px-4 py-2 rounded-full border border-gray-200 dark:border-neutral-700 text-[13px] font-medium transition-all hover:border-brand"
                 data-status="pending"
               >
                 Pending
               </button>
               <button
-                class="order-filter-btn px-4 py-2 rounded-full border text-[13px] font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand"
+                class="order-filter-btn px-4 py-2 rounded-full border border-gray-200 dark:border-neutral-700 text-[13px] font-medium transition-all hover:border-brand"
                 data-status="success"
               >
                 Approved
@@ -696,10 +724,8 @@
     </div>
 
     <!-- ── PRODUCT MODAL ── -->
-    <div
-      id="productModal"
-      class="hidden fixed inset-0 bg-black/60 z-[500] items-center justify-center p-5"
-    >
+    <!-- FIX 4: Use .modal-backdrop class for reliable backdrop-click detection -->
+    <div id="productModal" class="modal-backdrop" style="z-index: 500">
       <div
         class="modal-scroll bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl w-full max-w-[520px] max-h-[90vh] overflow-y-auto animate-fadeUp relative"
       >
@@ -808,11 +834,9 @@
     </div>
 
     <!-- ── DELETE PRODUCT MODAL ── -->
-    <div
-      id="deleteModal"
-      class="hidden fixed inset-0 bg-black/60 z-[600] items-center justify-center p-5"
-    >
+    <div id="deleteModal" class="modal-backdrop" style="z-index: 600">
       <div
+        id="deleteModalInner"
         class="bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl w-full max-w-[380px] p-7 animate-fadeUp"
       >
         <div
@@ -843,11 +867,9 @@
     </div>
 
     <!-- ── DELETE USER MODAL ── -->
-    <div
-      id="deleteUserModal"
-      class="hidden fixed inset-0 bg-black/60 z-[600] items-center justify-center p-5"
-    >
+    <div id="deleteUserModal" class="modal-backdrop" style="z-index: 600">
       <div
+        id="deleteUserModalInner"
         class="bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl w-full max-w-[380px] p-7 animate-fadeUp"
       >
         <div
@@ -878,10 +900,7 @@
     </div>
 
     <!-- ── ORDER DETAIL MODAL ── -->
-    <div
-      id="orderModal"
-      class="hidden fixed inset-0 bg-black/60 z-[500] items-center justify-center p-5"
-    >
+    <div id="orderModal" class="modal-backdrop" style="z-index: 500">
       <div
         class="modal-scroll bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl w-full max-w-[480px] max-h-[90vh] overflow-y-auto animate-fadeUp relative"
       >
@@ -906,9 +925,10 @@
           >
             Close
           </button>
+          <!-- FIX 8: Approve btn — JS sets data-order-id; single listener handles it -->
           <button
             id="orderApproveBtn"
-            class="px-6 py-2.5 rounded-full bg-green-500 text-white text-sm font-semibold hover:opacity-90 disabled:opacity-60 transition-opacity flex items-center gap-2"
+            class="hidden px-6 py-2.5 rounded-full bg-green-500 text-white text-sm font-semibold hover:opacity-90 disabled:opacity-60 transition-opacity flex items-center gap-2"
           >
             <i class="fas fa-check text-xs"></i> Approve Order
           </button>
@@ -926,12 +946,13 @@
     </div>
 
     <script>
-      // ── CONFIG ─────────────────────────────────────────────────
+      // ── CONFIG ────────────────────────────────────────────────
       const SB_URL = "https://sygdrjmjjxwxuczcnxjr.supabase.co";
-      const SB_KEY = "sb_publishable_lAqlBUViE_Jcq7PbVALyLg_b-X9YQvO";
+      const SB_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN5Z2Ryam1qanh3eHVjemNueGpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzODI0MDIsImV4cCI6MjA5Njk1ODQwMn0.xp-zwipa_l-1JeYzyTqSNxeK1dwqGH-ilK35jIXSncg";
       const ADMIN_EMAILS = ["admin@minipi.ng", "maxwellikiriko@yahoo.co.uk"];
 
-      // ── SUPABASE ───────────────────────────────────────────────
+      // ── SUPABASE ──────────────────────────────────────────────
       let sb = null;
       try {
         if (window.supabase?.createClient)
@@ -940,7 +961,7 @@
         console.warn("Supabase init failed", e);
       }
 
-      // ── DARK MODE ──────────────────────────────────────────────
+      // ── DARK MODE ─────────────────────────────────────────────
       const html = document.documentElement;
       const themeBtn = document.getElementById("themeBtn");
       const themeIcon = document.getElementById("themeIcon");
@@ -962,7 +983,7 @@
         localStorage.setItem("gTheme", !d ? "dark" : "light");
       });
 
-      // ── TOAST ──────────────────────────────────────────────────
+      // ── TOAST ─────────────────────────────────────────────────
       let toastTimer;
       function showToast(msg, type = "success") {
         const t = document.getElementById("toast");
@@ -978,26 +999,34 @@
         }, 3500);
       }
 
-      function setBusy(btn, busy, loadText, origText) {
+      function setBusy(btn, busy, loadText, origHTML) {
         btn.disabled = busy;
         btn.innerHTML = busy
           ? `<i class="fas fa-spinner fa-spin text-xs"></i> ${loadText}`
-          : origText;
+          : origHTML;
       }
 
-      // ── TABS ───────────────────────────────────────────────────
+      // ── TABS ──────────────────────────────────────────────────
+      // FIX 1: Use data-active attribute — avoids className string conflicts
       function switchTab(name) {
         document.querySelectorAll(".tab-btn").forEach((b) => {
-          const active = b.dataset.tab === name;
-          b.classList.toggle("active", active);
-          if (!active)
-            b.className = b.className
-              .replace("bg-brand text-white border-brand", "")
-              .trim();
+          b.setAttribute(
+            "data-active",
+            b.dataset.tab === name ? "true" : "false",
+          );
+          // Restore border style for inactive tabs
+          if (b.dataset.tab !== name) {
+            b.classList.remove("border-transparent");
+            b.classList.add("border-gray-200", "dark:border-neutral-700");
+          } else {
+            b.classList.remove("border-gray-200");
+            b.classList.add("border-transparent");
+          }
         });
         ["overview", "products", "orders", "users"].forEach((t) => {
-          const el = document.getElementById("tab-" + t);
-          if (el) el.classList.toggle("hidden", t !== name);
+          document
+            .getElementById("tab-" + t)
+            ?.classList.toggle("hidden", t !== name);
         });
         if (name === "products") loadProducts();
         if (name === "orders") loadOrders();
@@ -1009,7 +1038,36 @@
         btn.addEventListener("click", () => switchTab(btn.dataset.tab));
       });
 
-      // ── LOGIN ──────────────────────────────────────────────────
+      // ── HELPERS ───────────────────────────────────────────────
+      const fmt = (n) => "₦" + Number(n).toLocaleString("en-NG");
+      const fmtDate = (s) =>
+        s
+          ? new Date(s).toLocaleDateString("en-NG", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })
+          : "—";
+
+      // ── MODAL HELPERS (FIX 4) ─────────────────────────────────
+      // All modals use .modal-backdrop; backdrop click closes via event delegation
+      function openModal(id) {
+        document.getElementById(id).classList.add("open");
+      }
+      function closeModal(id) {
+        document.getElementById(id).classList.remove("open");
+      }
+
+      // Backdrop click: close if click target IS the backdrop itself
+      ["productModal", "deleteModal", "deleteUserModal", "orderModal"].forEach(
+        (id) => {
+          document.getElementById(id).addEventListener("click", (e) => {
+            if (e.target === e.currentTarget) closeModal(id);
+          });
+        },
+      );
+
+      // ── LOGIN ─────────────────────────────────────────────────
       const loginGate = document.getElementById("loginGate");
       const adminShell = document.getElementById("adminShell");
 
@@ -1100,18 +1158,10 @@
         });
       }
 
-      // ── HELPERS ────────────────────────────────────────────────
-      const fmt = (n) => "₦" + Number(n).toLocaleString("en-NG");
-      const fmtDate = (s) =>
-        s
-          ? new Date(s).toLocaleDateString("en-NG", {
-              day: "numeric",
-              month: "short",
-              year: "numeric",
-            })
-          : "—";
+      // ── OVERVIEW ──────────────────────────────────────────────
+      // FIX 5: Cache orders for overview so openOrderModal works without switching tabs
+      let overviewOrders = [];
 
-      // ── OVERVIEW ───────────────────────────────────────────────
       async function loadOverview() {
         if (!sb) return;
         try {
@@ -1120,10 +1170,12 @@
             sb.from("orders").select("*"),
             sb.from("profiles").select("*"),
           ]);
-
           const prods = prodsRes.data || [];
           const orders = ordersRes.data || [];
           const users = usersRes.data || [];
+
+          // Cache so overview's "View" buttons work
+          overviewOrders = orders;
 
           const approved = orders.filter((o) => o.status === "success");
           const pending = orders.filter((o) => o.status === "pending");
@@ -1150,17 +1202,20 @@
             (p) => p.cat === "gaming",
           ).length;
 
-          // Pending badge
+          // FIX 3: pendingAlert — use inline style display flex instead of toggling "flex" class
           const badge = document.getElementById("pendingOrdersBadge");
+          const alert = document.getElementById("pendingAlert");
           if (pending.length > 0) {
             badge.textContent = pending.length;
             badge.classList.remove("hidden");
-            document.getElementById("pendingAlert").classList.remove("hidden");
+            alert.classList.remove("hidden");
+            alert.style.display = "flex";
             document.getElementById("pendingAlertCount").textContent =
               `${pending.length} order${pending.length > 1 ? "s are" : " is"} awaiting approval.`;
           } else {
             badge.classList.add("hidden");
-            document.getElementById("pendingAlert").classList.add("hidden");
+            alert.classList.add("hidden");
+            alert.style.display = "";
           }
 
           // Recent orders (last 5)
@@ -1175,7 +1230,7 @@
             list.innerHTML = recent.map((o) => orderRowHTML(o)).join("");
             list.querySelectorAll(".view-order-btn").forEach((btn) => {
               btn.addEventListener("click", () =>
-                openOrderModal(btn.dataset.id),
+                openOrderModal(btn.dataset.id, overviewOrders),
               );
             });
           }
@@ -1197,13 +1252,14 @@
           </div>
           <div class="text-[13px] font-bold text-brand shrink-0">${fmt(o.total || 0)}</div>
           <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full shrink-0 ${statusClass}">${statusLabel}</span>
-          <button class="view-order-btn w-8 h-8 rounded-lg border border-gray-200 dark:border-neutral-700 flex items-center justify-center hover:border-brand hover:text-brand transition-colors text-xs shrink-0" data-id="${o.id}" title="View">
+          <button class="view-order-btn w-8 h-8 rounded-lg border border-gray-200 dark:border-neutral-700 flex items-center justify-center hover:border-brand hover:text-brand transition-colors text-xs shrink-0"
+            data-id="${o.id}" title="View">
             <i class="fas fa-eye pointer-events-none"></i>
           </button>
         </div>`;
       }
 
-      // ── PRODUCTS ───────────────────────────────────────────────
+      // ── PRODUCTS ──────────────────────────────────────────────
       let products = [],
         filteredProducts = [],
         currentPage = 1,
@@ -1282,21 +1338,35 @@
         tbody.innerHTML = page
           .map(
             (p) => `
-          <tr class="border-b border-gray-50 dark:border-neutral-800 hover:bg-gray-50 dark:hover:bg-neutral-800/40 transition-colors group animate-fadeUp">
-            <td class="px-5 py-3"><img src="${p.img || ""}" alt="${p.name}" class="w-11 h-11 object-cover rounded-xl bg-gray-100 dark:bg-neutral-800 border border-gray-100 dark:border-neutral-700" onerror="this.src='https://placehold.co/44x44/f3f4f6/9ca3af?text=IMG'" /></td>
-            <td class="px-4 py-3"><div class="text-[13px] font-semibold max-w-[180px] truncate" title="${p.name}">${p.name}</div><div class="text-[11px] text-gray-400 mt-0.5">ID: ${p.id}</div></td>
-            <td class="px-4 py-3"><span class="text-[11px] font-semibold uppercase tracking-wide px-2 py-1 rounded-full ${catBadge[p.cat] || "bg-gray-100 text-gray-600"}">${p.cat || "—"}</span></td>
+          <tr class="border-b border-gray-50 dark:border-neutral-800 hover:bg-gray-50 dark:hover:bg-neutral-800/40 transition-colors animate-fadeUp">
+            <td class="px-5 py-3">
+              <img src="${p.img || ""}" alt="${p.name}"
+                class="w-11 h-11 object-cover rounded-xl bg-gray-100 dark:bg-neutral-800 border border-gray-100 dark:border-neutral-700"
+                onerror="this.src='https://placehold.co/44x44/f3f4f6/9ca3af?text=IMG'" />
+            </td>
+            <td class="px-4 py-3">
+              <div class="text-[13px] font-semibold max-w-[180px] truncate" title="${p.name}">${p.name}</div>
+              <div class="text-[11px] text-gray-400 mt-0.5">ID: ${p.id}</div>
+            </td>
+            <td class="px-4 py-3">
+              <span class="text-[11px] font-semibold uppercase tracking-wide px-2 py-1 rounded-full ${catBadge[p.cat] || "bg-gray-100 text-gray-600"}">${p.cat || "—"}</span>
+            </td>
             <td class="px-4 py-3 text-[13px] font-bold text-brand">${fmt(p.price)}</td>
-            <td class="px-4 py-3 hidden md:table-cell"><div class="text-[12px] text-gray-500 dark:text-gray-400 max-w-[240px] truncate">${p.description || "—"}</div></td>
+            <td class="px-4 py-3 hidden md:table-cell">
+              <div class="text-[12px] text-gray-500 dark:text-gray-400 max-w-[240px] truncate">${p.description || "—"}</div>
+            </td>
             <td class="px-5 py-3 text-right">
               <div class="flex items-center justify-end gap-2">
-                <button class="edit-btn w-8 h-8 rounded-lg border border-gray-200 dark:border-neutral-700 flex items-center justify-center hover:border-brand hover:text-brand transition-colors text-xs" data-id="${p.id}" title="Edit"><i class="fas fa-pen pointer-events-none"></i></button>
-                <button class="delete-btn w-8 h-8 rounded-lg border border-gray-200 dark:border-neutral-700 flex items-center justify-center hover:border-red-400 hover:text-red-500 transition-colors text-xs" data-id="${p.id}" data-name="${p.name}" title="Delete"><i class="fas fa-trash pointer-events-none"></i></button>
+                <button class="edit-btn w-8 h-8 rounded-lg border border-gray-200 dark:border-neutral-700 flex items-center justify-center hover:border-brand hover:text-brand transition-colors text-xs"
+                  data-id="${p.id}" title="Edit"><i class="fas fa-pen pointer-events-none"></i></button>
+                <button class="delete-btn w-8 h-8 rounded-lg border border-gray-200 dark:border-neutral-700 flex items-center justify-center hover:border-red-400 hover:text-red-500 transition-colors text-xs"
+                  data-id="${p.id}" data-name="${p.name}" title="Delete"><i class="fas fa-trash pointer-events-none"></i></button>
               </div>
             </td>
           </tr>`,
           )
           .join("");
+
         pagination.classList.toggle("hidden", totalPages <= 1);
         document.getElementById("pageInfo").textContent =
           `Showing ${start + 1}–${Math.min(start + PAGE_SIZE, filteredProducts.length)} of ${filteredProducts.length} products`;
@@ -1323,24 +1393,24 @@
           if (delBtn) openDeleteModal(delBtn.dataset.id, delBtn.dataset.name);
         });
 
-      // Product Modal
-      const productModal = document.getElementById("productModal");
+      // ── PRODUCT MODAL ─────────────────────────────────────────
       function openProductModal() {
-        productModal.classList.remove("hidden");
-        productModal.classList.add("flex");
+        openModal("productModal");
         document.getElementById("modalError").classList.add("hidden");
       }
       function closeProductModal() {
-        productModal.classList.add("hidden");
-        productModal.classList.remove("flex");
+        closeModal("productModal");
         editingId = null;
         clearForm();
       }
+      // FIX 9: clearForm also hides image preview reliably
       function clearForm() {
-        ["fName", "fCat", "fPrice", "fImg", "fDesc"].forEach((id) => {
-          document.getElementById(id).value = "";
-        });
+        ["fName", "fPrice", "fImg", "fDesc"].forEach(
+          (id) => (document.getElementById(id).value = ""),
+        );
+        document.getElementById("fCat").value = "";
         document.getElementById("imgPreviewWrap").classList.add("hidden");
+        document.getElementById("imgPreview").src = "";
         document.getElementById("modalError").classList.add("hidden");
       }
 
@@ -1357,9 +1427,6 @@
       document
         .getElementById("modalCancelBtn")
         .addEventListener("click", closeProductModal);
-      productModal.addEventListener("click", (e) => {
-        if (e.target === productModal) closeProductModal();
-      });
 
       function openEditModal(id) {
         const p = products.find((x) => String(x.id) === String(id));
@@ -1372,10 +1439,14 @@
         document.getElementById("fPrice").value = p.price || "";
         document.getElementById("fImg").value = p.img || "";
         document.getElementById("fDesc").value = p.description || "";
+        const wrap = document.getElementById("imgPreviewWrap");
         if (p.img) {
           document.getElementById("imgPreview").src = p.img;
-          document.getElementById("imgPreviewWrap").classList.remove("hidden");
+          wrap.classList.remove("hidden");
+        } else {
+          wrap.classList.add("hidden");
         }
+        document.getElementById("modalError").classList.add("hidden");
         openProductModal();
       }
 
@@ -1388,6 +1459,7 @@
           wrap.classList.remove("hidden");
         } else {
           wrap.classList.add("hidden");
+          img.src = "";
         }
       });
 
@@ -1402,6 +1474,7 @@
           const errEl = document.getElementById("modalError");
           const btn = document.getElementById("modalSaveBtn");
           errEl.classList.add("hidden");
+
           if (!name) {
             errEl.textContent = "Product name is required.";
             errEl.classList.remove("hidden");
@@ -1422,9 +1495,10 @@
             errEl.classList.remove("hidden");
             return;
           }
+
           const payload = { name, cat, price, img, description: desc };
-          const origText = btn.textContent;
-          setBusy(btn, true, "Saving…", origText);
+          const origHTML = btn.innerHTML;
+          setBusy(btn, true, "Saving…", origHTML);
           try {
             if (editingId) {
               const { error } = await sb
@@ -1444,31 +1518,27 @@
             errEl.textContent = err.message || "Failed to save product.";
             errEl.classList.remove("hidden");
           } finally {
-            setBusy(btn, false, "", origText);
+            setBusy(btn, false, "", origHTML);
           }
         });
 
-      // Delete Product
-      const deleteModal = document.getElementById("deleteModal");
+      // ── DELETE PRODUCT ────────────────────────────────────────
       let deletingId = null;
       function openDeleteModal(id, name) {
         deletingId = id;
         document.getElementById("deleteMsg").textContent =
           `"${name}" will be permanently removed. This cannot be undone.`;
-        deleteModal.classList.remove("hidden");
-        deleteModal.classList.add("flex");
+        openModal("deleteModal");
       }
       function closeDeleteModal() {
-        deleteModal.classList.add("hidden");
-        deleteModal.classList.remove("flex");
+        closeModal("deleteModal");
         deletingId = null;
       }
+
       document
         .getElementById("deleteCancelBtn")
         .addEventListener("click", closeDeleteModal);
-      deleteModal.addEventListener("click", (e) => {
-        if (e.target === deleteModal) closeDeleteModal();
-      });
+
       document
         .getElementById("deleteConfirmBtn")
         .addEventListener("click", async () => {
@@ -1491,7 +1561,7 @@
           }
         });
 
-      // ── ORDERS ─────────────────────────────────────────────────
+      // ── ORDERS ────────────────────────────────────────────────
       let allOrders = [],
         orderFilterStatus = "all";
 
@@ -1514,14 +1584,13 @@
         }
       }
 
+      // FIX 2: Order filter uses data-active attribute
       document.querySelectorAll(".order-filter-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
-          document.querySelectorAll(".order-filter-btn").forEach((b) => {
-            b.className =
-              "order-filter-btn px-4 py-2 rounded-full border text-[13px] font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand";
-          });
-          btn.className =
-            "order-filter-btn active px-4 py-2 rounded-full border text-[13px] font-medium transition-all border-brand bg-brand text-white";
+          document
+            .querySelectorAll(".order-filter-btn")
+            .forEach((b) => b.setAttribute("data-active", "false"));
+          btn.setAttribute("data-active", "true");
           orderFilterStatus = btn.dataset.status;
           renderOrdersTable();
         });
@@ -1551,15 +1620,24 @@
             const statusLabel = o.status === "success" ? "Approved" : "Pending";
             return `<tr class="border-b border-gray-50 dark:border-neutral-800 hover:bg-gray-50 dark:hover:bg-neutral-800/40 transition-colors animate-fadeUp">
             <td class="px-5 py-3 text-[12px] font-mono text-gray-500">#${String(o.id).slice(-6).toUpperCase()}</td>
-            <td class="px-4 py-3"><div class="text-[13px] font-semibold">${o.customer_name || "—"}</div><div class="text-[11px] text-gray-400">${o.customer_email || "—"}</div></td>
+            <td class="px-4 py-3">
+              <div class="text-[13px] font-semibold">${o.customer_name || "—"}</div>
+              <div class="text-[11px] text-gray-400">${o.customer_email || "—"}</div>
+            </td>
             <td class="px-4 py-3"><div class="text-[12px] max-w-[180px] truncate" title="${o.items_summary || ""}">${o.items_summary || "—"}</div></td>
             <td class="px-4 py-3 text-[13px] font-bold text-brand">${fmt(o.total || 0)}</td>
             <td class="px-4 py-3"><span class="text-[11px] font-semibold px-2.5 py-1 rounded-full ${statusClass}">${statusLabel}</span></td>
             <td class="px-4 py-3 hidden md:table-cell text-[12px] text-gray-500">${fmtDate(o.created_at)}</td>
             <td class="px-5 py-3 text-right">
               <div class="flex items-center justify-end gap-2">
-                <button class="view-order-btn w-8 h-8 rounded-lg border border-gray-200 dark:border-neutral-700 flex items-center justify-center hover:border-brand hover:text-brand transition-colors text-xs" data-id="${o.id}" title="View"><i class="fas fa-eye pointer-events-none"></i></button>
-                ${o.status !== "success" ? `<button class="approve-order-btn w-8 h-8 rounded-lg border border-gray-200 dark:border-neutral-700 flex items-center justify-center hover:border-green-500 hover:text-green-500 transition-colors text-xs" data-id="${o.id}" title="Approve"><i class="fas fa-check pointer-events-none"></i></button>` : ""}
+                <button class="view-order-btn w-8 h-8 rounded-lg border border-gray-200 dark:border-neutral-700 flex items-center justify-center hover:border-brand hover:text-brand transition-colors text-xs"
+                  data-id="${o.id}" title="View"><i class="fas fa-eye pointer-events-none"></i></button>
+                ${
+                  o.status !== "success"
+                    ? `<button class="approve-order-btn w-8 h-8 rounded-lg border border-gray-200 dark:border-neutral-700 flex items-center justify-center hover:border-green-500 hover:text-green-500 transition-colors text-xs"
+                      data-id="${o.id}" title="Approve"><i class="fas fa-check pointer-events-none"></i></button>`
+                    : ""
+                }
               </div>
             </td>
           </tr>`;
@@ -1567,20 +1645,30 @@
           .join("");
 
         tbody.querySelectorAll(".view-order-btn").forEach((btn) => {
-          btn.addEventListener("click", () => openOrderModal(btn.dataset.id));
+          btn.addEventListener("click", () =>
+            openOrderModal(btn.dataset.id, allOrders),
+          );
         });
         tbody.querySelectorAll(".approve-order-btn").forEach((btn) => {
           btn.addEventListener("click", () => approveOrder(btn.dataset.id));
         });
       }
 
-      // Order Detail Modal
+      // ── ORDER DETAIL MODAL ────────────────────────────────────
+      // FIX 8: Single listener on approve button; stores order id via dataset
       let currentOrderId = null;
-      const orderModal = document.getElementById("orderModal");
-      function openOrderModal(id) {
-        const o = allOrders.find((x) => String(x.id) === String(id));
+      const orderApproveBtn = document.getElementById("orderApproveBtn");
+      orderApproveBtn.addEventListener("click", () => {
+        if (currentOrderId) approveOrder(currentOrderId, true);
+      });
+
+      // FIX 5: openOrderModal accepts the orders array as param so it works from overview too
+      function openOrderModal(id, ordersSource) {
+        const src = ordersSource || allOrders;
+        const o = src.find((x) => String(x.id) === String(id));
         if (!o) return;
         currentOrderId = o.id;
+
         const statusClass =
           o.status === "success" ? "text-green-600" : "text-amber-600";
         const statusLabel =
@@ -1613,41 +1701,41 @@
               <div class="text-sm font-semibold">Total Amount</div>
               <div class="text-xl font-extrabold text-brand">${fmt(o.total || 0)}</div>
             </div>
-            ${o.whatsapp_msg ? `<div class="bg-gray-50 dark:bg-neutral-800 rounded-xl p-3"><div class="text-[11px] text-gray-400 mb-1">WhatsApp Message</div><div class="text-[12px] text-gray-600 dark:text-gray-300 leading-relaxed">${o.whatsapp_msg}</div></div>` : ""}
+            ${
+              o.whatsapp_msg
+                ? `<div class="bg-gray-50 dark:bg-neutral-800 rounded-xl p-3">
+                   <div class="text-[11px] text-gray-400 mb-1">WhatsApp Message</div>
+                   <div class="text-[12px] text-gray-600 dark:text-gray-300 leading-relaxed">${o.whatsapp_msg}</div>
+                 </div>`
+                : ""
+            }
           </div>`;
-        const approveBtn = document.getElementById("orderApproveBtn");
+
         if (o.status === "success") {
-          approveBtn.classList.add("hidden");
+          orderApproveBtn.classList.add("hidden");
         } else {
-          approveBtn.classList.remove("hidden");
-          approveBtn.onclick = () => approveOrder(o.id, true);
+          orderApproveBtn.classList.remove("hidden");
+          // FIX 8: no inline onclick — listener is already attached above using currentOrderId
         }
-        orderModal.classList.remove("hidden");
-        orderModal.classList.add("flex");
+        openModal("orderModal");
       }
 
       document
         .getElementById("orderModalClose")
-        .addEventListener("click", closeOrderModal);
+        .addEventListener("click", () => closeModal("orderModal"));
       document
         .getElementById("orderModalCancelBtn")
-        .addEventListener("click", closeOrderModal);
-      orderModal.addEventListener("click", (e) => {
-        if (e.target === orderModal) closeOrderModal();
-      });
-      function closeOrderModal() {
-        orderModal.classList.add("hidden");
-        orderModal.classList.remove("flex");
-        currentOrderId = null;
-      }
+        .addEventListener("click", () => closeModal("orderModal"));
 
       async function approveOrder(id, fromModal = false) {
         if (!sb) return;
-        const order = allOrders.find((o) => String(o.id) === String(id));
+        // FIX 5: check both allOrders and overviewOrders
+        const order =
+          allOrders.find((o) => String(o.id) === String(id)) ||
+          overviewOrders.find((o) => String(o.id) === String(id));
         if (!order) return;
-        const btn = fromModal
-          ? document.getElementById("orderApproveBtn")
-          : null;
+
+        const btn = fromModal ? orderApproveBtn : null;
         if (btn)
           setBusy(
             btn,
@@ -1661,14 +1749,18 @@
             .update({ status: "success" })
             .eq("id", id);
           if (error) throw error;
-          // Update local state
-          const idx = allOrders.findIndex((o) => String(o.id) === String(id));
-          if (idx !== -1) allOrders[idx].status = "success";
+
+          // Update both caches
+          [allOrders, overviewOrders].forEach((arr) => {
+            const idx = arr.findIndex((o) => String(o.id) === String(id));
+            if (idx !== -1) arr[idx].status = "success";
+          });
+
           showToast(
             "Order approved! Customer notified in their account.",
             "success",
           );
-          if (fromModal) closeOrderModal();
+          if (fromModal) closeModal("orderModal");
           renderOrdersTable();
           loadOverview();
         } catch (err) {
@@ -1684,7 +1776,7 @@
         }
       }
 
-      // ── USERS ──────────────────────────────────────────────────
+      // ── USERS ─────────────────────────────────────────────────
       let allUsers = [];
 
       async function loadUsers() {
@@ -1693,7 +1785,6 @@
         document.getElementById("usersTableBody").innerHTML = "";
         if (!sb) return;
         try {
-          // Load profiles + orders count
           const [profilesRes, ordersRes] = await Promise.all([
             sb
               .from("profiles")
@@ -1756,9 +1847,7 @@
             </td>
             <td class="px-4 py-3 text-[13px] text-gray-600 dark:text-gray-300">${u.email || "—"}</td>
             <td class="px-4 py-3 hidden md:table-cell text-[12px] text-gray-500">${fmtDate(u.created_at)}</td>
-            <td class="px-4 py-3">
-              <span class="text-[12px] font-semibold">${u.order_count || 0}</span>
-            </td>
+            <td class="px-4 py-3"><span class="text-[12px] font-semibold">${u.order_count || 0}</span></td>
             <td class="px-4 py-3">
               ${
                 isAdmin
@@ -1768,10 +1857,14 @@
             </td>
             <td class="px-5 py-3 text-right">
               <div class="flex items-center justify-end gap-2">
-                <button class="toggle-admin-btn w-8 h-8 rounded-lg border flex items-center justify-center transition-colors text-xs ${isAdmin ? "border-amber-300 text-amber-500 hover:border-amber-500" : "border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"}" data-id="${u.id}" data-email="${u.email}" data-is-admin="${isAdmin}" title="${isAdmin ? "Remove admin" : "Make admin"}">
+                <button class="toggle-admin-btn w-8 h-8 rounded-lg border flex items-center justify-center transition-colors text-xs
+                  ${isAdmin ? "border-amber-300 text-amber-500 hover:border-amber-500" : "border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"}"
+                  data-id="${u.id}" data-email="${u.email}" data-is-admin="${isAdmin}"
+                  title="${isAdmin ? "Remove admin" : "Make admin"}">
                   <i class="${isAdmin ? "fas fa-user-minus" : "fas fa-user-shield"} pointer-events-none"></i>
                 </button>
-                <button class="delete-user-btn w-8 h-8 rounded-lg border border-gray-200 dark:border-neutral-700 flex items-center justify-center hover:border-red-400 hover:text-red-500 transition-colors text-xs" data-id="${u.id}" data-email="${u.email}" data-name="${u.full_name || u.email}" title="Delete user">
+                <button class="delete-user-btn w-8 h-8 rounded-lg border border-gray-200 dark:border-neutral-700 flex items-center justify-center hover:border-red-400 hover:text-red-500 transition-colors text-xs"
+                  data-id="${u.id}" data-name="${u.full_name || u.email}" title="Delete user">
                   <i class="fas fa-trash pointer-events-none"></i>
                 </button>
               </div>
@@ -1798,7 +1891,6 @@
 
       async function toggleAdminRole(userId, email, currentlyAdmin) {
         if (!sb) return;
-        // We use the profiles table to track is_admin flag
         const newVal = !currentlyAdmin;
         try {
           const { error } = await sb
@@ -1821,27 +1913,23 @@
         }
       }
 
-      // Delete User
-      const deleteUserModal = document.getElementById("deleteUserModal");
+      // ── DELETE USER ───────────────────────────────────────────
       let deletingUserId = null;
       function openDeleteUserModal(id, name) {
         deletingUserId = id;
         document.getElementById("deleteUserMsg").textContent =
           `"${name}" and all their data will be permanently removed. This cannot be undone.`;
-        deleteUserModal.classList.remove("hidden");
-        deleteUserModal.classList.add("flex");
+        openModal("deleteUserModal");
       }
       function closeDeleteUserModal() {
-        deleteUserModal.classList.add("hidden");
-        deleteUserModal.classList.remove("flex");
+        closeModal("deleteUserModal");
         deletingUserId = null;
       }
+
       document
         .getElementById("deleteUserCancelBtn")
         .addEventListener("click", closeDeleteUserModal);
-      deleteUserModal.addEventListener("click", (e) => {
-        if (e.target === deleteUserModal) closeDeleteUserModal();
-      });
+
       document
         .getElementById("deleteUserConfirmBtn")
         .addEventListener("click", async () => {
