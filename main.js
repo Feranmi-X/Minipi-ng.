@@ -960,6 +960,9 @@ function renderTestimonials() {
 renderTestimonials();
 setInterval(renderTestimonials, 6000);
 
+
+
+
 // ── SUPABASE LOAD + REALTIME ──────────────────────────────
 async function loadProductsFromSupabase() {
   if (sb) {
