@@ -1144,8 +1144,8 @@ function mpOrderCard(o) {
 async function openMpModal() {
   const overlay = document.getElementById("mp-overlay");
   overlay.style.display = "flex";
-  const user = currentUser || { name: "Guest", email: "" };
-
+ currentUser = { id: data.user.id, name, email: data.user.email };
+ 
   document.getElementById("mp-avatar").textContent = (user.name || "U")[0].toUpperCase();
   document.getElementById("mp-disp-name").textContent = user.name || "—";
   document.getElementById("mp-disp-email").textContent = user.email || "—";
