@@ -41,131 +41,138 @@ themeBtn.addEventListener("click", () => {
 });
 
 // ── MOBILE MENU ───────────────────────────────────────────
- const hamburger = document.getElementById("hamburger");
-      const mobileMenu = document.getElementById("mobileMenu");
-      hamburger.addEventListener("click", (e) => {
-        e.stopPropagation();
-        mobileMenu.classList.toggle("hidden");
-      });
-      document.addEventListener("click", (e) => {
-        if (!mobileMenu.contains(e.target) && e.target !== hamburger)
-          mobileMenu.classList.add("hidden");
-      });
+const hamburger = document.getElementById("hamburger");
+const mobileMenu = document.getElementById("mobileMenu");
+hamburger.addEventListener("click", (e) => {
+  e.stopPropagation();
+  mobileMenu.classList.toggle("hidden");
+});
+document.addEventListener("click", (e) => {
+  if (!mobileMenu.contains(e.target) && e.target !== hamburger)
+    mobileMenu.classList.add("hidden");
+});
 
-      // ── CATEGORIES DROPDOWN (desktop) ─────────────────────────────
-      (function () {
-        const btn = document.getElementById("catNavBtn");
-        const dd = document.getElementById("catNavDropdown");
-        const chv = document.getElementById("catNavChevron");
-        const li = document.getElementById("catNavItem");
-        if (!btn || !dd) return;
-        function openDd() {
-          dd.classList.remove(
-            "opacity-0",
-            "pointer-events-none",
-            "-translate-y-1.5",
-          );
-          dd.classList.add("opacity-100", "translate-y-0");
-          chv.style.transform = "rotate(180deg)";
-        }
-        function closeDd() {
-          dd.classList.add("opacity-0", "pointer-events-none");
-          dd.classList.remove("opacity-100", "translate-y-0");
-          chv.style.transform = "";
-        }
-        li.addEventListener("mouseenter", openDd);
-        li.addEventListener("mouseleave", closeDd);
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          dd.classList.contains("opacity-0") ? openDd() : closeDd();
-        });
-        document.addEventListener("click", (e) => {
-          if (!li.contains(e.target)) closeDd();
-        });
-        document.querySelectorAll(".dd-cat-link").forEach((b) => {
-          b.addEventListener("click", () => {
-            setFilter(b.dataset.cat);
-            closeDd();
-            mobileMenu.classList.add("hidden");
-          });
-        });
-        document.querySelectorAll(".mob-cat-btn").forEach((b) => {
-          b.addEventListener("click", () => {
-            setFilter(b.dataset.cat);
-            mobileMenu.classList.add("hidden");
-          });
-        });
-      })();
+// ── CATEGORIES DROPDOWN (desktop) ─────────────────────────
+(function () {
+  const btn = document.getElementById("catNavBtn");
+  const dd = document.getElementById("catNavDropdown");
+  const chv = document.getElementById("catNavChevron");
+  const li = document.getElementById("catNavItem");
+  if (!btn || !dd) return;
 
-// ── PRODUCTS DATA ─────────────────────────────────────────
+  function openDd() {
+    dd.classList.remove("opacity-0", "pointer-events-none", "-translate-y-[6px]", "-translate-y-1.5");
+    dd.classList.add("opacity-100", "translate-y-0");
+    chv.style.transform = "rotate(180deg)";
+  }
+  function closeDd() {
+    dd.classList.add("opacity-0", "pointer-events-none");
+    dd.classList.remove("opacity-100", "translate-y-0");
+    chv.style.transform = "";
+  }
+
+  li.addEventListener("mouseenter", openDd);
+  li.addEventListener("mouseleave", closeDd);
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    dd.classList.contains("opacity-0") ? openDd() : closeDd();
+  });
+  document.addEventListener("click", (e) => {
+    if (!li.contains(e.target)) closeDd();
+  });
+
+  // On index page: filter in place, don't navigate
+  if (!window.location.pathname.includes("shop.html")) {
+    document.querySelectorAll(".cat-nav-link").forEach((a) => {
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        closeDd();
+        mobileMenu.classList.add("hidden");
+        if (typeof setFilter === "function") {
+          setFilter(a.dataset.cat);
+          document.getElementById("shop").scrollIntoView({ behavior: "smooth" });
+        }
+      });
+    });
+  }
+
+  document.querySelectorAll(".mob-cat-btn").forEach((b) => {
+    b.addEventListener("click", () => {
+      if (typeof setFilter === "function") setFilter(b.dataset.cat);
+      mobileMenu.classList.add("hidden");
+    });
+  });
+})();
+
+// ── PRODUCTS DATA (fallback) ──────────────────────────────
 const products = [
-  // ===== PHONES =====
-  { id: 1, name: "iPhone 15 Pro Max", cat: "phone", price: 1845000, img: "https://images.unsplash.com/photo-1696446702183-cbd13d3c1e0e?auto=format&fit=crop&w=400&q=80", desc: "A17 Pro chip, titanium design, 256GB storage, 48MP camera." },
-  { id: 2, name: "iPhone 15 Pro", cat: "phone", price: 1650000, img: "https://images.unsplash.com/photo-1592286927505-1def25115481?auto=format&fit=crop&w=400&q=80", desc: "Pro camera system with Dynamic Island, 128GB storage." },
-  { id: 3, name: "Samsung Galaxy S24 Ultra", cat: "phone", price: 1720000, img: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=400&q=80", desc: "200MP camera, built-in S Pen, 256GB storage." },
-  { id: 4, name: "Google Pixel 9 Pro", cat: "phone", price: 1380000, img: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=400&q=80", desc: "AI-powered camera, clean Android, 7 years of updates." },
-  { id: 5, name: "Samsung Galaxy S23", cat: "phone", price: 980000, img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80", desc: "Snapdragon 8 Gen 2, 50MP camera, 128GB." },
-  { id: 6, name: "iPhone 14", cat: "phone", price: 1050000, img: "https://images.unsplash.com/photo-1574170609519-3e82a8fa1aad?auto=format&fit=crop&w=400&q=80", desc: "A15 Bionic chip, dual camera, 128GB storage." },
-  { id: 25, name: "iPhone 15", cat: "phone", price: 1180000, img: "https://images.unsplash.com/photo-1697284960823-2a5e5e1bb524?auto=format&fit=crop&w=400&q=80", desc: "A16 Bionic chip, Dynamic Island, 48MP main camera, 128GB." },
-  { id: 26, name: "Samsung Galaxy A55", cat: "phone", price: 520000, img: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=400&q=80", desc: "Exynos 1480, 50MP OIS camera, 256GB, 5000mAh battery." },
-  { id: 27, name: "Xiaomi 14 Pro", cat: "phone", price: 980000, img: "https://images.unsplash.com/photo-1598965402089-897ce52e8355?auto=format&fit=crop&w=400&q=80", desc: "Snapdragon 8 Gen 3, Leica optics, 120W fast charging." },
-  { id: 28, name: "OnePlus 12", cat: "phone", price: 890000, img: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=400&q=80", desc: "Snapdragon 8 Gen 3, 50MP Hasselblad camera, 256GB." },
-  { id: 29, name: "Tecno Phantom V Fold", cat: "phone", price: 1290000, img: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=400&q=80", desc: "Foldable AMOLED display, 50MP triple camera, 256GB." },
-  { id: 30, name: "Infinix Zero 30", cat: "phone", price: 380000, img: "https://images.unsplash.com/photo-1574170609519-3e82a8fa1aad?auto=format&fit=crop&w=400&q=80", desc: "Curved AMOLED display, 108MP OIS camera, 256GB." },
-
-  // ===== TABLETS =====
-  { id: 7, name: "iPad Pro M4 11-inch", cat: "tablet", price: 1450000, img: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=400&q=80", desc: "M4 chip, Liquid Retina XDR display, 256GB Wi-Fi." },
-  { id: 8, name: "Samsung Galaxy Tab S9", cat: "tablet", price: 980000, img: "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=400&q=80", desc: "AMOLED display, S Pen included, 128GB storage." },
-  { id: 9, name: "iPad Air 11-inch M2", cat: "tablet", price: 850000, img: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=400&q=80", desc: "M2 chip, all-day battery, 128GB Wi-Fi, Touch ID." },
-  { id: 10, name: "Lenovo Tab P12", cat: "tablet", price: 540000, img: "https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?auto=format&fit=crop&w=400&q=80", desc: "12.7-inch display, LTPS, perfect for entertainment." },
-  { id: 11, name: "Microsoft Surface Pro 9", cat: "tablet", price: 1250000, img: "https://images.unsplash.com/photo-1593642533144-3d62aa4783ec?auto=format&fit=crop&w=400&q=80", desc: "Intel Core i5, 8GB RAM, 2-in-1 Windows tablet." },
-  { id: 12, name: "Xiaomi Pad 6 Pro", cat: "tablet", price: 620000, img: "https://images.unsplash.com/photo-1587033411391-5d9e51cce126?auto=format&fit=crop&w=400&q=80", desc: "Snapdragon 8+, 144Hz display, 256GB storage." },
-  { id: 31, name: "iPad Mini 7", cat: "tablet", price: 720000, img: "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=400&q=80", desc: "A17 Pro chip, 8.3-inch Liquid Retina display, 128GB." },
-  { id: 32, name: "Samsung Galaxy Tab A9+", cat: "tablet", price: 290000, img: "https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?auto=format&fit=crop&w=400&q=80", desc: "11-inch display, quad speakers, 64GB storage, budget pick." },
-  { id: 33, name: "Huawei MatePad 11.5", cat: "tablet", price: 480000, img: "https://images.unsplash.com/photo-1593642533144-3d62aa4783ec?auto=format&fit=crop&w=400&q=80", desc: "144Hz PaperMatte display, Snapdragon chipset, 128GB." },
-  { id: 34, name: "Amazon Fire Max 11", cat: "tablet", price: 240000, img: "https://images.unsplash.com/photo-1587033411391-5d9e51cce126?auto=format&fit=crop&w=400&q=80", desc: "11-inch display, octa-core processor, 64GB, great for media." },
-
-  // ===== LAPTOPS =====
-  { id: 13, name: 'MacBook Pro 14" M4', cat: "laptop", price: 3450000, img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80", desc: "M4 chip, 16GB RAM, 512GB SSD, Liquid Retina XDR." },
-  { id: 14, name: "Dell XPS 13", cat: "laptop", price: 1980000, img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=400&q=80", desc: "Intel Core Ultra 7, 16GB RAM, 512GB SSD, OLED display." },
-  { id: 15, name: "HP Spectre x360", cat: "laptop", price: 2150000, img: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=400&q=80", desc: "2-in-1 convertible, OLED touchscreen, 1TB SSD." },
-  { id: 16, name: "ASUS ROG Zephyrus G14", cat: "laptop", price: 2890000, img: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=400&q=80", desc: "RTX 4060, Ryzen 9, 16GB RAM, 165Hz display." },
-  { id: 17, name: "MacBook Air M2 15-inch", cat: "laptop", price: 2250000, img: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=400&q=80", desc: "M2 chip, 8GB RAM, 256GB SSD, fanless design." },
-  { id: 18, name: "Lenovo ThinkPad X1 Carbon", cat: "laptop", price: 2400000, img: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=400&q=80", desc: "Intel Core i7, 16GB RAM, 512GB SSD, business-grade." },
-  { id: 35, name: "MacBook Air M3 13-inch", cat: "laptop", price: 1980000, img: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=400&q=80", desc: "M3 chip, 8GB RAM, 256GB SSD, all-day battery life." },
-  { id: 36, name: "Acer Swift Go 14", cat: "laptop", price: 1150000, img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=400&q=80", desc: "Intel Core i5, 16GB RAM, 512GB SSD, OLED display." },
-  { id: 37, name: "Microsoft Surface Laptop 6", cat: "laptop", price: 2050000, img: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=400&q=80", desc: "Intel Core Ultra 5, 16GB RAM, touchscreen, 512GB SSD." },
-  { id: 38, name: "ASUS VivoBook 16", cat: "laptop", price: 850000, img: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=400&q=80", desc: "AMD Ryzen 5, 8GB RAM, 512GB SSD, 16-inch FHD+ display." },
-  { id: 39, name: "Lenovo Legion Pro 5", cat: "laptop", price: 3150000, img: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=400&q=80", desc: "RTX 4070, Ryzen 7, 32GB RAM, 240Hz display." },
-
-  // ===== GAMING =====
-  { id: 19, name: "PlayStation 5 Slim", cat: "gaming", price: 720000, img: "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?auto=format&fit=crop&w=400&q=80", desc: "1TB SSD, 4K gaming, ultra-high-speed console." },
-  { id: 20, name: "Xbox Series X", cat: "gaming", price: 695000, img: "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&w=400&q=80", desc: "4K gaming, 1TB SSD, Game Pass compatible." },
-  { id: 21, name: "Nintendo Switch OLED", cat: "gaming", price: 410000, img: "https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?auto=format&fit=crop&w=400&q=80", desc: "7-inch OLED screen, enhanced audio, 64GB storage." },
-  { id: 22, name: "Logitech G Pro Wireless", cat: "gaming", price: 95000, img: "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=400&q=80", desc: "Ultra-lightweight wireless gaming mouse, HERO sensor." },
-  { id: 23, name: "Razer BlackShark V2 Pro", cat: "gaming", price: 185000, img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80", desc: "Wireless gaming headset, THX spatial audio, 70hr battery." },
-  { id: 24, name: "PS5 DualSense Controller", cat: "gaming", price: 85000, img: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=400&q=80", desc: "Haptic feedback, adaptive triggers, built-in mic." },
-  { id: 40, name: "Xbox Series S", cat: "gaming", price: 420000, img: "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&w=400&q=80", desc: "All-digital 1440p gaming console, 512GB SSD." },
-  { id: 41, name: "Steam Deck OLED", cat: "gaming", price: 850000, img: "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?auto=format&fit=crop&w=400&q=80", desc: "7.4-inch HDR OLED, 1TB SSD, handheld PC gaming." },
-  { id: 42, name: "Corsair K70 RGB Keyboard", cat: "gaming", price: 165000, img: "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=400&q=80", desc: "Mechanical RGB keyboard, PBT keycaps, hyper-polling." },
-  { id: 43, name: "Meta Quest 3", cat: "gaming", price: 980000, img: "https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?auto=format&fit=crop&w=400&q=80", desc: "Mixed reality VR headset, 128GB storage, Snapdragon XR2." },
-  { id: 44, name: "SteelSeries Arctis Nova Pro", cat: "gaming", price: 295000, img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80", desc: "Active noise cancelling wireless gaming headset." },
+  // PHONES
+  { id: 1,  name: "iPhone 15 Pro Max",        cat: "phone",  price: 1845000, new_arrival: false, img: "https://images.unsplash.com/photo-1696446702183-cbd13d3c1e0e?auto=format&fit=crop&w=400&q=80", desc: "A17 Pro chip, titanium design, 256GB storage, 48MP camera." },
+  { id: 2,  name: "iPhone 15 Pro",             cat: "phone",  price: 1650000, new_arrival: false, img: "https://images.unsplash.com/photo-1592286927505-1def25115481?auto=format&fit=crop&w=400&q=80", desc: "Pro camera system with Dynamic Island, 128GB storage." },
+  { id: 3,  name: "Samsung Galaxy S24 Ultra",  cat: "phone",  price: 1720000, new_arrival: false, img: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=400&q=80", desc: "200MP camera, built-in S Pen, 256GB storage." },
+  { id: 4,  name: "Google Pixel 9 Pro",        cat: "phone",  price: 1380000, new_arrival: false, img: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=400&q=80", desc: "AI-powered camera, clean Android, 7 years of updates." },
+  { id: 5,  name: "Samsung Galaxy S23",        cat: "phone",  price: 980000,  new_arrival: false, img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=400&q=80", desc: "Snapdragon 8 Gen 2, 50MP camera, 128GB." },
+  { id: 6,  name: "iPhone 14",                 cat: "phone",  price: 1050000, new_arrival: false, img: "https://images.unsplash.com/photo-1574170609519-3e82a8fa1aad?auto=format&fit=crop&w=400&q=80", desc: "A15 Bionic chip, dual camera, 128GB storage." },
+  { id: 25, name: "iPhone 15",                 cat: "phone",  price: 1180000, new_arrival: true,  img: "https://images.unsplash.com/photo-1697284960823-2a5e5e1bb524?auto=format&fit=crop&w=400&q=80", desc: "A16 Bionic chip, Dynamic Island, 48MP main camera, 128GB." },
+  { id: 26, name: "Samsung Galaxy A55",        cat: "phone",  price: 520000,  new_arrival: true,  img: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=400&q=80", desc: "Exynos 1480, 50MP OIS camera, 256GB, 5000mAh battery." },
+  { id: 27, name: "Xiaomi 14 Pro",             cat: "phone",  price: 980000,  new_arrival: true,  img: "https://images.unsplash.com/photo-1598965402089-897ce52e8355?auto=format&fit=crop&w=400&q=80", desc: "Snapdragon 8 Gen 3, Leica optics, 120W fast charging." },
+  { id: 28, name: "OnePlus 12",                cat: "phone",  price: 890000,  new_arrival: false, img: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=400&q=80", desc: "Snapdragon 8 Gen 3, 50MP Hasselblad camera, 256GB." },
+  { id: 29, name: "Tecno Phantom V Fold",      cat: "phone",  price: 1290000, new_arrival: false, img: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=400&q=80", desc: "Foldable AMOLED display, 50MP triple camera, 256GB." },
+  { id: 30, name: "Infinix Zero 30",           cat: "phone",  price: 380000,  new_arrival: false, img: "https://images.unsplash.com/photo-1574170609519-3e82a8fa1aad?auto=format&fit=crop&w=400&q=80", desc: "Curved AMOLED display, 108MP OIS camera, 256GB." },
+  // TABLETS
+  { id: 7,  name: "iPad Pro M4 11-inch",       cat: "tablet", price: 1450000, new_arrival: false, img: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=400&q=80", desc: "M4 chip, Liquid Retina XDR display, 256GB Wi-Fi." },
+  { id: 8,  name: "Samsung Galaxy Tab S9",     cat: "tablet", price: 980000,  new_arrival: false, img: "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=400&q=80", desc: "AMOLED display, S Pen included, 128GB storage." },
+  { id: 9,  name: "iPad Air 11-inch M2",       cat: "tablet", price: 850000,  new_arrival: false, img: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=400&q=80", desc: "M2 chip, all-day battery, 128GB Wi-Fi, Touch ID." },
+  { id: 10, name: "Lenovo Tab P12",            cat: "tablet", price: 540000,  new_arrival: false, img: "https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?auto=format&fit=crop&w=400&q=80", desc: "12.7-inch display, LTPS, perfect for entertainment." },
+  { id: 11, name: "Microsoft Surface Pro 9",   cat: "tablet", price: 1250000, new_arrival: false, img: "https://images.unsplash.com/photo-1593642533144-3d62aa4783ec?auto=format&fit=crop&w=400&q=80", desc: "Intel Core i5, 8GB RAM, 2-in-1 Windows tablet." },
+  { id: 12, name: "Xiaomi Pad 6 Pro",          cat: "tablet", price: 620000,  new_arrival: false, img: "https://images.unsplash.com/photo-1587033411391-5d9e51cce126?auto=format&fit=crop&w=400&q=80", desc: "Snapdragon 8+, 144Hz display, 256GB storage." },
+  { id: 31, name: "iPad Mini 7",               cat: "tablet", price: 720000,  new_arrival: true,  img: "https://images.unsplash.com/photo-1561154464-82e9adf32764?auto=format&fit=crop&w=400&q=80", desc: "A17 Pro chip, 8.3-inch Liquid Retina display, 128GB." },
+  { id: 32, name: "Samsung Galaxy Tab A9+",    cat: "tablet", price: 290000,  new_arrival: false, img: "https://images.unsplash.com/photo-1585790050230-5dd28404ccb9?auto=format&fit=crop&w=400&q=80", desc: "11-inch display, quad speakers, 64GB storage, budget pick." },
+  { id: 33, name: "Huawei MatePad 11.5",       cat: "tablet", price: 480000,  new_arrival: false, img: "https://images.unsplash.com/photo-1593642533144-3d62aa4783ec?auto=format&fit=crop&w=400&q=80", desc: "144Hz PaperMatte display, Snapdragon chipset, 128GB." },
+  { id: 34, name: "Amazon Fire Max 11",        cat: "tablet", price: 240000,  new_arrival: false, img: "https://images.unsplash.com/photo-1587033411391-5d9e51cce126?auto=format&fit=crop&w=400&q=80", desc: "11-inch display, octa-core processor, 64GB, great for media." },
+  // LAPTOPS
+  { id: 13, name: 'MacBook Pro 14" M4',        cat: "laptop", price: 3450000, new_arrival: false, img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=400&q=80", desc: "M4 chip, 16GB RAM, 512GB SSD, Liquid Retina XDR." },
+  { id: 14, name: "Dell XPS 13",               cat: "laptop", price: 1980000, new_arrival: false, img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=400&q=80", desc: "Intel Core Ultra 7, 16GB RAM, 512GB SSD, OLED display." },
+  { id: 15, name: "HP Spectre x360",           cat: "laptop", price: 2150000, new_arrival: false, img: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=400&q=80", desc: "2-in-1 convertible, OLED touchscreen, 1TB SSD." },
+  { id: 16, name: "ASUS ROG Zephyrus G14",     cat: "laptop", price: 2890000, new_arrival: false, img: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=400&q=80", desc: "RTX 4060, Ryzen 9, 16GB RAM, 165Hz display." },
+  { id: 17, name: "MacBook Air M2 15-inch",    cat: "laptop", price: 2250000, new_arrival: false, img: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=400&q=80", desc: "M2 chip, 8GB RAM, 256GB SSD, fanless design." },
+  { id: 18, name: "Lenovo ThinkPad X1 Carbon", cat: "laptop", price: 2400000, new_arrival: false, img: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=400&q=80", desc: "Intel Core i7, 16GB RAM, 512GB SSD, business-grade." },
+  { id: 35, name: "MacBook Air M3 13-inch",    cat: "laptop", price: 1980000, new_arrival: true,  img: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?auto=format&fit=crop&w=400&q=80", desc: "M3 chip, 8GB RAM, 256GB SSD, all-day battery life." },
+  { id: 36, name: "Acer Swift Go 14",          cat: "laptop", price: 1150000, new_arrival: false, img: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=400&q=80", desc: "Intel Core i5, 16GB RAM, 512GB SSD, OLED display." },
+  { id: 37, name: "Microsoft Surface Laptop 6",cat: "laptop", price: 2050000, new_arrival: false, img: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=400&q=80", desc: "Intel Core Ultra 5, 16GB RAM, touchscreen, 512GB SSD." },
+  { id: 38, name: "ASUS VivoBook 16",          cat: "laptop", price: 850000,  new_arrival: false, img: "https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&w=400&q=80", desc: "AMD Ryzen 5, 8GB RAM, 512GB SSD, 16-inch FHD+ display." },
+  { id: 39, name: "Lenovo Legion Pro 5",       cat: "laptop", price: 3150000, new_arrival: true,  img: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=400&q=80", desc: "RTX 4070, Ryzen 7, 32GB RAM, 240Hz display." },
+  // GAMING
+  { id: 19, name: "PlayStation 5 Slim",        cat: "gaming", price: 720000,  new_arrival: false, img: "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?auto=format&fit=crop&w=400&q=80", desc: "1TB SSD, 4K gaming, ultra-high-speed console." },
+  { id: 20, name: "Xbox Series X",             cat: "gaming", price: 695000,  new_arrival: false, img: "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&w=400&q=80", desc: "4K gaming, 1TB SSD, Game Pass compatible." },
+  { id: 21, name: "Nintendo Switch OLED",      cat: "gaming", price: 410000,  new_arrival: false, img: "https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?auto=format&fit=crop&w=400&q=80", desc: "7-inch OLED screen, enhanced audio, 64GB storage." },
+  { id: 22, name: "Logitech G Pro Wireless",   cat: "gaming", price: 95000,   new_arrival: false, img: "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=400&q=80", desc: "Ultra-lightweight wireless gaming mouse, HERO sensor." },
+  { id: 23, name: "Razer BlackShark V2 Pro",   cat: "gaming", price: 185000,  new_arrival: false, img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80", desc: "Wireless gaming headset, THX spatial audio, 70hr battery." },
+  { id: 24, name: "PS5 DualSense Controller",  cat: "gaming", price: 85000,   new_arrival: false, img: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?auto=format&fit=crop&w=400&q=80", desc: "Haptic feedback, adaptive triggers, built-in mic." },
+  { id: 40, name: "Xbox Series S",             cat: "gaming", price: 420000,  new_arrival: false, img: "https://images.unsplash.com/photo-1621259182978-fbf93132d53d?auto=format&fit=crop&w=400&q=80", desc: "All-digital 1440p gaming console, 512GB SSD." },
+  { id: 41, name: "Steam Deck OLED",           cat: "gaming", price: 850000,  new_arrival: true,  img: "https://images.unsplash.com/photo-1607853202273-797f1c22a38e?auto=format&fit=crop&w=400&q=80", desc: "7.4-inch HDR OLED, 1TB SSD, handheld PC gaming." },
+  { id: 42, name: "Corsair K70 RGB Keyboard",  cat: "gaming", price: 165000,  new_arrival: false, img: "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=400&q=80", desc: "Mechanical RGB keyboard, PBT keycaps, hyper-polling." },
+  { id: 43, name: "Meta Quest 3",              cat: "gaming", price: 980000,  new_arrival: true,  img: "https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?auto=format&fit=crop&w=400&q=80", desc: "Mixed reality VR headset, 128GB storage, Snapdragon XR2." },
+  { id: 44, name: "SteelSeries Arctis Nova Pro",cat: "gaming",price: 295000,  new_arrival: false, img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80", desc: "Active noise cancelling wireless gaming headset." },
 ];
 
-const fmt = (n) => "₦" + n.toLocaleString("en-NG");
+const fmt = (n) => "₦" + Number(n).toLocaleString("en-NG");
 let activeCat = "all";
 let searchTerm = "";
 
+// ── RENDER PRODUCTS ───────────────────────────────────────
 function renderProducts() {
   const grid = document.getElementById("productGrid");
+  if (!grid) return;
+
   const list = products.filter((p) => {
     const okCat = activeCat === "all" || p.cat === activeCat;
     const q = searchTerm.toLowerCase();
     const okQ =
       !q ||
-      p.name.toLowerCase().includes(q) ||
-      p.cat.toLowerCase().includes(q) ||
-      p.desc.toLowerCase().includes(q);
+      (p.name || "").toLowerCase().includes(q) ||
+      (p.cat || "").toLowerCase().includes(q) ||
+      (p.desc || "").toLowerCase().includes(q);
     return okCat && okQ;
   });
 
@@ -179,13 +186,14 @@ function renderProducts() {
     .map(
       (p, i) => `
     <div class="product-card bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col transition-all hover:shadow-xl hover:border-brand animate-fadeUp group" style="animation-delay:${i * 0.04}s">
-      <div class="aspect-square overflow-hidden bg-gray-100 dark:bg-neutral-800">
+      <div class="relative aspect-square overflow-hidden bg-gray-100 dark:bg-neutral-800">
         <img src="${p.img}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105">
+        ${p.new_arrival ? '<span class="absolute top-2 left-2 bg-brand text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">New</span>' : ""}
       </div>
       <div class="p-3.5 flex-1 flex flex-col">
         <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-1">${p.cat}</div>
         <div class="text-[13px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis" title="${p.name}">${p.name}</div>
-        <div class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed mb-2.5 line-clamp-2 flex-1">${p.desc}</div>
+        <div class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed mb-2.5 line-clamp-2 flex-1">${p.desc || ""}</div>
         <div class="text-[15px] font-bold text-brand mb-3">${fmt(p.price)}</div>
         <div class="flex gap-2">
           <button class="flex-1 px-1 py-2 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 text-[12px] font-semibold hover:border-brand hover:text-brand transition-colors" data-id="${p.id}" data-action="details">Details</button>
@@ -193,7 +201,7 @@ function renderProducts() {
         </div>
       </div>
     </div>
-  `,
+  `
     )
     .join("");
 }
@@ -212,14 +220,10 @@ document.getElementById("productGrid").addEventListener("click", (e) => {
 });
 
 // ── FILTERS ───────────────────────────────────────────────
-const pillBase =
-  "px-[18px] py-2 rounded-full border-[1.5px] text-[13px] font-medium transition-all whitespace-nowrap";
-const pillInactive =
-  "border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-gray-900 dark:text-gray-100 hover:border-brand hover:text-brand";
+const pillBase = "px-[18px] py-2 rounded-full border-[1.5px] text-[13px] font-medium transition-all whitespace-nowrap";
+const pillInactive = "border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-gray-900 dark:text-gray-100 hover:border-brand hover:text-brand";
 const pillActive = "bg-brand text-white border-brand";
-
-const catCardBase =
-  "cat-card flex flex-col items-center gap-3 bg-white dark:bg-neutral-900 border-[1.5px] rounded-2xl py-7 px-4 text-[13px] font-medium hover:border-brand hover:shadow-[0_4px_20px_rgba(255,122,0,0.12)] transition-all";
+const catCardBase = "cat-card flex flex-col items-center gap-3 bg-white dark:bg-neutral-900 border-[1.5px] rounded-2xl py-7 px-4 text-[13px] font-medium hover:border-brand hover:shadow-[0_4px_20px_rgba(255,122,0,0.12)] transition-all";
 
 function styleFilterPills() {
   document.querySelectorAll(".filter-pill").forEach((b) => {
@@ -228,12 +232,7 @@ function styleFilterPills() {
   });
   document.querySelectorAll(".cat-card").forEach((b) => {
     const isActive = b.dataset.cat === activeCat;
-    b.className =
-      catCardBase +
-      " " +
-      (isActive
-        ? "border-brand shadow-[0_4px_20px_rgba(255,122,0,0.12)]"
-        : "border-gray-200 dark:border-neutral-800");
+    b.className = catCardBase + " " + (isActive ? "border-brand shadow-[0_4px_20px_rgba(255,122,0,0.12)]" : "border-gray-200 dark:border-neutral-800");
   });
 }
 
@@ -243,17 +242,25 @@ function setFilter(cat) {
   renderProducts();
 }
 
-document.getElementById("filterRow").addEventListener("click", (e) => {
-  const btn = e.target.closest(".filter-pill");
-  if (btn) setFilter(btn.dataset.cat);
-});
+const filterRowEl = document.getElementById("filterRow");
+if (filterRowEl) {
+  // FIX: remove 'hidden' so pills are always visible
+  filterRowEl.classList.remove("hidden");
+  filterRowEl.addEventListener("click", (e) => {
+    const btn = e.target.closest(".filter-pill");
+    if (btn) setFilter(btn.dataset.cat);
+  });
+}
 
-document.getElementById("catGrid").addEventListener("click", (e) => {
-  const btn = e.target.closest(".cat-card");
-  if (!btn) return;
-  setFilter(btn.dataset.cat);
-  document.getElementById("shop").scrollIntoView({ behavior: "smooth" });
-});
+const catGrid = document.getElementById("catGrid");
+if (catGrid) {
+  catGrid.addEventListener("click", (e) => {
+    const btn = e.target.closest(".cat-card");
+    if (!btn) return;
+    setFilter(btn.dataset.cat);
+    document.getElementById("shop").scrollIntoView({ behavior: "smooth" });
+  });
+}
 
 document.querySelectorAll(".footer-cat").forEach((a) => {
   a.addEventListener("click", (e) => {
@@ -264,36 +271,58 @@ document.querySelectorAll(".footer-cat").forEach((a) => {
 });
 
 // ── SEARCH ────────────────────────────────────────────────
+// FIX: clear search inputs on page load so email never pre-fills
+window.addEventListener("DOMContentLoaded", () => {
+  const sd = document.getElementById("searchDesktop");
+  const sm = document.getElementById("searchMobile");
+  if (sd) sd.value = "";
+  if (sm) sm.value = "";
+});
+
 function doSearch(val) {
   searchTerm = val.trim();
   renderProducts();
-  document.getElementById("shop").scrollIntoView({ behavior: "smooth" });
+  const shop = document.getElementById("shop");
+  if (shop) shop.scrollIntoView({ behavior: "smooth" });
 }
 
-document.getElementById("searchDesktop").addEventListener("input", (e) => {
-  searchTerm = e.target.value;
-  renderProducts();
-});
-document.getElementById("searchDesktop").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") doSearch(e.target.value);
-});
-document.getElementById("searchBtnD").addEventListener("click", () =>
-  doSearch(document.getElementById("searchDesktop").value),
-);
-document.getElementById("searchMobile").addEventListener("input", (e) => {
-  searchTerm = e.target.value;
-  renderProducts();
-});
-document.getElementById("searchMobile").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") {
-    doSearch(e.target.value);
+const searchDesktop = document.getElementById("searchDesktop");
+if (searchDesktop) {
+  searchDesktop.addEventListener("input", (e) => {
+    searchTerm = e.target.value;
+    renderProducts();
+  });
+  searchDesktop.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") doSearch(e.target.value);
+  });
+}
+
+const searchBtnD = document.getElementById("searchBtnD");
+if (searchBtnD) {
+  searchBtnD.addEventListener("click", () => doSearch(document.getElementById("searchDesktop").value));
+}
+
+const searchMobile = document.getElementById("searchMobile");
+if (searchMobile) {
+  searchMobile.addEventListener("input", (e) => {
+    searchTerm = e.target.value;
+    renderProducts();
+  });
+  searchMobile.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      doSearch(e.target.value);
+      mobileMenu.classList.add("hidden");
+    }
+  });
+}
+
+const searchBtnM = document.getElementById("searchBtnM");
+if (searchBtnM) {
+  searchBtnM.addEventListener("click", () => {
+    doSearch(document.getElementById("searchMobile").value);
     mobileMenu.classList.add("hidden");
-  }
-});
-document.getElementById("searchBtnM").addEventListener("click", () => {
-  doSearch(document.getElementById("searchMobile").value);
-  mobileMenu.classList.add("hidden");
-});
+  });
+}
 
 // ── CART ──────────────────────────────────────────────────
 let cart = [];
@@ -312,6 +341,8 @@ function renderCart() {
   const badge = document.getElementById("cartBadge");
   const total = document.getElementById("cartTotal");
   const items = document.getElementById("cartItems");
+  if (!badge || !total || !items) return;
+
   const count = cart.reduce((s, i) => s + i.qty, 0);
   const sum = cart.reduce((s, i) => s + i.price * i.qty, 0);
   badge.textContent = count;
@@ -344,7 +375,7 @@ function renderCart() {
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </button>
     </div>
-  `,
+  `
     )
     .join("");
 }
@@ -359,8 +390,9 @@ document.getElementById("cartItems").addEventListener("click", (e) => {
   else if (btn.dataset.action === "dec") {
     item.qty--;
     if (item.qty <= 0) cart = cart.filter((i) => i.id !== id);
-  } else if (btn.dataset.action === "remove")
+  } else if (btn.dataset.action === "remove") {
     cart = cart.filter((i) => i.id !== id);
+  }
   renderCart();
 });
 
@@ -381,13 +413,58 @@ document.getElementById("cartBtn").addEventListener("click", openCart);
 document.getElementById("cartClose").addEventListener("click", closeCart);
 cartOverlay.addEventListener("click", closeCart);
 
+// ── CHECKOUT / PAYMENT MODAL ──────────────────────────────
+function copyAcct() {
+  navigator.clipboard.writeText("7089344370").then(() => showToast("Account number copied!"));
+}
 
+function openPaymentModal() {
+  if (!cart.length) {
+    showToast("Your cart is empty");
+    return;
+  }
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const totalFmt = fmt(total);
 
-// ── NEW ARRIVALS on index page (reads new_arrival flag from Supabase) ──
+  document.getElementById("paymentTotal").textContent = totalFmt;
+
+  // Detailed WhatsApp message with every item
+  const itemLines = cart.map((i) => `• ${i.name} x${i.qty} — ${fmt(i.price * i.qty)}`).join("\n");
+  const msg = encodeURIComponent(
+    `Hello Minipi NG! 👋\n\n` +
+    `I just made a payment for my order:\n\n` +
+    `🛒 *Items Ordered:*\n${itemLines}\n\n` +
+    `💰 *Total Paid: ${totalFmt}*\n\n` +
+    `Please find my payment receipt attached. Kindly confirm my order. Thank you!`
+  );
+  document.getElementById("whatsappPayLink").href = `https://wa.me/2348034970248?text=${msg}`;
+
+  closeCart();
+  const ov = document.getElementById("paymentOverlay");
+  ov.classList.remove("hidden");
+  ov.classList.add("flex");
+}
+
+// FIX: single clean listener on checkoutBtn — no cloning needed
+document.getElementById("checkoutBtn").addEventListener("click", openPaymentModal);
+
+document.getElementById("paymentClose").addEventListener("click", () => {
+  document.getElementById("paymentOverlay").classList.add("hidden");
+  document.getElementById("paymentOverlay").classList.remove("flex");
+});
+document.getElementById("paymentOverlay").addEventListener("click", function (e) {
+  if (e.target === this) {
+    this.classList.add("hidden");
+    this.classList.remove("flex");
+  }
+});
+
+// ── NEW ARRIVALS ──────────────────────────────────────────
 function renderHomeArrivals() {
   const track = document.getElementById("arrivalsTrack");
   if (!track) return;
-  // Prefer products with new_arrival=true, fallback to last 8 by id
+
+  // Use new_arrival flag from Supabase; fallback to last 8 products
   let arrivals = products.filter((p) => p.new_arrival);
   if (!arrivals.length) arrivals = [...products].slice(-8);
   if (!arrivals.length) {
@@ -395,6 +472,7 @@ function renderHomeArrivals() {
     if (sec) sec.style.display = "none";
     return;
   }
+
   track.innerHTML = arrivals
     .map(
       (p) => `
@@ -409,7 +487,7 @@ function renderHomeArrivals() {
         <div class="text-[12px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">${p.name}</div>
         <div class="text-[13px] font-bold text-brand mt-auto pt-2">${fmt(p.price)}</div>
       </div>
-    </div>`,
+    </div>`
     )
     .join("");
 }
@@ -420,80 +498,14 @@ document.getElementById("arrLeft")?.addEventListener("click", () => {
 document.getElementById("arrRight")?.addEventListener("click", () => {
   document.getElementById("arrivalsTrack")?.scrollBy({ left: 250, behavior: "smooth" });
 });
-      // ── PAYMENT MODAL (replaces Paystack) ────────────────────────
-      function copyAcct() {
-        navigator.clipboard.writeText("7089344370").then(() => {
-          if (typeof showToast === "function")
-            showToast("Account number copied!");
-        });
-      }
-
-      // Override checkoutBtn after main.js loads
-      window.addEventListener("load", function () {
-        const btn = document.getElementById("checkoutBtn");
-        if (!btn) return;
-        // Clone to remove old listeners
-        const newBtn = btn.cloneNode(true);
-        btn.parentNode.replaceChild(newBtn, btn);
-        newBtn.addEventListener("click", openPaymentModal);
-      });
-
-      function openPaymentModal() {
-        // Use cart from main.js
-        const cartArr = typeof cart !== "undefined" ? cart : [];
-        if (!cartArr.length) {
-          if (typeof showToast === "function") showToast("Your cart is empty");
-          return;
-        }
-        const total = cartArr.reduce((s, i) => s + i.price * i.qty, 0);
-        const fmt = (n) => "₦" + Number(n).toLocaleString("en-NG");
-        const itemNames = cartArr.map((i) => `${i.name} x${i.qty}`).join(", ");
-        const totalFmt = fmt(total);
-
-        document.getElementById("paymentTotal").textContent = totalFmt;
-
-        // Build WhatsApp message
-        const msg = encodeURIComponent(
-  `Hello Minipi NG! 👋\n\n` +
-  `I just made a payment for my order:\n\n` +
-  `🛒 *Items Ordered:*\n${cartArr.map((i) => `• ${i.name} x${i.qty} — ${fmt(i.price * i.qty)}`).join("\n")}\n\n` +
-  `💰 *Total Paid: ${totalFmt}*\n\n` +
-  `Please find my payment receipt attached. Kindly confirm my order. Thank you!`
-);
-        document.getElementById("whatsappPayLink").href =
-          `https://wa.me/2348034970248?text=${msg}`;
-
-        // Close cart, open payment modal
-        if (typeof closeCart === "function") closeCart();
-        const ov = document.getElementById("paymentOverlay");
-        ov.classList.remove("hidden");
-        ov.classList.add("flex");
-      }
-
-      document.getElementById("paymentClose").addEventListener("click", () => {
-        document.getElementById("paymentOverlay").classList.add("hidden");
-        document.getElementById("paymentOverlay").classList.remove("flex");
-      });
-      document
-        .getElementById("paymentOverlay")
-        .addEventListener("click", function (e) {
-          if (e.target === this) {
-            this.classList.add("hidden");
-            this.classList.remove("flex");
-          }
-        });
 
 // ── SCROLL ANIMATION ──────────────────────────────────────
-const sections = document.querySelectorAll(".fade-section");
+const fadeSections = document.querySelectorAll(".fade-section");
 const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) entry.target.classList.add("show");
-    });
-  },
-  { threshold: 0.2 },
+  (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("show"); }),
+  { threshold: 0.2 }
 );
-sections.forEach((section) => observer.observe(section));
+fadeSections.forEach((s) => observer.observe(s));
 
 // ── PRODUCT DETAIL MODAL ──────────────────────────────────
 let pdCurrent = null, pdQty = 1;
@@ -503,9 +515,9 @@ function openProductDetail(p) {
   pdQty = 1;
   document.getElementById("pdImg").src = p.img;
   document.getElementById("pdImg").alt = p.name;
-  document.getElementById("pdCat").textContent = p.cat.toUpperCase();
+  document.getElementById("pdCat").textContent = (p.cat || "").toUpperCase();
   document.getElementById("pdName").textContent = p.name;
-  document.getElementById("pdDesc").textContent = p.desc;
+  document.getElementById("pdDesc").textContent = p.desc || "";
   document.getElementById("pdPrice").textContent = fmt(p.price);
   document.getElementById("pdQty").textContent = 1;
   const ov = document.getElementById("pdOverlay");
@@ -514,13 +526,14 @@ function openProductDetail(p) {
 }
 
 document.getElementById("pdClose").addEventListener("click", () => {
-  const ov = document.getElementById("pdOverlay");
-  ov.classList.add("hidden");
-  ov.classList.remove("flex");
+  document.getElementById("pdOverlay").classList.add("hidden");
+  document.getElementById("pdOverlay").classList.remove("flex");
 });
 document.getElementById("pdOverlay").addEventListener("click", (e) => {
-  const ov = document.getElementById("pdOverlay");
-  if (e.target === ov) { ov.classList.add("hidden"); ov.classList.remove("flex"); }
+  if (e.target === document.getElementById("pdOverlay")) {
+    document.getElementById("pdOverlay").classList.add("hidden");
+    document.getElementById("pdOverlay").classList.remove("flex");
+  }
 });
 document.getElementById("pdInc").addEventListener("click", () => {
   pdQty++;
@@ -530,17 +543,16 @@ document.getElementById("pdDec").addEventListener("click", () => {
   if (pdQty > 1) { pdQty--; document.getElementById("pdQty").textContent = pdQty; }
 });
 document.getElementById("pdAddCart").addEventListener("click", () => {
-  addToCart(pdCurrent.id, pdQty);
-  const ov = document.getElementById("pdOverlay");
-  ov.classList.add("hidden");
-  ov.classList.remove("flex");
+  if (pdCurrent) addToCart(pdCurrent.id, pdQty);
+  document.getElementById("pdOverlay").classList.add("hidden");
+  document.getElementById("pdOverlay").classList.remove("flex");
 });
 
 // ── INFO MODAL ────────────────────────────────────────────
 const infoContent = {
   about: {
-    title: "About Gadgets.",
-    body: `<p>Gadgets is Nigeria's go-to online store for the latest phones, tablets, laptops and gaming gear.</p>
+    title: "About Minipi NG",
+    body: `<p>Minipi NG is Nigeria's go-to online store for the latest phones, tablets, laptops and gaming gear.</p>
            <p>We source authentic devices directly from trusted brands and deliver them to your doorstep, with prices always listed in Naira.</p>
            <p>Founded with one goal: make great technology accessible to everyone in Nigeria.</p>`,
   },
@@ -558,6 +570,7 @@ const infoContent = {
 document.querySelectorAll(".info-link").forEach((btn) => {
   btn.addEventListener("click", () => {
     const d = infoContent[btn.dataset.info];
+    if (!d) return;
     document.getElementById("infoTitle").textContent = d.title;
     document.getElementById("infoBody").innerHTML = d.body;
     const ov = document.getElementById("infoOverlay");
@@ -566,13 +579,14 @@ document.querySelectorAll(".info-link").forEach((btn) => {
   });
 });
 document.getElementById("infoClose").addEventListener("click", () => {
-  const ov = document.getElementById("infoOverlay");
-  ov.classList.add("hidden");
-  ov.classList.remove("flex");
+  document.getElementById("infoOverlay").classList.add("hidden");
+  document.getElementById("infoOverlay").classList.remove("flex");
 });
 document.getElementById("infoOverlay").addEventListener("click", (e) => {
-  const ov = document.getElementById("infoOverlay");
-  if (e.target === ov) { ov.classList.add("hidden"); ov.classList.remove("flex"); }
+  if (e.target === document.getElementById("infoOverlay")) {
+    document.getElementById("infoOverlay").classList.add("hidden");
+    document.getElementById("infoOverlay").classList.remove("flex");
+  }
 });
 
 // ── TOAST ─────────────────────────────────────────────────
@@ -589,6 +603,14 @@ function showToast(msg) {
   }, 2500);
 }
 
+// ── ABOUT TOGGLE ──────────────────────────────────────────
+function toggleContent() {
+  const content = document.getElementById("moreContent");
+  const button = document.getElementById("toggleBtn");
+  content.classList.toggle("hidden");
+  button.textContent = content.classList.contains("hidden") ? "See More" : "See Less";
+}
+
 // ── AUTH STATE ────────────────────────────────────────────
 let currentUser = null;
 
@@ -598,6 +620,9 @@ function refreshAuthUI() {
   if (currentUser) {
     document.getElementById("userName").textContent = currentUser.name;
     document.getElementById("userEmail").textContent = currentUser.email;
+    authDd.classList.add("hidden");
+    userDd.classList.add("hidden");
+  } else {
     authDd.classList.add("hidden");
     userDd.classList.add("hidden");
   }
@@ -656,26 +681,23 @@ function closeAuthModal() {
 function clearAuthAlerts() {
   ["siError", "siSuccess", "suError", "suSuccess"].forEach((id) => {
     const el = document.getElementById(id);
-    el.classList.add("hidden");
-    el.textContent = "";
+    if (el) { el.classList.add("hidden"); el.textContent = ""; }
   });
 }
 
 function showAlert(id, msg) {
   const el = document.getElementById(id);
-  el.textContent = msg;
-  el.classList.remove("hidden");
+  if (el) { el.textContent = msg; el.classList.remove("hidden"); }
 }
 
 document.getElementById("openSignIn").addEventListener("click", () => showAuthModal("signIn"));
 document.getElementById("openSignUp").addEventListener("click", () => showAuthModal("signUp"));
 document.getElementById("toSignUp").addEventListener("click", () => showAuthModal("signUp"));
 document.getElementById("toSignIn").addEventListener("click", () => showAuthModal("signIn"));
-
 document.querySelectorAll(".auth-close").forEach((btn) => btn.addEventListener("click", closeAuthModal));
 authOverlay.addEventListener("click", (e) => { if (e.target === authOverlay) closeAuthModal(); });
 
-// Password visibility toggles — covers all modals including reset
+// Password visibility toggles
 document.addEventListener("click", (e) => {
   const btn = e.target.closest(".toggle-pwd");
   if (!btn) return;
@@ -683,7 +705,7 @@ document.addEventListener("click", (e) => {
   if (input) input.type = input.type === "password" ? "text" : "password";
 });
 
-// Password strength
+// Password strength meter
 document.getElementById("suPwd").addEventListener("input", (e) => {
   const v = e.target.value;
   let s = 0;
@@ -695,20 +717,20 @@ document.getElementById("suPwd").addEventListener("input", (e) => {
   const labels = ["Weak", "Fair", "Good", "Strong"];
   for (let i = 1; i <= 4; i++) {
     const bar = document.getElementById(`sb${i}`);
-    bar.style.background = i <= s ? colors[s - 1] : "";
-    if (i > s) bar.style.removeProperty("background");
+    if (bar) { bar.style.background = i <= s ? colors[s - 1] : ""; }
   }
   const lbl = document.getElementById("sbLabel");
-  lbl.textContent = v.length ? labels[s - 1] || "" : "";
-  lbl.style.color = v.length && s > 0 ? colors[s - 1] : "";
+  if (lbl) {
+    lbl.textContent = v.length ? (labels[s - 1] || "") : "";
+    lbl.style.color = v.length && s > 0 ? colors[s - 1] : "";
+  }
 });
 
-// Enter key support
+// Enter key shortcuts
 document.getElementById("siEmail").addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("signInBtn").click(); });
 document.getElementById("siPwd").addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("signInBtn").click(); });
 document.getElementById("suPwd").addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("signUpBtn").click(); });
 
-// Loading state helpers
 function setBusy(btn, busy, loadTxt, origTxt) {
   btn.disabled = busy;
   btn.innerHTML = busy
@@ -719,23 +741,19 @@ function setBusy(btn, busy, loadTxt, origTxt) {
 // ── SIGN UP ───────────────────────────────────────────────
 document.getElementById("signUpBtn").addEventListener("click", async () => {
   clearAuthAlerts();
-  const name = document.getElementById("suName").value.trim();
+  const name  = document.getElementById("suName").value.trim();
   const email = document.getElementById("suEmail").value.trim().toLowerCase();
-  const pwd = document.getElementById("suPwd").value;
-  const btn = document.getElementById("signUpBtn");
+  const pwd   = document.getElementById("suPwd").value;
+  const btn   = document.getElementById("signUpBtn");
 
-  if (!name) { showAlert("suError", "Please enter your full name."); return; }
+  if (!name)  { showAlert("suError", "Please enter your full name."); return; }
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showAlert("suError", "Please enter a valid email address."); return; }
   if (!pwd || pwd.length < 6) { showAlert("suError", "Password must be at least 6 characters."); return; }
   if (!sb) { showAlert("suError", "Authentication service unavailable. Please try again later."); return; }
 
   setBusy(btn, true, "Creating account…", "Create Account");
   try {
-    const { data, error } = await sb.auth.signUp({
-      email,
-      password: pwd,
-      options: { data: { full_name: name } },
-    });
+    const { data, error } = await sb.auth.signUp({ email, password: pwd, options: { data: { full_name: name } } });
     if (error) throw error;
     if (data.user && !data.session) {
       showAlert("suSuccess", `Account created! Check ${email} for a confirmation link before signing in.`);
@@ -762,12 +780,12 @@ document.getElementById("signUpBtn").addEventListener("click", async () => {
 document.getElementById("signInBtn").addEventListener("click", async () => {
   clearAuthAlerts();
   const email = document.getElementById("siEmail").value.trim().toLowerCase();
-  const pwd = document.getElementById("siPwd").value;
-  const btn = document.getElementById("signInBtn");
+  const pwd   = document.getElementById("siPwd").value;
+  const btn   = document.getElementById("signInBtn");
 
   if (!email) { showAlert("siError", "Please enter your email address."); return; }
-  if (!pwd) { showAlert("siError", "Please enter your password."); return; }
-  if (!sb) { showAlert("siError", "Authentication service unavailable."); return; }
+  if (!pwd)   { showAlert("siError", "Please enter your password."); return; }
+  if (!sb)    { showAlert("siError", "Authentication service unavailable."); return; }
 
   setBusy(btn, true, "Signing in…", "Sign In");
   try {
@@ -797,12 +815,10 @@ document.getElementById("forgotBtn").addEventListener("click", async () => {
   }
   if (!sb) { showAlert("siError", "Feature unavailable right now."); return; }
 
-  const forgotBtn = document.getElementById("forgotBtn");
-  forgotBtn.textContent = "Sending…";
-  forgotBtn.disabled = true;
-
+  const fBtn = document.getElementById("forgotBtn");
+  fBtn.textContent = "Sending…";
+  fBtn.disabled = true;
   try {
-    // Use whatever is currently in the browser address bar as the redirect
     const redirectTo = window.location.origin + window.location.pathname;
     const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo });
     if (error) throw error;
@@ -810,24 +826,10 @@ document.getElementById("forgotBtn").addEventListener("click", async () => {
   } catch (err) {
     showAlert("siError", err.message || "Could not send reset email. Try again.");
   } finally {
-    forgotBtn.textContent = "Forgot password?";
-    forgotBtn.disabled = false;
+    fBtn.textContent = "Forgot password?";
+    fBtn.disabled = false;
   }
 });
-
-// ── ABOUT TOGGLE ──────────────────────────────────────────
-  function toggleContent() {
-    const content = document.getElementById("moreContent");
-    const button = document.getElementById("toggleBtn");
-
-    content.classList.toggle("hidden");
-
-    if (content.classList.contains("hidden")) {
-      button.textContent = "See More";
-    } else {
-      button.textContent = "See Less";
-    }
-  }
 
 // ── SIGN OUT ──────────────────────────────────────────────
 document.getElementById("logoutBtn").addEventListener("click", async () => {
@@ -840,15 +842,14 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
 
 // ── RESET PASSWORD MODAL ──────────────────────────────────
 function openResetModal() {
-  // Close any other open modals first
   closeAuthModal();
   const ov = document.getElementById("resetOverlay");
   document.getElementById("rpPwd").value = "";
   document.getElementById("rpPwdConfirm").value = "";
-  document.getElementById("rpError").classList.add("hidden");
-  document.getElementById("rpError").textContent = "";
-  document.getElementById("rpSuccess").classList.add("hidden");
-  document.getElementById("rpSuccess").textContent = "";
+  ["rpError", "rpSuccess"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.add("hidden"); el.textContent = ""; }
+  });
   document.getElementById("rpSubmitBtn").innerHTML = "Update Password";
   document.getElementById("rpSubmitBtn").disabled = false;
   ov.classList.remove("hidden");
@@ -856,61 +857,37 @@ function openResetModal() {
 }
 
 function closeResetModal() {
-  const ov = document.getElementById("resetOverlay");
-  ov.classList.add("hidden");
-  ov.classList.remove("flex");
+  document.getElementById("resetOverlay").classList.add("hidden");
+  document.getElementById("resetOverlay").classList.remove("flex");
 }
 
 document.getElementById("rpClose").addEventListener("click", closeResetModal);
 document.getElementById("resetOverlay").addEventListener("click", (e) => {
   if (e.target === document.getElementById("resetOverlay")) closeResetModal();
 });
-
-// Enter key on reset fields
 document.getElementById("rpPwd").addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("rpSubmitBtn").click(); });
 document.getElementById("rpPwdConfirm").addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("rpSubmitBtn").click(); });
 
 document.getElementById("rpSubmitBtn").addEventListener("click", async () => {
-  const pwd = document.getElementById("rpPwd").value;
+  const pwd     = document.getElementById("rpPwd").value;
   const confirm = document.getElementById("rpPwdConfirm").value;
-  const errEl = document.getElementById("rpError");
-  const okEl = document.getElementById("rpSuccess");
-  const btn = document.getElementById("rpSubmitBtn");
+  const errEl   = document.getElementById("rpError");
+  const okEl    = document.getElementById("rpSuccess");
+  const btn     = document.getElementById("rpSubmitBtn");
 
-  errEl.classList.add("hidden");
-  errEl.textContent = "";
-  okEl.classList.add("hidden");
-  okEl.textContent = "";
+  [errEl, okEl].forEach((el) => { if (el) { el.classList.add("hidden"); el.textContent = ""; } });
 
-  if (!pwd || pwd.length < 6) {
-    errEl.textContent = "Password must be at least 6 characters.";
-    errEl.classList.remove("hidden");
-    return;
-  }
-  if (pwd !== confirm) {
-    errEl.textContent = "Passwords do not match. Please try again.";
-    errEl.classList.remove("hidden");
-    return;
-  }
-  if (!sb) {
-    errEl.textContent = "Authentication service unavailable.";
-    errEl.classList.remove("hidden");
-    return;
-  }
+  if (!pwd || pwd.length < 6) { errEl.textContent = "Password must be at least 6 characters."; errEl.classList.remove("hidden"); return; }
+  if (pwd !== confirm) { errEl.textContent = "Passwords do not match. Please try again."; errEl.classList.remove("hidden"); return; }
+  if (!sb) { errEl.textContent = "Authentication service unavailable."; errEl.classList.remove("hidden"); return; }
 
   setBusy(btn, true, "Updating password…", "Update Password");
-
   try {
     const { error } = await sb.auth.updateUser({ password: pwd });
     if (error) throw error;
-
     okEl.textContent = "Password updated! You are now signed in.";
     okEl.classList.remove("hidden");
-
-    setTimeout(() => {
-      closeResetModal();
-      showToast("Password updated successfully 🎉");
-    }, 2000);
+    setTimeout(() => { closeResetModal(); showToast("Password updated successfully 🎉"); }, 2000);
   } catch (err) {
     let msg = err.message || "Failed to update password. Please request a new reset link.";
     if (/same password/i.test(msg)) msg = "New password must be different from your old one.";
@@ -921,18 +898,13 @@ document.getElementById("rpSubmitBtn").addEventListener("click", async () => {
   }
 });
 
-// ── SESSION RESTORE + PASSWORD RECOVERY DETECTION ────────
+// ── SESSION RESTORE + PASSWORD RECOVERY ──────────────────
 if (sb) {
   sb.auth.onAuthStateChange((event, session) => {
-    if (event === "PASSWORD_RECOVERY") {
-      // User clicked the reset link in their email — show the new password form
-      openResetModal();
-      return;
-    }
+    if (event === "PASSWORD_RECOVERY") { openResetModal(); return; }
     if (session?.user) {
       const u = session.user;
-      const name = u.user_metadata?.full_name || u.email.split("@")[0];
-      currentUser = { name, email: u.email };
+      currentUser = { name: u.user_metadata?.full_name || u.email.split("@")[0], email: u.email };
       refreshAuthUI();
       if (event === "SIGNED_IN") closeAuthModal();
     } else if (event === "SIGNED_OUT") {
@@ -944,10 +916,7 @@ if (sb) {
   sb.auth.getSession().then(({ data }) => {
     if (data?.session?.user) {
       const u = data.session.user;
-      currentUser = {
-        name: u.user_metadata?.full_name || u.email.split("@")[0],
-        email: u.email,
-      };
+      currentUser = { name: u.user_metadata?.full_name || u.email.split("@")[0], email: u.email };
       refreshAuthUI();
     }
   });
@@ -955,27 +924,28 @@ if (sb) {
 
 // ── TESTIMONIALS ──────────────────────────────────────────
 const testimonials = [
-  { name: "Iwari", role: "Bussiness Woman", text: "I ordered an iPhone from Minipi and received it within 24 hours. The device was original, sealed, and exactly as advertised." },
-  { name: "Ayofe", role: "Content Creator", text: "Minipi saved me from buying fake gadgets online. Their customer support guided me perfectly and my MacBook arrived safely." },
-  { name: "charles", role: "business man", text: "The prices are amazing. I've purchased accessories, headphones, and a laptop. Every product exceeded expectations." },
-  { name: "Chidi Monday", role: "Business Owner", text: "Their delivery speed shocked me. Ordered in the morning and got my smartwatch before evening." },
-  { name: "Daniel Wilson", role: "Photographer", text: "Bought a camera and accessories from Minipi. Everything was genuine and packaged professionally." },
-  { name: "Amanda Okon", role: "Student", text: "Best gadget store I've used. Affordable prices, secure payment, and excellent after-sales support." },
+  { name: "Iwari",        role: "Business Woman",  text: "I ordered an iPhone from Minipi and received it within 24 hours. The device was original, sealed, and exactly as advertised." },
+  { name: "Ayofe",        role: "Content Creator", text: "Minipi saved me from buying fake gadgets online. Their customer support guided me perfectly and my MacBook arrived safely." },
+  { name: "Charles",      role: "Business Man",    text: "The prices are amazing. I've purchased accessories, headphones, and a laptop. Every product exceeded expectations." },
+  { name: "Chidi Monday", role: "Business Owner",  text: "Their delivery speed shocked me. Ordered in the morning and got my smartwatch before evening." },
+  { name: "Daniel Wilson",role: "Photographer",    text: "Bought a camera and accessories from Minipi. Everything was genuine and packaged professionally." },
+  { name: "Amanda Okon",  role: "Student",         text: "Best gadget store I've used. Affordable prices, secure payment, and excellent after-sales support." },
 ];
 
 let currentIndex = 0;
-const container = document.getElementById("testimonialContainer");
+const testimonialContainer = document.getElementById("testimonialContainer");
 
 function renderTestimonials() {
-  container.innerHTML = "";
-  const currentSet = testimonials.slice(currentIndex, currentIndex + 3);
-  currentSet.forEach((item) => {
-    container.innerHTML += `
+  if (!testimonialContainer) return;
+  testimonialContainer.innerHTML = "";
+  const set = testimonials.slice(currentIndex, currentIndex + 3);
+  set.forEach((item) => {
+    testimonialContainer.innerHTML += `
       <div class="bg-brand/60 border border-gray-800 rounded-3xl p-8 hover:border-cyan-500 transition duration-500 hover:-translate-y-2">
         <div class="flex mb-5 text-yellow-400 text-xl">★★★★★</div>
         <p class="text-black dark:text-white leading-relaxed mb-6">"${item.text}"</p>
         <div class="flex items-center gap-4">
-          <div class="w-14 h-14 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-lg">${item.name.charAt(0)}</div>
+          <div class="w-14 h-14 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-lg text-white">${item.name.charAt(0)}</div>
           <div>
             <h4 class="font-semibold text-lg">${item.name}</h4>
             <p class="text-sm text-gray-400">${item.role}</p>
@@ -988,55 +958,54 @@ function renderTestimonials() {
 }
 
 renderTestimonials();
-setInterval(renderTestimonials, 60000);
+setInterval(renderTestimonials, 6000);
 
-// ── INIT ──────────────────────────────────────────────────
-styleFilterPills();
-
+// ── SUPABASE LOAD + REALTIME ──────────────────────────────
 async function loadProductsFromSupabase() {
-  if (!sb) {
-    renderProducts();
-    renderHomeArrivals();
-    return;
+  if (sb) {
+    try {
+      const { data, error } = await sb.from("products").select("*");
+      if (!error && data && data.length) {
+        products.length = 0;
+        products.push(...data);
+      }
+    } catch (e) {
+      console.warn("Could not load products from Supabase", e);
+    }
+
+    // FIX: Realtime subscription so admin changes reflect instantly
+    sb.channel("home-products-live")
+      .on("postgres_changes", { event: "*", schema: "public", table: "products" }, (payload) => {
+        if (payload.eventType === "INSERT") {
+          products.unshift(payload.new);
+          showToast(`🔥 New product: ${payload.new.name}`);
+        } else if (payload.eventType === "UPDATE") {
+          const idx = products.findIndex((p) => String(p.id) === String(payload.new.id));
+          if (idx !== -1) products[idx] = payload.new;
+        } else if (payload.eventType === "DELETE") {
+          const idx = products.findIndex((p) => String(p.id) === String(payload.old.id));
+          if (idx !== -1) products.splice(idx, 1);
+        }
+        renderProducts();
+        renderHomeArrivals();
+      })
+      .subscribe();
   }
-  const { data, error } = await sb.from("products").select("*");
-  if (!error && data && data.length) {
-    products.length = 0;
-    products.push(...data);
-  }
+
+  // Always render after load attempt
+  styleFilterPills();
   renderProducts();
   renderHomeArrivals();
-
-  // Realtime: re-render arrivals when admin adds/edits products
-  sb.channel("home-products")
-    .on("postgres_changes", { event: "*", schema: "public", table: "products" }, (payload) => {
-      if (payload.eventType === "INSERT") {
-        products.unshift(payload.new);
-        showToast(`New product: ${payload.new.name}`);
-      } else if (payload.eventType === "UPDATE") {
-        const idx = products.findIndex((p) => p.id === payload.new.id);
-        if (idx !== -1) products[idx] = payload.new;
-      } else if (payload.eventType === "DELETE") {
-        const idx = products.findIndex((p) => p.id === payload.old.id);
-        if (idx !== -1) products.splice(idx, 1);
-      }
-      renderProducts();
-      renderHomeArrivals();
-    })
-    .subscribe();
+  renderCart();
 }
 
-
-// Show filter row (was hidden in HTML)
-const filterRowEl = document.getElementById("filterRow");
-if (filterRowEl) filterRowEl.classList.remove("hidden");
 // ── CUSTOMER PROFILE MODAL ────────────────────────────────
 function mpFmt(n) { return "₦" + Number(n).toLocaleString("en-NG"); }
 
 function mpOrderCard(o) {
   const colors = {
     success: { bg: "#eaf3de", color: "#3B6D11", icon: "✓", label: "Delivered" },
-    pending: { bg: "#faeeda", color: "#854F0B", icon: "⏳", label: "Pending" },
+    pending:  { bg: "#faeeda", color: "#854F0B", icon: "⏳", label: "Pending" },
   };
   const c = colors[o.status] || colors.pending;
   return `<div style="background:#f9fafb;border-radius:10px;border:.5px solid #e5e7eb;padding:.9rem 1rem;margin-bottom:.65rem;display:flex;align-items:flex-start;gap:12px;">
@@ -1093,7 +1062,6 @@ document.getElementById("mp-close-btn").addEventListener("click", () => {
 document.getElementById("mp-overlay").addEventListener("click", (e) => {
   if (e.target === e.currentTarget) e.target.style.display = "none";
 });
-
 document.querySelectorAll(".mp-tab").forEach((tab) => {
   tab.addEventListener("click", () => {
     document.querySelectorAll(".mp-tab").forEach((t) => {
@@ -1110,59 +1078,5 @@ document.querySelectorAll(".mp-tab").forEach((tab) => {
   });
 });
 
-(function () {
-        const btn = document.getElementById("catNavBtn");
-        const dd = document.getElementById("catNavDropdown");
-        const chv = document.getElementById("catNavChevron");
-        if (!btn || !dd) return;
-
-        function openDd() {
-          dd.classList.remove(
-            "opacity-0",
-            "pointer-events-none",
-            "-translate-y-[6px]",
-          );
-          dd.classList.add("opacity-100", "translate-y-0");
-          chv.style.transform = "rotate(180deg)";
-        }
-        function closeDd() {
-          dd.classList.add("opacity-0", "pointer-events-none");
-          dd.classList.remove("opacity-100", "translate-y-0");
-          chv.style.transform = "";
-        }
-
-        // hover (desktop)
-        const li = document.getElementById("catNavItem");
-        li.addEventListener("mouseenter", openDd);
-        li.addEventListener("mouseleave", closeDd);
-
-        // click toggle (keyboard / touch)
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          dd.classList.contains("opacity-0") ? openDd() : closeDd();
-        });
-
-        // close on outside click
-        document.addEventListener("click", (e) => {
-          if (!li.contains(e.target)) closeDd();
-        });
-
-        // if on index page, category links filter in-place instead of navigating
-        if (!window.location.pathname.includes("shop.html")) {
-          document.querySelectorAll(".cat-nav-link").forEach((a) => {
-            a.addEventListener("click", (e) => {
-              e.preventDefault();
-              const cat = a.dataset.cat;
-              closeDd();
-              // call setFilter if main.js is loaded
-              if (typeof setFilter === "function") {
-                setFilter(cat);
-                document
-                  .getElementById("shop")
-                  .scrollIntoView({ behavior: "smooth" });
-              }
-            });
-          });
-        }
-      })();
-
+// ── KICK OFF ──────────────────────────────────────────────
+loadProductsFromSupabase();
