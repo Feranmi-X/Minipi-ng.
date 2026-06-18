@@ -99,6 +99,13 @@
         animation: scrollRight 15s linear infinite;
         white-space: nowrap;
       }
+      .modal-scroll::-webkit-scrollbar {
+        width: 6px;
+      }
+      .modal-scroll::-webkit-scrollbar-thumb {
+        background: #d1d5db;
+        border-radius: 4px;
+      }
     </style>
     <link
       rel="stylesheet"
@@ -293,7 +300,10 @@
             >
           </li>
         </ul>
+
+        <!-- RIGHT ICONS -->
         <div class="flex items-center gap-2 shrink-0 ml-auto">
+          <!-- Dark mode -->
           <button
             id="themeBtn"
             aria-label="Toggle dark mode"
@@ -326,6 +336,7 @@
               <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
             </svg>
           </button>
+          <!-- Cart -->
           <button
             id="cartBtn"
             aria-label="Open cart"
@@ -349,6 +360,65 @@
               >0</span
             >
           </button>
+          <!-- Account -->
+          <div class="relative">
+            <button
+              id="accountBtn"
+              aria-label="Account"
+              class="w-[38px] h-[38px] rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 flex items-center justify-center hover:border-brand transition-colors shrink-0"
+            >
+              <svg
+                width="17"
+                height="17"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+            </button>
+            <!-- Guest dropdown -->
+            <div
+              id="authDropdown"
+              class="hidden absolute right-0 top-[calc(100%+8px)] bg-white dark:bg-neutral-800 border-[1.5px] border-gray-200 dark:border-neutral-700 rounded-2xl shadow-xl overflow-hidden min-w-[180px] z-[200] animate-dropIn"
+            >
+              <button
+                id="openSignIn"
+                class="block w-full text-left px-4 py-3 text-[13px] font-medium border-b border-gray-200 dark:border-neutral-700 hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors"
+              >
+                Sign In
+              </button>
+              <button
+                id="openSignUp"
+                class="block w-full text-left px-4 py-3 text-[13px] font-medium hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors"
+              >
+                Create Account
+              </button>
+            </div>
+            <!-- Logged-in dropdown -->
+            <div
+              id="userDropdown"
+              class="hidden absolute right-0 top-[calc(100%+8px)] bg-white dark:bg-neutral-800 border-[1.5px] border-gray-200 dark:border-neutral-700 rounded-2xl shadow-xl overflow-hidden min-w-[180px] z-[200] animate-dropIn"
+            >
+              <div
+                class="px-4 py-3 border-b border-gray-200 dark:border-neutral-700"
+              >
+                <div id="userName" class="text-[13px] font-semibold">—</div>
+                <div id="userEmail" class="text-[11px] text-gray-500 mt-0.5">
+                  —
+                </div>
+              </div>
+              <button
+                id="logoutBtn"
+                class="block w-full text-left px-4 py-3 text-[13px] font-medium text-red-500 hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors"
+              >
+                Sign Out
+              </button>
+            </div>
+          </div>
+          <!-- Hamburger -->
           <button
             id="hamburger"
             aria-label="Menu"
@@ -369,6 +439,8 @@
           </button>
         </div>
       </div>
+
+      <!-- MOBILE MENU -->
       <div
         id="mobileMenu"
         class="hidden md:hidden px-5 py-4 border-t border-gray-200 dark:border-neutral-800 bg-white dark:bg-neutral-900"
@@ -662,6 +734,125 @@
       </div>
     </section>
 
+    <!-- FOOTER -->
+    <footer
+      id="contact"
+      class="bg-white dark:bg-neutral-900 border-t border-gray-200 dark:border-neutral-800 transition-colors duration-300"
+    >
+      <div
+        class="max-w-[1280px] mx-auto px-5 pt-12 pb-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-8"
+      >
+        <div>
+          <div class="text-xl font-extrabold mb-2.5">
+            <span class="text-brand">Mini</span>pi NG<span class="text-brand"
+              >.</span
+            >
+          </div>
+          <p
+            class="text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed"
+          >
+            Your one-stop shop for phones, tablets, laptops and gaming gear in
+            Nigeria. Authentic products, best prices.
+          </p>
+        </div>
+        <div>
+          <h4 class="text-[13px] font-semibold mb-3.5">Shop</h4>
+          <ul class="flex flex-col gap-2.5">
+            <li>
+              <a
+                href="#shop"
+                class="footer-cat text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
+                data-cat="phone"
+                >Phones</a
+              >
+            </li>
+            <li>
+              <a
+                href="#shop"
+                class="footer-cat text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
+                data-cat="tablet"
+                >Tablets</a
+              >
+            </li>
+            <li>
+              <a
+                href="#shop"
+                class="footer-cat text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
+                data-cat="laptop"
+                >Laptops</a
+              >
+            </li>
+            <li>
+              <a
+                href="#shop"
+                class="footer-cat text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
+                data-cat="gaming"
+                >Gaming</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-[13px] font-semibold mb-3.5">Company</h4>
+          <ul class="flex flex-col gap-2.5">
+            <li>
+              <button
+                class="info-link text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
+                data-info="about"
+              >
+                About Us
+              </button>
+            </li>
+            <li>
+              <a
+                href="/index.html#contact"
+                class="text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
+                >Contact</a
+              >
+            </li>
+            <li>
+              <button
+                class="info-link text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
+                data-info="faqs"
+              >
+                FAQs
+              </button>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-[13px] font-semibold mb-3.5">Contact</h4>
+          <ul class="flex flex-col gap-2.5">
+            <li>
+              <a
+                href="mailto:support@gadgets.ng"
+                class="text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
+                >support@gadgets.ng</a
+              >
+            </li>
+            <li>
+              <a
+                href="tel:+2348034970248"
+                class="text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
+                >+234 8034970248</a
+              >
+            </li>
+            <li class="text-[13px] text-gray-500 dark:text-gray-400">
+              Lagos, Nigeria
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div
+        class="text-center text-xs text-gray-400 dark:text-gray-500 py-4 px-5 border-t border-gray-200 dark:border-neutral-800 max-w-[1280px] mx-auto"
+      >
+        © 2026 Minipi NG. All rights reserved.
+        <a href="index.html" class="hover:text-brand transition-colors ml-3"
+          >Back to Home</a
+        >
+      </div>
+    </footer>
+
     <!-- CART OVERLAY + DRAWER -->
     <div
       id="cartOverlay"
@@ -708,14 +899,13 @@
       </div>
     </aside>
 
-    <!-- ★ PAYMENT MODAL -->
+    <!-- PAYMENT MODAL -->
     <div
       id="paymentOverlay"
       class="hidden fixed inset-0 bg-black/60 z-[600] items-center justify-center p-5"
     >
       <div
-        class="bg-white dark:bg-neutral-900 rounded-[20px] shadow-2xl relative max-h-[90vh] overflow-y-auto animate-fadeUp w-full max-w-[420px] p-7"
-        style="scrollbar-width: thin"
+        class="modal-scroll bg-white dark:bg-neutral-900 rounded-[20px] shadow-2xl relative max-h-[90vh] overflow-y-auto animate-fadeUp w-full max-w-[420px] p-7"
       >
         <button
           id="paymentClose"
@@ -759,14 +949,12 @@
           Transfer the total amount to the account below, then send your receipt
           on WhatsApp.
         </p>
-
         <div class="bg-brand/10 rounded-2xl p-4 mb-5 text-center">
           <p class="text-[12px] text-gray-500 dark:text-gray-400 mb-1">
             Order Total
           </p>
           <p id="paymentTotal" class="text-2xl font-extrabold text-brand">₦0</p>
         </div>
-
         <div
           class="bg-gray-50 dark:bg-neutral-800 rounded-2xl p-4 mb-5 space-y-3"
         >
@@ -778,14 +966,12 @@
           <div class="flex justify-between items-center">
             <span class="text-[13px] text-gray-500 dark:text-gray-400"
               >Bank</span
-            >
-            <span class="text-[13px] font-bold">Opay</span>
+            ><span class="text-[13px] font-bold">Opay</span>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-[13px] text-gray-500 dark:text-gray-400"
               >Account Name</span
-            >
-            <span class="text-[13px] font-bold">Oluwafemi</span>
+            ><span class="text-[13px] font-bold">Oluwafemi</span>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-[13px] text-gray-500 dark:text-gray-400"
@@ -804,7 +990,6 @@
             </div>
           </div>
         </div>
-
         <ol
           class="text-[12px] text-gray-500 dark:text-gray-400 space-y-2 mb-6 list-none"
         >
@@ -827,19 +1012,250 @@
             >Send the screenshot to us on WhatsApp to confirm your order.
           </li>
         </ol>
-
         <a
           id="whatsappPayLink"
           href="#"
           target="_blank"
           class="w-full py-3 rounded-full bg-green-500 text-white text-sm font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
         >
-          <i class="fab fa-whatsapp text-lg"></i>
-          Send Receipt on WhatsApp
+          <i class="fab fa-whatsapp text-lg"></i> Send Receipt on WhatsApp
         </a>
         <p class="text-[11px] text-gray-400 text-center mt-3">
           Your order will be confirmed once we receive your payment screenshot.
         </p>
+      </div>
+    </div>
+
+    <!-- AUTH OVERLAY -->
+    <div
+      id="authOverlay"
+      class="hidden fixed inset-0 bg-black/60 z-[500] items-center justify-center p-5"
+    >
+      <!-- Sign In Modal -->
+      <div
+        id="signInModal"
+        class="hidden modal-scroll bg-white dark:bg-neutral-900 rounded-[20px] shadow-2xl relative max-h-[90vh] overflow-y-auto animate-fadeUp w-full max-w-[380px] p-7"
+      >
+        <button
+          class="auth-close absolute top-3.5 right-3.5 w-[30px] h-[30px] flex items-center justify-center rounded-full text-gray-500 bg-gray-100 dark:bg-neutral-800 hover:text-gray-900 dark:hover:text-white transition-colors"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+        <div
+          class="w-12 h-12 rounded-full bg-brand/10 flex items-center justify-center mx-auto mb-3.5 text-brand"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </div>
+        <div class="text-xl font-bold text-center mb-1">Welcome back</div>
+        <div
+          class="text-[13px] text-gray-500 dark:text-gray-400 text-center mb-6"
+        >
+          Sign in to your Minipi account
+        </div>
+        <div
+          id="siError"
+          class="hidden px-3.5 py-2.5 rounded-[10px] text-xs mb-3.5 leading-relaxed bg-red-50 border-[1.5px] border-red-200 text-red-600 dark:bg-red-500/10 dark:border-red-500/30 dark:text-red-400"
+        ></div>
+        <div
+          id="siSuccess"
+          class="hidden px-3.5 py-2.5 rounded-[10px] text-xs mb-3.5 leading-relaxed bg-green-50 border-[1.5px] border-green-200 text-green-600 dark:bg-green-500/10 dark:border-green-500/30 dark:text-green-400"
+        ></div>
+        <div class="mb-4">
+          <label class="block text-xs font-semibold mb-1.5"
+            >Email address</label
+          >
+          <input
+            id="siEmail"
+            type="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            class="w-full px-4 py-[11px] rounded-[10px] border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-[13px] outline-none focus:border-brand placeholder:text-gray-400 transition-colors"
+          />
+        </div>
+        <div class="mb-5">
+          <label class="block text-xs font-semibold mb-1.5">Password</label>
+          <div class="relative">
+            <input
+              id="siPwd"
+              type="password"
+              autocomplete="current-password"
+              placeholder="••••••••"
+              class="w-full px-4 py-[11px] pr-10 rounded-[10px] border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-[13px] outline-none focus:border-brand placeholder:text-gray-400 transition-colors"
+            />
+            <button
+              class="toggle-pwd absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+              data-target="siPwd"
+              type="button"
+            >
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <button
+          id="signInBtn"
+          class="w-full py-3 rounded-full bg-brand text-white text-sm font-semibold flex items-center justify-center gap-2 hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-opacity"
+        >
+          Sign In
+        </button>
+        <div
+          class="text-center text-[13px] text-gray-500 dark:text-gray-400 mt-4"
+        >
+          Don't have an account?
+          <button
+            id="toSignUp"
+            class="text-brand font-semibold hover:underline"
+          >
+            Create one
+          </button>
+        </div>
+      </div>
+      <!-- Sign Up Modal -->
+      <div
+        id="signUpModal"
+        class="hidden modal-scroll bg-white dark:bg-neutral-900 rounded-[20px] shadow-2xl relative max-h-[90vh] overflow-y-auto animate-fadeUp w-full max-w-[380px] p-7"
+      >
+        <button
+          class="auth-close absolute top-3.5 right-3.5 w-[30px] h-[30px] flex items-center justify-center rounded-full text-gray-500 bg-gray-100 dark:bg-neutral-800 hover:text-gray-900 dark:hover:text-white transition-colors"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+        <div
+          class="w-12 h-12 rounded-full bg-brand/10 flex items-center justify-center mx-auto mb-3.5 text-brand"
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <line x1="19" y1="8" x2="19" y2="14" />
+            <line x1="22" y1="11" x2="16" y2="11" />
+          </svg>
+        </div>
+        <div class="text-xl font-bold text-center mb-1">Create account</div>
+        <div
+          class="text-[13px] text-gray-500 dark:text-gray-400 text-center mb-6"
+        >
+          Join Minipi to start shopping
+        </div>
+        <div
+          id="suError"
+          class="hidden px-3.5 py-2.5 rounded-[10px] text-xs mb-3.5 leading-relaxed bg-red-50 border-[1.5px] border-red-200 text-red-600 dark:bg-red-500/10 dark:border-red-500/30 dark:text-red-400"
+        ></div>
+        <div
+          id="suSuccess"
+          class="hidden px-3.5 py-2.5 rounded-[10px] text-xs mb-3.5 leading-relaxed bg-green-50 border-[1.5px] border-green-200 text-green-600 dark:bg-green-500/10 dark:border-green-500/30 dark:text-green-400"
+        ></div>
+        <div class="mb-4">
+          <label class="block text-xs font-semibold mb-1.5">Full name</label>
+          <input
+            id="suName"
+            type="text"
+            autocomplete="name"
+            placeholder="Jane Doe"
+            class="w-full px-4 py-[11px] rounded-[10px] border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-[13px] outline-none focus:border-brand placeholder:text-gray-400 transition-colors"
+          />
+        </div>
+        <div class="mb-4">
+          <label class="block text-xs font-semibold mb-1.5"
+            >Email address</label
+          >
+          <input
+            id="suEmail"
+            type="email"
+            autocomplete="email"
+            placeholder="you@example.com"
+            class="w-full px-4 py-[11px] rounded-[10px] border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-[13px] outline-none focus:border-brand placeholder:text-gray-400 transition-colors"
+          />
+        </div>
+        <div class="mb-5">
+          <label class="block text-xs font-semibold mb-1.5">Password</label>
+          <div class="relative">
+            <input
+              id="suPwd"
+              type="password"
+              autocomplete="new-password"
+              placeholder="At least 6 characters"
+              class="w-full px-4 py-[11px] pr-10 rounded-[10px] border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-[13px] outline-none focus:border-brand placeholder:text-gray-400 transition-colors"
+            />
+            <button
+              class="toggle-pwd absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+              data-target="suPwd"
+              type="button"
+            >
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <button
+          id="signUpBtn"
+          class="w-full py-3 rounded-full bg-brand text-white text-sm font-semibold flex items-center justify-center gap-2 hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-opacity"
+        >
+          Create Account
+        </button>
+        <div
+          class="text-center text-[13px] text-gray-500 dark:text-gray-400 mt-4"
+        >
+          Already have an account?
+          <button
+            id="toSignIn"
+            class="text-brand font-semibold hover:underline"
+          >
+            Sign in
+          </button>
+        </div>
       </div>
     </div>
 
@@ -849,7 +1265,7 @@
       class="hidden fixed inset-0 bg-black/60 z-[500] items-center justify-center p-5"
     >
       <div
-        class="bg-white dark:bg-neutral-900 rounded-[20px] shadow-2xl relative max-h-[90vh] overflow-y-auto animate-fadeUp w-full max-w-[560px] p-6"
+        class="modal-scroll bg-white dark:bg-neutral-900 rounded-[20px] shadow-2xl relative max-h-[90vh] overflow-y-auto animate-fadeUp w-full max-w-[560px] p-6"
       >
         <button
           id="pdClose"
@@ -887,7 +1303,7 @@
               id="pdPrice"
               class="text-xl font-extrabold text-brand mb-4"
             ></div>
-            <div id="pdBadgeRow" class="mb-4"></div>
+            <div id="pdBadgeRow" class="mb-2"></div>
             <div class="flex items-center gap-3 mb-4">
               <button
                 id="pdDec"
@@ -915,6 +1331,37 @@
             </button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- INFO MODAL -->
+    <div
+      id="infoOverlay"
+      class="hidden fixed inset-0 bg-black/60 z-[500] items-center justify-center p-5"
+    >
+      <div
+        class="modal-scroll bg-white dark:bg-neutral-900 rounded-[20px] shadow-2xl relative max-h-[90vh] overflow-y-auto animate-fadeUp w-full max-w-[440px] p-7"
+      >
+        <button
+          id="infoClose"
+          class="absolute top-3.5 right-3.5 w-[30px] h-[30px] flex items-center justify-center rounded-full text-gray-500 bg-gray-100 dark:bg-neutral-800 hover:text-gray-900 dark:hover:text-white transition-colors"
+        >
+          <svg
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+          >
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+        <h2 id="infoTitle" class="text-lg font-bold mb-4"></h2>
+        <div
+          id="infoBody"
+          class="text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed [&>p]:mb-2.5 [&_.faq-item]:mb-4 [&_.faq-q]:text-[13px] [&_.faq-q]:font-semibold [&_.faq-q]:text-gray-900 [&_.faq-q]:dark:text-gray-100 [&_.faq-q]:mb-1"
+        ></div>
       </div>
     </div>
 
@@ -1048,11 +1495,12 @@
 
     <script>
       const CART_KEY = "minipi_cart";
-      const ORDERS_KEY = "mp_orders";
 
-      // ── SUPABASE ──────────────────────────────────────────────────
+      // ── SUPABASE ─────────────────────────────────────────────────────────────────
+      // Use the SAME key as main.js (anon key, not publishable key)
       const SB_URL = "https://sygdrjmjjxwxuczcnxjr.supabase.co";
-      const SB_KEY = "sb_publishable_lAqlBUViE_Jcq7PbVALyLg_b-X9YQvO";
+      const SB_KEY =
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN5Z2Ryam1qanh3eHVjemNueGpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzODI0MDIsImV4cCI6MjA5Njk1ODQwMn0.xp-zwipa_l-1JeYzyTqSNxeK1dwqGH-ilK35jIXSncg";
       let sb = null;
       try {
         if (
@@ -1065,14 +1513,279 @@
         console.warn("Supabase init failed", e);
       }
 
-      // ── DARK MODE ─────────────────────────────────────────────────
+      // ── AUTH STATE ────────────────────────────────────────────────────────────────
+      let currentUser = null;
+
+      function refreshAuthUI() {
+        const authDd = document.getElementById("authDropdown");
+        const userDd = document.getElementById("userDropdown");
+        if (!authDd || !userDd) return;
+        authDd.classList.add("hidden");
+        userDd.classList.add("hidden");
+        if (currentUser) {
+          const nameEl = document.getElementById("userName");
+          const emailEl = document.getElementById("userEmail");
+          if (nameEl) nameEl.textContent = currentUser.name;
+          if (emailEl) emailEl.textContent = currentUser.email;
+        }
+      }
+
+      // Session restore — reads the Supabase session cookie/localStorage that was
+      // written when the user signed in on the home page. No re-login needed.
+      if (sb) {
+        sb.auth.onAuthStateChange((_event, session) => {
+          if (session?.user) {
+            const u = session.user;
+            currentUser = {
+              id: u.id,
+              name: u.user_metadata?.full_name || u.email.split("@")[0],
+              email: u.email,
+            };
+          } else {
+            currentUser = null;
+          }
+          refreshAuthUI();
+        });
+
+        sb.auth.getSession().then(({ data }) => {
+          if (data?.session?.user) {
+            const u = data.session.user;
+            currentUser = {
+              id: u.id,
+              name: u.user_metadata?.full_name || u.email.split("@")[0],
+              email: u.email,
+            };
+            refreshAuthUI();
+          }
+        });
+      }
+
+      // ── ACCOUNT BUTTON & DROPDOWNS ────────────────────────────────────────────────
+      const accountBtn = document.getElementById("accountBtn");
+      const authDd = document.getElementById("authDropdown");
+      const userDd = document.getElementById("userDropdown");
+
+      if (accountBtn) {
+        accountBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (currentUser) {
+            authDd?.classList.add("hidden");
+            userDd?.classList.toggle("hidden");
+          } else {
+            userDd?.classList.add("hidden");
+            authDd?.classList.toggle("hidden");
+          }
+        });
+      }
+
+      document.addEventListener("click", (e) => {
+        if (accountBtn && !accountBtn.contains(e.target)) {
+          authDd?.classList.add("hidden");
+          userDd?.classList.add("hidden");
+        }
+      });
+
+      // Auth modal helpers
+      const authOverlay = document.getElementById("authOverlay");
+      const signInModal = document.getElementById("signInModal");
+      const signUpModal = document.getElementById("signUpModal");
+
+      function showAuthModal(which) {
+        if (!authOverlay) return;
+        authOverlay.classList.remove("hidden");
+        authOverlay.classList.add("flex");
+        authDd?.classList.add("hidden");
+        userDd?.classList.add("hidden");
+        if (which === "signIn") {
+          signInModal?.classList.remove("hidden");
+          signUpModal?.classList.add("hidden");
+        } else {
+          signUpModal?.classList.remove("hidden");
+          signInModal?.classList.add("hidden");
+        }
+        clearAuthAlerts();
+      }
+
+      function closeAuthModal() {
+        authOverlay?.classList.add("hidden");
+        authOverlay?.classList.remove("flex");
+        signInModal?.classList.add("hidden");
+        signUpModal?.classList.add("hidden");
+        clearAuthAlerts();
+      }
+
+      function clearAuthAlerts() {
+        ["siError", "siSuccess", "suError", "suSuccess"].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.classList.add("hidden");
+            el.textContent = "";
+          }
+        });
+      }
+
+      function showAlert(id, msg) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.textContent = msg;
+          el.classList.remove("hidden");
+        }
+      }
+
+      document
+        .getElementById("openSignIn")
+        ?.addEventListener("click", () => showAuthModal("signIn"));
+      document
+        .getElementById("openSignUp")
+        ?.addEventListener("click", () => showAuthModal("signUp"));
+      document
+        .getElementById("toSignUp")
+        ?.addEventListener("click", () => showAuthModal("signUp"));
+      document
+        .getElementById("toSignIn")
+        ?.addEventListener("click", () => showAuthModal("signIn"));
+      document
+        .querySelectorAll(".auth-close")
+        .forEach((btn) => btn.addEventListener("click", closeAuthModal));
+      authOverlay?.addEventListener("click", (e) => {
+        if (e.target === authOverlay) closeAuthModal();
+      });
+
+      // ── SIGN IN ───────────────────────────────────────────────────────────────────
+      document
+        .getElementById("signInBtn")
+        ?.addEventListener("click", async () => {
+          clearAuthAlerts();
+          const email = document
+            .getElementById("siEmail")
+            .value.trim()
+            .toLowerCase();
+          const pwd = document.getElementById("siPwd").value;
+          const btn = document.getElementById("signInBtn");
+          if (!email) {
+            showAlert("siError", "Please enter your email address.");
+            return;
+          }
+          if (!pwd) {
+            showAlert("siError", "Please enter your password.");
+            return;
+          }
+          if (!sb) {
+            showAlert("siError", "Authentication service unavailable.");
+            return;
+          }
+          btn.disabled = true;
+          btn.innerHTML = `<span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin shrink-0"></span>Signing in…`;
+          try {
+            const { data, error } = await sb.auth.signInWithPassword({
+              email,
+              password: pwd,
+            });
+            if (error) throw error;
+            const u = data.user;
+            currentUser = {
+              id: u.id,
+              name: u.user_metadata?.full_name || u.email.split("@")[0],
+              email: u.email,
+            };
+            refreshAuthUI();
+            closeAuthModal();
+            showToast(`Welcome back, ${currentUser.name}!`);
+          } catch (err) {
+            let msg = err.message || "Sign in failed.";
+            if (/Invalid login/i.test(msg))
+              msg = "Incorrect email or password.";
+            if (/Email not confirmed/i.test(msg))
+              msg = "Please confirm your email first.";
+            showAlert("siError", msg);
+          } finally {
+            btn.disabled = false;
+            btn.innerHTML = "Sign In";
+          }
+        });
+
+      // ── SIGN UP ───────────────────────────────────────────────────────────────────
+      document
+        .getElementById("signUpBtn")
+        ?.addEventListener("click", async () => {
+          clearAuthAlerts();
+          const name = document.getElementById("suName").value.trim();
+          const email = document
+            .getElementById("suEmail")
+            .value.trim()
+            .toLowerCase();
+          const pwd = document.getElementById("suPwd").value;
+          const btn = document.getElementById("signUpBtn");
+          if (!name) {
+            showAlert("suError", "Please enter your full name.");
+            return;
+          }
+          if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showAlert("suError", "Please enter a valid email.");
+            return;
+          }
+          if (!pwd || pwd.length < 6) {
+            showAlert("suError", "Password must be at least 6 characters.");
+            return;
+          }
+          if (!sb) {
+            showAlert("suError", "Authentication service unavailable.");
+            return;
+          }
+          btn.disabled = true;
+          btn.innerHTML = `<span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin shrink-0"></span>Creating…`;
+          try {
+            const { data, error } = await sb.auth.signUp({
+              email,
+              password: pwd,
+              options: { data: { full_name: name } },
+            });
+            if (error) throw error;
+            if (data.user && !data.session) {
+              showAlert(
+                "suSuccess",
+                `Account created! Check ${email} for a confirmation link.`,
+              );
+            } else if (data.session) {
+              currentUser = { id: data.user.id, name, email: data.user.email };
+              refreshAuthUI();
+              closeAuthModal();
+              showToast(`Welcome, ${name}! 🎉`);
+            }
+          } catch (err) {
+            let msg = err.message || "Sign up failed.";
+            if (/already registered/i.test(msg))
+              msg = "An account with this email already exists.";
+            showAlert("suError", msg);
+          } finally {
+            btn.disabled = false;
+            btn.innerHTML = "Create Account";
+          }
+        });
+
+      // ── SIGN OUT ──────────────────────────────────────────────────────────────────
+      document
+        .getElementById("logoutBtn")
+        ?.addEventListener("click", async () => {
+          userDd?.classList.add("hidden");
+          if (sb) {
+            try {
+              await sb.auth.signOut();
+            } catch (e) {}
+          }
+          currentUser = null;
+          refreshAuthUI();
+          showToast("Signed out successfully");
+        });
+
+      // ── DARK MODE ─────────────────────────────────────────────────────────────────
       const html = document.documentElement;
       const iconSun = document.getElementById("iconSun");
       const iconMoon = document.getElementById("iconMoon");
       function applyTheme(dark) {
         dark ? html.classList.add("dark") : html.classList.remove("dark");
-        iconSun.classList.toggle("hidden", dark);
-        iconMoon.classList.toggle("hidden", !dark);
+        iconSun?.classList.toggle("hidden", dark);
+        iconMoon?.classList.toggle("hidden", !dark);
       }
       const saved = localStorage.getItem("gTheme");
       applyTheme(
@@ -1086,7 +1799,7 @@
         localStorage.setItem("gTheme", !isDark ? "dark" : "light");
       });
 
-      // ── MOBILE MENU ───────────────────────────────────────────────
+      // ── MOBILE MENU ───────────────────────────────────────────────────────────────
       const hamburger = document.getElementById("hamburger");
       const mobileMenu = document.getElementById("mobileMenu");
       hamburger.addEventListener("click", (e) => {
@@ -1098,7 +1811,7 @@
           mobileMenu.classList.add("hidden");
       });
 
-      // ── CATEGORIES DROPDOWN ───────────────────────────────────────
+      // ── CATEGORIES DROPDOWN ───────────────────────────────────────────────────────
       (function () {
         const btn = document.getElementById("catNavBtn");
         const dd = document.getElementById("catNavDropdown");
@@ -1143,7 +1856,24 @@
         });
       })();
 
-      // ── FALLBACK PRODUCTS ─────────────────────────────────────────
+      // ── CART HELPERS ──────────────────────────────────────────────────────────────
+      function loadCart() {
+        try {
+          return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+        } catch {
+          return [];
+        }
+      }
+      function saveCart(c) {
+        localStorage.setItem(CART_KEY, JSON.stringify(c));
+      }
+
+      // Real-time cart sync across tabs — if you add on home page, badge updates here instantly
+      window.addEventListener("storage", (e) => {
+        if (e.key === CART_KEY) renderCart();
+      });
+
+      // ── FALLBACK PRODUCTS ─────────────────────────────────────────────────────────
       const fallbackProducts = [
         {
           id: 1,
@@ -1543,7 +2273,7 @@
         },
       ];
 
-      // ── STATE ─────────────────────────────────────────────────────
+      // ── STATE ─────────────────────────────────────────────────────────────────────
       let allProducts = [];
       let activeCat = "all";
       let searchTerm = "";
@@ -1553,24 +2283,13 @@
 
       const fmt = (n) => "₦" + Number(n).toLocaleString("en-NG");
 
-      function loadCart() {
-        try {
-          return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-        } catch {
-          return [];
-        }
-      }
-      function saveCart(c) {
-        localStorage.setItem(CART_KEY, JSON.stringify(c));
-      }
-
-      // ── LOAD PRODUCTS ─────────────────────────────────────────────
+      // ── LOAD PRODUCTS ─────────────────────────────────────────────────────────────
       async function loadProducts() {
         if (sb) {
           try {
             const { data, error } = await sb.from("products").select("*");
-            if (!error && data && data.length) allProducts = data;
-            else allProducts = fallbackProducts;
+            allProducts =
+              !error && data && data.length ? data : fallbackProducts;
           } catch {
             allProducts = fallbackProducts;
           }
@@ -1588,13 +2307,12 @@
 
         document.getElementById("loadingState").classList.add("hidden");
         document.getElementById("productGrid").classList.remove("hidden");
-
         styleFilterPills();
         renderArrivals();
         renderProducts();
       }
 
-      // ── NEW ARRIVALS ──────────────────────────────────────────────
+      // ── NEW ARRIVALS ──────────────────────────────────────────────────────────────
       function renderArrivals() {
         const track = document.getElementById("arrivalsTrack");
         let arrivals = allProducts.filter((p) => p.new_arrival);
@@ -1606,34 +2324,38 @@
         track.innerHTML = arrivals
           .map(
             (p) => `
-          <div class="bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col group cursor-pointer hover:border-brand hover:shadow-lg transition-all"
-               onclick='openProductDetail(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
-            <div class="relative aspect-square overflow-hidden bg-gray-100 dark:bg-neutral-800">
-              <img src="${p.img}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105" />
-              <span class="absolute top-2 left-2 bg-brand text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">New</span>
-            </div>
-            <div class="p-3 flex-1 flex flex-col">
-              <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-0.5">${p.cat}</div>
-              <div class="text-[12px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">${p.name}</div>
-              <div class="text-[13px] font-bold text-brand mt-auto pt-2">${fmt(p.price)}</div>
-            </div>
-          </div>`,
+    <div class="bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col group cursor-pointer hover:border-brand hover:shadow-lg transition-all"
+         onclick='openProductDetail(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
+      <div class="relative aspect-square overflow-hidden bg-gray-100 dark:bg-neutral-800">
+        <img src="${p.img}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105"/>
+        <span class="absolute top-2 left-2 bg-brand text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">New</span>
+      </div>
+      <div class="p-3 flex-1 flex flex-col">
+        <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-0.5">${p.cat}</div>
+        <div class="text-[12px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">${p.name}</div>
+        <div class="text-[13px] font-bold text-brand mt-auto pt-2">${fmt(p.price)}</div>
+      </div>
+    </div>`,
           )
           .join("");
       }
 
-      document.getElementById("arrLeft").addEventListener("click", () => {
-        document
-          .getElementById("arrivalsTrack")
-          .scrollBy({ left: -250, behavior: "smooth" });
-      });
-      document.getElementById("arrRight").addEventListener("click", () => {
-        document
-          .getElementById("arrivalsTrack")
-          .scrollBy({ left: 250, behavior: "smooth" });
-      });
+      document
+        .getElementById("arrLeft")
+        .addEventListener("click", () =>
+          document
+            .getElementById("arrivalsTrack")
+            .scrollBy({ left: -250, behavior: "smooth" }),
+        );
+      document
+        .getElementById("arrRight")
+        .addEventListener("click", () =>
+          document
+            .getElementById("arrivalsTrack")
+            .scrollBy({ left: 250, behavior: "smooth" }),
+        );
 
-      // ── RENDER PRODUCTS ───────────────────────────────────────────
+      // ── RENDER PRODUCTS ───────────────────────────────────────────────────────────
       function renderProducts() {
         const grid = document.getElementById("productGrid");
         const empty = document.getElementById("emptyState");
@@ -1682,22 +2404,22 @@
         grid.innerHTML = list
           .map(
             (p, i) => `
-          <div class="product-card bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col transition-all hover:shadow-xl hover:border-brand animate-fadeUp group" style="animation-delay:${i * 0.03}s">
-            <div class="relative aspect-square overflow-hidden bg-gray-100 dark:bg-neutral-800">
-              <img src="${p.img}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105" />
-              ${p.new_arrival ? '<span class="absolute top-2 left-2 bg-brand text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">New</span>' : ""}
-            </div>
-            <div class="p-3.5 flex-1 flex flex-col">
-              <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-1">${p.cat}</div>
-              <div class="text-[13px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis" title="${p.name}">${p.name}</div>
-              <div class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed mb-2.5 line-clamp-2 flex-1">${p.desc || ""}</div>
-              <div class="text-[15px] font-bold text-brand mb-3">${fmt(p.price)}</div>
-              <div class="flex gap-2">
-                <button class="flex-1 px-1 py-2 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 text-[12px] font-semibold hover:border-brand hover:text-brand transition-colors" data-id="${p.id}" data-action="details">Details</button>
-                <button class="flex-1 px-1 py-2 rounded-full bg-brand text-white text-[12px] font-semibold hover:opacity-85 transition-opacity" data-id="${p.id}" data-action="cart">Add to Cart</button>
-              </div>
-            </div>
-          </div>`,
+    <div class="product-card bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col transition-all hover:shadow-xl hover:border-brand animate-fadeUp group" style="animation-delay:${i * 0.03}s">
+      <div class="relative aspect-square overflow-hidden bg-gray-100 dark:bg-neutral-800">
+        <img src="${p.img}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105"/>
+        ${p.new_arrival ? '<span class="absolute top-2 left-2 bg-brand text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">New</span>' : ""}
+      </div>
+      <div class="p-3.5 flex-1 flex flex-col">
+        <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-1">${p.cat}</div>
+        <div class="text-[13px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis" title="${p.name}">${p.name}</div>
+        <div class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed mb-2.5 line-clamp-2 flex-1">${p.desc || ""}</div>
+        <div class="text-[15px] font-bold text-brand mb-3">${fmt(p.price)}</div>
+        <div class="flex gap-2">
+          <button class="flex-1 px-1 py-2 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 text-[12px] font-semibold hover:border-brand hover:text-brand transition-colors" data-id="${p.id}" data-action="details">Details</button>
+          <button class="flex-1 px-1 py-2 rounded-full bg-brand text-white text-[12px] font-semibold hover:opacity-85 transition-opacity" data-id="${p.id}" data-action="cart">Add to Cart</button>
+        </div>
+      </div>
+    </div>`,
           )
           .join("");
       }
@@ -1705,14 +2427,15 @@
       document.getElementById("productGrid").addEventListener("click", (e) => {
         const btn = e.target.closest("[data-action]");
         if (!btn) return;
-        const id = btn.dataset.id;
-        const p = allProducts.find((x) => String(x.id) === String(id));
+        const p = allProducts.find(
+          (x) => String(x.id) === String(btn.dataset.id),
+        );
         if (!p) return;
         if (btn.dataset.action === "cart") addToCart(p, 1);
         else if (btn.dataset.action === "details") openProductDetail(p);
       });
 
-      // ── FILTERS ───────────────────────────────────────────────────
+      // ── FILTERS ───────────────────────────────────────────────────────────────────
       function styleFilterPills() {
         document.querySelectorAll(".filter-pill").forEach((b) => {
           const active = b.dataset.cat === activeCat;
@@ -1754,7 +2477,7 @@
         renderProducts();
       });
 
-      // ── SEARCH ────────────────────────────────────────────────────
+      // ── SEARCH ────────────────────────────────────────────────────────────────────
       function doSearch(val) {
         searchTerm = val.trim();
         renderProducts();
@@ -1780,7 +2503,7 @@
         mobileMenu.classList.add("hidden");
       });
 
-      // ── PRODUCT DETAIL ────────────────────────────────────────────
+      // ── PRODUCT DETAIL MODAL ──────────────────────────────────────────────────────
       function openProductDetail(p) {
         pdCurrent = p;
         pdQty = 1;
@@ -1826,7 +2549,7 @@
         document.getElementById("pdOverlay").classList.remove("flex");
       });
 
-      // ── CART ──────────────────────────────────────────────────────
+      // ── CART ──────────────────────────────────────────────────────────────────────
       function addToCart(p, qty) {
         const cartArr = loadCart();
         const ex = cartArr.find((i) => String(i.id) === String(p.id));
@@ -1857,29 +2580,29 @@
 
         if (!cartArr.length) {
           items.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-gray-300 dark:text-gray-600 gap-2.5 text-center p-10">
-            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="opacity-40"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Your cart is empty</p>
-          </div>`;
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="opacity-40"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Your cart is empty</p>
+    </div>`;
           return;
         }
         items.innerHTML = cartArr
           .map(
             (item) => `
-          <div class="flex gap-3 items-center p-2.5 bg-gray-100 dark:bg-neutral-800 rounded-[10px]">
-            <img src="${item.img}" alt="${item.name}" class="w-[52px] h-[52px] object-cover rounded-lg shrink-0" />
-            <div class="flex-1 min-w-0">
-              <div class="text-xs font-semibold whitespace-nowrap overflow-hidden text-ellipsis mb-0.5">${item.name}</div>
-              <div class="text-xs text-brand font-semibold mb-1.5">${fmt(item.price)}</div>
-              <div class="flex items-center gap-2">
-                <button class="qty-btn w-6 h-6 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm flex items-center justify-center hover:border-brand transition-colors" data-id="${item.id}" data-action="dec">−</button>
-                <span class="text-[13px] font-semibold min-w-[16px] text-center">${item.qty}</span>
-                <button class="qty-btn w-6 h-6 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm flex items-center justify-center hover:border-brand transition-colors" data-id="${item.id}" data-action="inc">+</button>
-              </div>
-            </div>
-            <button class="text-gray-300 dark:text-gray-600 w-7 h-7 flex items-center justify-center rounded-full hover:text-red-500 transition-colors" data-id="${item.id}" data-action="remove">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            </button>
-          </div>`,
+    <div class="flex gap-3 items-center p-2.5 bg-gray-100 dark:bg-neutral-800 rounded-[10px]">
+      <img src="${item.img}" alt="${item.name}" class="w-[52px] h-[52px] object-cover rounded-lg shrink-0"/>
+      <div class="flex-1 min-w-0">
+        <div class="text-xs font-semibold whitespace-nowrap overflow-hidden text-ellipsis mb-0.5">${item.name}</div>
+        <div class="text-xs text-brand font-semibold mb-1.5">${fmt(item.price)}</div>
+        <div class="flex items-center gap-2">
+          <button class="qty-btn w-6 h-6 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm flex items-center justify-center hover:border-brand transition-colors" data-id="${item.id}" data-action="dec">−</button>
+          <span class="text-[13px] font-semibold min-w-[16px] text-center">${item.qty}</span>
+          <button class="qty-btn w-6 h-6 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm flex items-center justify-center hover:border-brand transition-colors" data-id="${item.id}" data-action="inc">+</button>
+        </div>
+      </div>
+      <button class="text-gray-300 dark:text-gray-600 w-7 h-7 flex items-center justify-center rounded-full hover:text-red-500 transition-colors" data-id="${item.id}" data-action="remove">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>`,
           )
           .join("");
       }
@@ -1887,9 +2610,10 @@
       document.getElementById("cartItems").addEventListener("click", (e) => {
         const btn = e.target.closest("[data-action]");
         if (!btn || !btn.dataset.id) return;
-        const id = btn.dataset.id;
         const cartArr = loadCart();
-        const item = cartArr.find((i) => String(i.id) === String(id));
+        const item = cartArr.find(
+          (i) => String(i.id) === String(btn.dataset.id),
+        );
         if (!item) return;
         if (btn.dataset.action === "inc") item.qty++;
         else if (btn.dataset.action === "dec") {
@@ -1917,37 +2641,79 @@
       document.getElementById("cartClose").addEventListener("click", closeCart);
       cartOverlay.addEventListener("click", closeCart);
 
-      // ── PAYMENT MODAL (no Paystack) ───────────────────────────────
+      // ── PAYMENT MODAL ─────────────────────────────────────────────────────────────
       function copyAcct() {
         navigator.clipboard
           .writeText("7089344370")
           .then(() => showToast("Account number copied!"));
       }
 
-      document.getElementById("checkoutBtn").addEventListener("click", () => {
-        const cartArr = loadCart();
-        if (!cartArr.length) {
-          showToast("Your cart is empty");
-          return;
-        }
+      document
+        .getElementById("checkoutBtn")
+        .addEventListener("click", async () => {
+          const cartArr = loadCart();
+          if (!cartArr.length) {
+            showToast("Your cart is empty");
+            return;
+          }
 
-        const total = cartArr.reduce((s, i) => s + i.price * i.qty, 0);
-        const itemNames = cartArr.map((i) => `${i.name} x${i.qty}`).join(", ");
-        const totalFmt = fmt(total);
+          // Guard: must be signed in (same as home page)
+          if (!currentUser) {
+            showToast("Please sign in to checkout");
+            showAuthModal("signIn");
+            return;
+          }
 
-        document.getElementById("paymentTotal").textContent = totalFmt;
+          const total = cartArr.reduce((s, i) => s + i.price * i.qty, 0);
+          const totalFmt = fmt(total);
+          const itemLines = cartArr
+            .map((i) => `${i.name} x${i.qty} — ${fmt(i.price * i.qty)}`)
+            .join("\n");
+          const itemsSummary = cartArr
+            .map((i) => `${i.name} x${i.qty}`)
+            .join(", ");
 
-        const msg = encodeURIComponent(
-          `Hello Minipi NG! 👋\n\nI just made a payment for my order:\n\n${itemNames}\n\nTotal: ${totalFmt}\n\nPlease find my payment receipt attached. Kindly confirm my order. Thank you!`,
-        );
-        document.getElementById("whatsappPayLink").href =
-          `https://wa.me/2348034970248?text=${msg}`;
+          document.getElementById("paymentTotal").textContent = totalFmt;
 
-        closeCart();
-        const ov = document.getElementById("paymentOverlay");
-        ov.classList.remove("hidden");
-        ov.classList.add("flex");
-      });
+          // Save order to Supabase (same as home page)
+          let orderId = null;
+          if (sb) {
+            try {
+              const { data, error } = await sb
+                .from("orders")
+                .insert([
+                  {
+                    user_id: currentUser.id,
+                    customer_name: currentUser.name,
+                    customer_email: currentUser.email,
+                    items_summary: itemsSummary,
+                    total,
+                    status: "pending",
+                  },
+                ])
+                .select()
+                .single();
+              if (!error && data) orderId = data.id;
+            } catch (err) {
+              console.warn("Order save failed", err);
+            }
+          }
+
+          const refTag = orderId
+            ? ` (Ref: ${String(orderId).slice(0, 8).toUpperCase()})`
+            : "";
+          const msg = encodeURIComponent(
+            `Hello Minipi NG! 👋\n\nI just made a payment for my order${refTag}:\n\n` +
+              `🛒 *Items Ordered:*\n${itemLines}\n\n💰 *Total Paid: ${totalFmt}*\n\nPlease find my payment receipt attached. Kindly confirm my order. Thank you!`,
+          );
+          document.getElementById("whatsappPayLink").href =
+            `https://wa.me/2348034970248?text=${msg}`;
+
+          closeCart();
+          const ov = document.getElementById("paymentOverlay");
+          ov.classList.remove("hidden");
+          ov.classList.add("flex");
+        });
 
       document.getElementById("paymentClose").addEventListener("click", () => {
         document.getElementById("paymentOverlay").classList.add("hidden");
@@ -1962,7 +2728,7 @@
           }
         });
 
-      // ── TOAST ─────────────────────────────────────────────────────
+      // ── TOAST ─────────────────────────────────────────────────────────────────────
       let toastT = null;
       function showToast(msg) {
         const t = document.getElementById("toast");
@@ -1976,61 +2742,90 @@
         }, 2500);
       }
 
-      // ── INFO MODAL ────────────────────────────────────────────────
+      // ── INFO MODAL (proper overlay instead of alert) ──────────────────────────────
+      // Re-use the footer info-link buttons by creating a simple inline modal
       const infoContent = {
         about: {
-          title: "About Gadgets.",
-          body: `<p>Gadgets is Nigeria's go-to online store for the latest phones, tablets, laptops and gaming gear.</p><p>We source authentic devices directly from trusted brands and deliver them to your doorstep, with prices always listed in Naira.</p><p>Founded with one goal: make great technology accessible to everyone in Nigeria.</p>`,
+          title: "About Minipi NG",
+          body: `<p class="mb-2">Minipi NG is Nigeria's go-to online store for the latest phones, tablets, laptops and gaming gear.</p><p class="mb-2">We source authentic devices directly from trusted brands and deliver them to your doorstep, with prices always listed in Naira.</p><p>Founded with one goal: make great technology accessible to everyone in Nigeria.</p>`,
         },
         faqs: {
           title: "Frequently Asked Questions",
-          body: `<div class="faq-item"><div class="faq-q">Do products come with warranty?</div><p>Yes — all products carry a minimum 1-year manufacturer warranty.</p></div><div class="faq-item"><div class="faq-q">How long does delivery take?</div><p>2–5 business days within Nigeria depending on your location.</p></div><div class="faq-item"><div class="faq-q">Can I pay on delivery?</div><p>Yes, pay-on-delivery is available in select cities.</p></div><div class="faq-item"><div class="faq-q">Do you ship outside Nigeria?</div><p>Currently we only ship within Nigeria.</p></div><div class="faq-item"><div class="faq-q">Can I return a product?</div><p>Yes — within 7 days of delivery for any defective item.</p></div>`,
+          body: `<div class="mb-3"><p class="font-semibold text-gray-900 dark:text-gray-100 mb-1">Do products come with warranty?</p><p>Yes — all products carry a minimum 1-year manufacturer warranty.</p></div><div class="mb-3"><p class="font-semibold text-gray-900 dark:text-gray-100 mb-1">How long does delivery take?</p><p>2–5 business days within Nigeria.</p></div><div class="mb-3"><p class="font-semibold text-gray-900 dark:text-gray-100 mb-1">Can I pay on delivery?</p><p>Yes, pay-on-delivery is available in select cities.</p></div><div class="mb-3"><p class="font-semibold text-gray-900 dark:text-gray-100 mb-1">Do you ship outside Nigeria?</p><p>Currently we only ship within Nigeria.</p></div><div><p class="font-semibold text-gray-900 dark:text-gray-100 mb-1">Can I return a product?</p><p>Yes — within 7 days of delivery for any defective item.</p></div>`,
         },
       };
+
+      // Inject a lightweight info overlay if not already in the HTML
+      if (!document.getElementById("shopInfoOverlay")) {
+        const infoOv = document.createElement("div");
+        infoOv.id = "shopInfoOverlay";
+        infoOv.className =
+          "hidden fixed inset-0 bg-black/60 z-[500] items-center justify-center p-5";
+        infoOv.innerHTML = `
+    <div class="bg-white dark:bg-neutral-900 rounded-[20px] shadow-2xl relative max-h-[80vh] overflow-y-auto animate-fadeUp w-full max-w-[440px] p-7">
+      <button id="shopInfoClose" class="absolute top-3.5 right-3.5 w-[30px] h-[30px] flex items-center justify-center rounded-full text-gray-500 bg-gray-100 dark:bg-neutral-800 hover:text-gray-900 dark:hover:text-white transition-colors">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <h2 id="shopInfoTitle" class="text-lg font-bold mb-4"></h2>
+      <div id="shopInfoBody" class="text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed"></div>
+    </div>`;
+        document.body.appendChild(infoOv);
+        document
+          .getElementById("shopInfoClose")
+          .addEventListener("click", () => {
+            infoOv.classList.add("hidden");
+            infoOv.classList.remove("flex");
+          });
+        infoOv.addEventListener("click", (e) => {
+          if (e.target === infoOv) {
+            infoOv.classList.add("hidden");
+            infoOv.classList.remove("flex");
+          }
+        });
+      }
+
       document.querySelectorAll(".info-link").forEach((btn) => {
         btn.addEventListener("click", () => {
           const d = infoContent[btn.dataset.info];
           if (!d) return;
-          // Simple inline display since no infoOverlay on this page — show toast or create on-the-fly
-          alert(d.title + "\n\n" + d.body.replace(/<[^>]+>/g, ""));
+          document.getElementById("shopInfoTitle").textContent = d.title;
+          document.getElementById("shopInfoBody").innerHTML = d.body;
+          const ov = document.getElementById("shopInfoOverlay");
+          ov.classList.remove("hidden");
+          ov.classList.add("flex");
         });
       });
 
-      // ── REALTIME ──────────────────────────────────────────────────
+      // ── REALTIME PRODUCTS ─────────────────────────────────────────────────────────
       function subscribeToProducts() {
         if (!sb) return;
-        sb.channel("products-channel")
+        sb.channel("shop-products-live")
           .on(
             "postgres_changes",
             { event: "*", schema: "public", table: "products" },
             (payload) => {
               if (payload.eventType === "INSERT") {
                 allProducts.unshift(payload.new);
-                renderArrivals();
-                renderProducts();
-                showToast(`New product added: ${payload.new.name}`);
+                showToast(`New: ${payload.new.name}`);
               } else if (payload.eventType === "UPDATE") {
-                const idx = allProducts.findIndex(
-                  (p) => p.id === payload.new.id,
+                const i = allProducts.findIndex(
+                  (p) => String(p.id) === String(payload.new.id),
                 );
-                if (idx !== -1) {
-                  allProducts[idx] = payload.new;
-                  renderArrivals();
-                  renderProducts();
-                }
+                if (i !== -1) allProducts[i] = payload.new;
               } else if (payload.eventType === "DELETE") {
-                allProducts = allProducts.filter(
-                  (p) => p.id !== payload.old.id,
+                const i = allProducts.findIndex(
+                  (p) => String(p.id) === String(payload.old.id),
                 );
-                renderArrivals();
-                renderProducts();
+                if (i !== -1) allProducts.splice(i, 1);
               }
+              renderArrivals();
+              renderProducts();
             },
           )
           .subscribe();
       }
 
-      // ── INIT ──────────────────────────────────────────────────────
+      // ── INIT ──────────────────────────────────────────────────────────────────────
       loadProducts().then(() => {
         renderCart();
         subscribeToProducts();
