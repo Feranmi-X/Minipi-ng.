@@ -390,7 +390,7 @@ cartOverlay.addEventListener("click", closeCart);
 
 // ── CHECKOUT / PAYMENT MODAL ──────────────────────────────
 function copyAcct() {
-  navigator.clipboard.writeText("7089344370").then(() => showToast("Account number copied!"));
+  navigator.clipboard.writeText("0230092228").then(() => showToast("Account number copied!"));
 }
 
 async function openPaymentModal() {
