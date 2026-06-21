@@ -1397,9 +1397,9 @@
             (p) => `
           <tr class="border-b border-gray-50 dark:border-neutral-800 hover:bg-gray-50 dark:hover:bg-neutral-800/40 transition-colors animate-fadeUp">
             <td class="px-5 py-3">
-              <img src="${p.img || ""}" alt="${p.name}"
+              <img src="${p.img || ""}" alt="${p.name}" loading="lazy"
                 class="w-11 h-11 object-cover rounded-xl bg-gray-100 dark:bg-neutral-800 border border-gray-100 dark:border-neutral-700"
-                onerror="this.src='https://placehold.co/44x44/f3f4f6/9ca3af?text=IMG'" />
+                onerror="this.onerror=null;this.src='https://placehold.co/44x44/f3f4f6/9ca3af?text=IMG'" />
             </td>
             <td class="px-4 py-3">
               <div class="text-[13px] font-semibold max-w-[180px] truncate" title="${p.name}">${p.name}</div>
@@ -1450,6 +1450,89 @@
           if (delBtn) openDeleteModal(delBtn.dataset.id, delBtn.dataset.name);
         });
 
+      // ── IMAGE COMPRESSION + UPLOAD ──────────────────────────────
+      // Compresses/re-encodes any image (including HEIC-decodable-by-browser,
+      // big phone photos, etc.) to a JPEG under ~1600px on the long edge before
+      // it ever reaches Supabase. This fixes:
+      //   1) "blind"/broken images caused by formats the <img> tag can't render
+      //   2) slow page loads caused by multi-MB unoptimized photos
+      function compressImage(file, maxDim = 1600, quality = 0.82) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          const url = URL.createObjectURL(file);
+          img.onload = () => {
+            URL.revokeObjectURL(url);
+            let { width, height } = img;
+            if (width > maxDim || height > maxDim) {
+              if (width > height) {
+                height = Math.round((height * maxDim) / width);
+                width = maxDim;
+              } else {
+                width = Math.round((width * maxDim) / height);
+                height = maxDim;
+              }
+            }
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+            canvas.toBlob(
+              (blob) => {
+                if (!blob) {
+                  reject(
+                    new Error(
+                      "Could not process this image. Try a different photo (JPG/PNG/WEBP).",
+                    ),
+                  );
+                  return;
+                }
+                resolve(blob);
+              },
+              "image/jpeg",
+              quality,
+            );
+          };
+          img.onerror = () => {
+            URL.revokeObjectURL(url);
+            reject(
+              new Error(
+                "This file isn't a readable image (HEIC photos from iPhone aren't supported by browsers — please pick 'Most Compatible' format in your camera settings, or convert to JPG first).",
+              ),
+            );
+          };
+          img.src = url;
+        });
+      }
+
+      // Verifies the uploaded file is genuinely reachable before we save the URL
+      function verifyImageLoads(url, timeoutMs = 8000) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          const t = setTimeout(() => {
+            img.src = "";
+            reject(
+              new Error(
+                "Image upload succeeded but the file isn't loading back. Please try again.",
+              ),
+            );
+          }, timeoutMs);
+          img.onload = () => {
+            clearTimeout(t);
+            resolve(true);
+          };
+          img.onerror = () => {
+            clearTimeout(t);
+            reject(
+              new Error(
+                "Image upload succeeded but the file isn't loading back. Please check the storage bucket is public, then try again.",
+              ),
+            );
+          };
+          img.src = url + (url.includes("?") ? "&" : "?") + "v=" + Date.now();
+        });
+      }
+
       // ── IMAGE UPLOAD ──────────────────────────────────────────
       // Drag-over highlight
       const uploadZone = document.getElementById("uploadZone");
@@ -1471,9 +1554,12 @@
           const file = e.target.files[0];
           if (!file || !sb) return;
 
-          // Validate size (5 MB max)
-          if (file.size > 5 * 1024 * 1024) {
-            showToast("Image must be under 5 MB.", "error");
+          // Validate size (25 MB max raw — we compress it down before upload)
+          if (file.size > 25 * 1024 * 1024) {
+            showToast(
+              "Image is too large. Please choose a file under 25 MB.",
+              "error",
+            );
             e.target.value = "";
             return;
           }
@@ -1486,7 +1572,7 @@
           document.getElementById("uploadPct").textContent = "0%";
           document.getElementById("uploadProgressBar").style.width = "0%";
           document.getElementById("uploadStatusText").textContent =
-            "Uploading…";
+            "Compressing image…";
 
           // Animate bar to 60% while waiting (Supabase JS v2 doesn't expose progress events)
           let fakeProgress = 0;
@@ -1498,19 +1584,39 @@
               fakeProgress + "%";
           }, 120);
 
-          // Unique file name to avoid collisions
-          const ext = file.name.split(".").pop().toLowerCase();
-          const fileName = `product_${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
-
           try {
+            // 1) Compress / re-encode to a safe, small JPEG.
+            //    This also fixes HEIC and other browser-unviewable formats,
+            //    since canvas re-encoding always outputs JPEG.
+            const compressedBlob = await compressImage(file);
+
+            document.getElementById("uploadStatusText").textContent =
+              "Uploading…";
+
+            // Unique file name to avoid collisions — always .jpg since we re-encoded
+            const fileName = `product_${Date.now()}_${Math.random().toString(36).slice(2, 8)}.jpg`;
+
             const { data, error } = await sb.storage
               .from(BUCKET)
-              .upload(fileName, file, {
+              .upload(fileName, compressedBlob, {
                 upsert: false,
-                contentType: file.type,
+                contentType: "image/jpeg",
               });
 
             if (error) throw error;
+
+            // Get public URL
+            const { data: urlData } = sb.storage
+              .from(BUCKET)
+              .getPublicUrl(data.path);
+            const publicUrl = urlData.publicUrl;
+
+            // 2) Verify the file is actually reachable before trusting it —
+            //    this catches silent storage/RLS failures instead of leaving
+            //    a "blind" broken image on the product.
+            document.getElementById("uploadStatusText").textContent =
+              "Verifying…";
+            await verifyImageLoads(publicUrl);
 
             // Finish progress bar
             clearInterval(fakeTimer);
@@ -1519,18 +1625,13 @@
             document.getElementById("uploadStatusText").textContent =
               "Upload complete!";
 
-            // Get public URL
-            const { data: urlData } = sb.storage
-              .from(BUCKET)
-              .getPublicUrl(data.path);
-            const publicUrl = urlData.publicUrl;
-
             // Store URL in hidden field
             document.getElementById("fImg").value = publicUrl;
 
             // Show preview
             document.getElementById("imgPreview").src = publicUrl;
-            document.getElementById("imgPreviewName").textContent = file.name;
+            document.getElementById("imgPreviewName").textContent =
+              file.name.replace(/\.[^.]+$/, "") + ".jpg (compressed)";
             document
               .getElementById("imgPreviewWrap")
               .classList.remove("hidden");
@@ -1541,7 +1642,10 @@
             }, 800);
           } catch (err) {
             clearInterval(fakeTimer);
-            showToast("Upload failed: " + err.message, "error");
+            showToast(
+              err.message || "Upload failed. Please try again.",
+              "error",
+            );
             // Reset to show zone again
             document.getElementById("uploadProgress").classList.add("hidden");
             uploadZone.classList.remove("hidden");
