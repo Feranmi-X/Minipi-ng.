@@ -113,6 +113,26 @@ function saveCart(c) {
   localStorage.setItem(CART_KEY, JSON.stringify(c));
 }
 
+// ── IMAGE HELPERS (sizing/format only — no other logic touched) ──
+// Appends/normalizes width + quality params on Unsplash URLs so the
+// browser downloads an image close to its actual rendered size
+// instead of a much larger one, and requests auto format (webp/avif
+// when supported) for a smaller payload.
+function optimizeImgUrl(url, w) {
+  if (!url || typeof url !== "string") return url;
+  if (!url.includes("images.unsplash.com")) return url;
+  try {
+    const u = new URL(url);
+    u.searchParams.set("auto", "format");
+    u.searchParams.set("fit", "crop");
+    u.searchParams.set("w", String(w));
+    u.searchParams.set("q", "70");
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 // ── PRODUCTS DATA (fallback) ──────────────────────────────
 const products = [
   // PHONES
@@ -192,7 +212,7 @@ function renderProducts() {
   grid.innerHTML = list.map((p, i) => `
     <div class="product-card bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col transition-all hover:shadow-xl hover:border-brand animate-fadeUp group" style="animation-delay:${i * 0.04}s">
       <div class="relative aspect-square overflow-hidden bg-gray-100 dark:bg-neutral-800">
-        <img src="${p.img}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105">
+        <img src="${optimizeImgUrl(p.img, 400)}" alt="${p.name}" width="400" height="400" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105">
         ${p.new_arrival ? '<span class="absolute top-2 left-2 bg-brand text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">New</span>' : ""}
       </div>
       <div class="p-3.5 flex-1 flex flex-col">
@@ -339,7 +359,7 @@ function renderCart() {
 
   items.innerHTML = cartArr.map((item) => `
     <div class="flex gap-3 items-center p-2.5 bg-gray-100 dark:bg-neutral-800 rounded-[10px]">
-      <img src="${item.img}" alt="${item.name}" class="w-[52px] h-[52px] object-cover rounded-lg shrink-0">
+      <img src="${optimizeImgUrl(item.img, 104)}" alt="${item.name}" width="52" height="52" loading="lazy" decoding="async" class="w-[52px] h-[52px] object-cover rounded-lg shrink-0">
       <div class="flex-1 min-w-0">
         <div class="text-xs font-semibold whitespace-nowrap overflow-hidden text-ellipsis mb-0.5">${item.name}</div>
         <div class="text-xs text-brand font-semibold mb-1.5">${fmt(item.price)}</div>
@@ -462,7 +482,7 @@ function renderHomeArrivals() {
     <div class="bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col group cursor-pointer hover:border-brand hover:shadow-lg transition-all"
          onclick='openProductDetail(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
       <div class="relative aspect-square overflow-hidden bg-gray-100 dark:bg-neutral-800">
-        <img src="${p.img}" alt="${p.name}" loading="lazy" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105" />
+        <img src="${optimizeImgUrl(p.img, 220)}" alt="${p.name}" width="220" height="220" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105" />
         <span class="absolute top-2 left-2 bg-brand text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">New</span>
       </div>
       <div class="p-3 flex-1 flex flex-col">
@@ -491,7 +511,7 @@ let pdCurrent = null, pdQty = 1;
 function openProductDetail(p) {
   pdCurrent = p;
   pdQty     = 1;
-  document.getElementById("pdImg").src           = p.img;
+  document.getElementById("pdImg").src           = optimizeImgUrl(p.img, 560);
   document.getElementById("pdImg").alt           = p.name;
   document.getElementById("pdCat").textContent   = (p.cat || "").toUpperCase();
   document.getElementById("pdName").textContent  = p.name;

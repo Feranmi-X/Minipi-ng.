@@ -5,9 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Minipi NG</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
+    />
+    <link
+      rel="preload"
+      as="image"
+      href="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=440&q=70"
+      fetchpriority="high"
     />
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -654,8 +661,14 @@
           </div>
         </div>
         <img
-          src="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=700&q=80"
+          src="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=440&q=70"
+          srcset="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=280&q=70 280w, https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=440&q=70 440w"
+          sizes="(max-width: 767px) 280px, 440px"
           alt="Wireless earbuds"
+          width="440"
+          height="440"
+          fetchpriority="high"
+          decoding="async"
           class="w-full max-w-[280px] md:max-w-[440px] aspect-square object-cover rounded-3xl shadow-2xl justify-self-center mx-auto"
         />
       </div>
@@ -1064,8 +1077,14 @@
           </div>
         </div>
         <img
-          src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=700&q=80"
+          src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=460&q=70"
+          srcset="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=280&q=70 280w, https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=460&q=70 460w"
+          sizes="(max-width: 767px) 280px, 460px"
           alt="Smartphones"
+          width="460"
+          height="460"
+          loading="lazy"
+          decoding="async"
           class="w-full max-w-[280px] md:max-w-[460px] rounded-3xl object-cover shadow-2xl justify-self-center mx-auto"
         />
       </div>
@@ -1669,6 +1688,8 @@
             id="pdImg"
             src=""
             alt=""
+            loading="lazy"
+            decoding="async"
             class="w-full aspect-square object-cover rounded-2xl bg-gray-100 dark:bg-neutral-800"
           />
           <div class="flex flex-col">
