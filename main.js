@@ -107,7 +107,6 @@ window.copyAcct = copyAcct;
   });
   document.addEventListener("click", (e) => { if (!li.contains(e.target)) closeDd(); });
 
-  // On index page, cat nav links scroll to shop + filter
   if (!window.location.pathname.includes("shop.html")) {
     document.querySelectorAll(".cat-nav-link").forEach((a) => {
       a.addEventListener("click", (e) => {
@@ -208,6 +207,16 @@ const fmt = (n) => "₦" + Number(n).toLocaleString("en-NG");
 let activeCat  = "all";
 let searchTerm = "";
 
+// ── CLEAR SEARCH INPUTS HELPER ────────────────────────────
+// Prevents browser autofill from contaminating the product grid
+function clearSearchInputs() {
+  const sd = document.getElementById("searchDesktop");
+  const sm = document.getElementById("searchMobile");
+  if (sd) sd.value = "";
+  if (sm) sm.value = "";
+  searchTerm = "";
+}
+
 // ── RENDER PRODUCTS ───────────────────────────────────────
 function renderProducts() {
   const grid = document.getElementById("productGrid");
@@ -279,13 +288,11 @@ const pillActive   = "bg-brand text-white border-brand";
 const pillInactive = "border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-gray-900 dark:text-gray-100 hover:border-brand hover:text-brand";
 
 function styleFilterPills() {
-  // Style filter pills (above product grid)
   document.querySelectorAll(".filter-pill").forEach((b) => {
     const active = b.dataset.cat === activeCat;
     b.className = `filter-pill px-[18px] py-2 rounded-full border-[1.5px] text-[13px] font-medium transition-all whitespace-nowrap ${active ? pillActive : pillInactive}`;
   });
 
-  // ✅ FIX: Style ALL cat-card buttons including the "All" card
   document.querySelectorAll(".cat-card").forEach((b) => {
     const active = b.dataset.cat === activeCat;
     b.style.borderColor = active ? "#ff7a00" : "";
@@ -309,7 +316,6 @@ if (filterRow) {
   });
 }
 
-// ✅ FIX: catGrid click handler now covers the All button since it's a cat-card
 const catGrid = document.getElementById("catGrid");
 if (catGrid) {
   catGrid.addEventListener("click", (e) => {
@@ -329,11 +335,30 @@ document.querySelectorAll(".footer-cat").forEach((a) => {
 });
 
 // ── SEARCH ────────────────────────────────────────────────
+// FIX: Clear inputs on DOMContentLoaded AND after a short delay to catch
+// late browser autofill that fires after the initial load event
 window.addEventListener("DOMContentLoaded", () => {
-  const sd = document.getElementById("searchDesktop");
-  const sm = document.getElementById("searchMobile");
-  if (sd) sd.value = "";
-  if (sm) sm.value = "";
+  clearSearchInputs();
+  renderProducts();
+  // Second clear after 500ms catches browsers that autofill slightly late
+  setTimeout(() => {
+    const sd = document.getElementById("searchDesktop");
+    const sm = document.getElementById("searchMobile");
+    const sdVal = sd ? sd.value.trim() : "";
+    const smVal = sm ? sm.value.trim() : "";
+    // Only re-clear if the value doesn't look like a real product search
+    // (i.e. it contains @ or looks like an email/phone — autofill artifacts)
+    if (sdVal.includes("@") || /^\+?\d{6,}$/.test(sdVal)) {
+      if (sd) sd.value = "";
+      searchTerm = "";
+      renderProducts();
+    }
+    if (smVal.includes("@") || /^\+?\d{6,}$/.test(smVal)) {
+      if (sm) sm.value = "";
+      searchTerm = "";
+      renderProducts();
+    }
+  }, 500);
 });
 
 function doSearch(val) {
@@ -705,6 +730,11 @@ function unsubscribeFromUserOrders() {
 
 // ── REFRESH AUTH UI ───────────────────────────────────────
 function refreshAuthUI() {
+  // FIX: Always clear search inputs on auth state change to prevent
+  // browser autofill from contaminating the product grid with email/phone values
+  clearSearchInputs();
+  renderProducts();
+
   const authDd     = document.getElementById("authDropdown");
   const userDd     = document.getElementById("userDropdown");
   const adminLink  = document.getElementById("adminNavLink");
@@ -791,6 +821,9 @@ function closeAuthModal() {
   signInModal?.classList.add("hidden");
   signUpModal?.classList.add("hidden");
   clearAuthAlerts();
+  // FIX: Clear search inputs when auth modal closes in case autofill fired
+  clearSearchInputs();
+  renderProducts();
 }
 
 function clearAuthAlerts() {
@@ -1035,6 +1068,9 @@ document.getElementById("rpSubmitBtn")?.addEventListener("click", async () => {
 // ── SESSION / AUTH STATE CHANGE ───────────────────────────
 if (sb) {
   sb.auth.onAuthStateChange((event, session) => {
+    // FIX: Clear search inputs on every auth event to prevent autofill bleed
+    clearSearchInputs();
+
     if (event === "PASSWORD_RECOVERY") {
       openResetModal();
       return;
@@ -1156,7 +1192,6 @@ async function loadProductsFromSupabase() {
       .subscribe();
   }
 
-  // ✅ FIX: activeCat is "all" by default — styleFilterPills highlights the All card immediately on load
   styleFilterPills();
   renderProducts();
   renderHomeArrivals();
