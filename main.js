@@ -204,6 +204,7 @@ const products = [
 const fmt = (n) => "₦" + Number(n).toLocaleString("en-NG");
 
 // ── ACTIVE CATEGORY — default "all" so everything shows on load ──
+const VALID_CATS = ["all", "phone", "tablet", "laptop", "gaming"];
 let activeCat  = "all";
 let searchTerm = "";
 
@@ -302,8 +303,12 @@ function styleFilterPills() {
   });
 }
 
+// FIX: setFilter now validates the incoming category against the known
+// list and falls back to "all" for anything unrecognized (missing/typo'd
+// data-cat attributes, stale markup, etc.) instead of silently filtering
+// the grid to an unintended category or leaving it blank.
 function setFilter(cat) {
-  activeCat = cat;
+  activeCat = VALID_CATS.includes(cat) ? cat : "all";
   styleFilterPills();
   renderProducts();
 }
@@ -338,6 +343,10 @@ document.querySelectorAll(".footer-cat").forEach((a) => {
 // FIX: Clear inputs on DOMContentLoaded AND after a short delay to catch
 // late browser autofill that fires after the initial load event
 window.addEventListener("DOMContentLoaded", () => {
+  // FIX: explicitly re-assert the default "all" state on load (instead of
+  // relying solely on the module-level initializer) so a stale value
+  // injected before this listener runs can never leak into the first render
+  setFilter("all");
   clearSearchInputs();
   renderProducts();
   // Second clear after 500ms catches browsers that autofill slightly late
@@ -606,6 +615,17 @@ const sectionObserver = new IntersectionObserver(
   { threshold: 0.15 }
 );
 fadeSections.forEach((s) => sectionObserver.observe(s));
+
+// FIX: Safety net — if a fade-section never intersects (e.g. it sits below
+// the fold on a short mobile viewport and the user never scrolls far enough
+// to trigger it, or never reflows the page), force it visible after a short
+// delay so content is never permanently stuck at opacity:0. This previously
+// caused product cards to render correctly into the DOM but stay invisible
+// on mobile until an unrelated click (e.g. a filter button) triggered a
+// scrollIntoView that happened to bring the section into view.
+setTimeout(() => {
+  fadeSections.forEach((s) => s.classList.add("show"));
+}, 1200);
 
 // ── PRODUCT DETAIL MODAL ──────────────────────────────────
 let pdCurrent = null, pdQty = 1;
@@ -1192,8 +1212,10 @@ async function loadProductsFromSupabase() {
       .subscribe();
   }
 
-  styleFilterPills();
-  renderProducts();
+  // FIX: re-assert default filter state once Supabase data is in so the
+  // styled pills/cards reflect "all" against the (possibly replaced)
+  // products array, instead of trusting whatever was rendered earlier
+  setFilter(activeCat);
   renderHomeArrivals();
   renderCart();
 }
