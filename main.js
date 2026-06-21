@@ -1,4 +1,5 @@
-emailjs.init("iPxqCrlDaf1OsTw3J");
+// ── EMAIL JS INIT ─────────────────────────────────────────
+try { emailjs.init("iPxqCrlDaf1OsTw3J"); } catch(e) {}
 
 // ── SHARED KEYS ───────────────────────────────────────────
 const CART_KEY = "minipi_cart";
@@ -11,9 +12,7 @@ try {
   if (window.supabase && typeof window.supabase.createClient === "function") {
     sb = window.supabase.createClient(SB_URL, SB_KEY);
   }
-} catch (e) {
-  console.warn("Supabase init failed", e);
-}
+} catch (e) { console.warn("Supabase init failed", e); }
 
 // ── DARK MODE ─────────────────────────────────────────────
 const html     = document.documentElement;
@@ -24,12 +23,12 @@ const iconMoon = document.getElementById("iconMoon");
 function applyTheme(dark) {
   if (dark) {
     html.classList.add("dark");
-    iconSun.classList.add("hidden");
-    iconMoon.classList.remove("hidden");
+    if (iconSun)  iconSun.classList.add("hidden");
+    if (iconMoon) iconMoon.classList.remove("hidden");
   } else {
     html.classList.remove("dark");
-    iconSun.classList.remove("hidden");
-    iconMoon.classList.add("hidden");
+    if (iconSun)  iconSun.classList.remove("hidden");
+    if (iconMoon) iconMoon.classList.add("hidden");
   }
 }
 
@@ -37,23 +36,47 @@ const savedTheme  = localStorage.getItem("gTheme");
 const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 applyTheme(savedTheme ? savedTheme === "dark" : prefersDark);
 
-themeBtn.addEventListener("click", () => {
-  const isDark = html.classList.contains("dark");
-  applyTheme(!isDark);
-  localStorage.setItem("gTheme", !isDark ? "dark" : "light");
-});
+if (themeBtn) {
+  themeBtn.addEventListener("click", () => {
+    const isDark = html.classList.contains("dark");
+    applyTheme(!isDark);
+    localStorage.setItem("gTheme", isDark ? "light" : "dark");
+  });
+}
 
 // ── MOBILE MENU ───────────────────────────────────────────
 const hamburger  = document.getElementById("hamburger");
 const mobileMenu = document.getElementById("mobileMenu");
-hamburger.addEventListener("click", (e) => {
-  e.stopPropagation();
-  mobileMenu.classList.toggle("hidden");
-});
-document.addEventListener("click", (e) => {
-  if (!mobileMenu.contains(e.target) && e.target !== hamburger)
-    mobileMenu.classList.add("hidden");
-});
+
+if (hamburger && mobileMenu) {
+  hamburger.addEventListener("click", (e) => {
+    e.stopPropagation();
+    mobileMenu.classList.toggle("hidden");
+  });
+  document.addEventListener("click", (e) => {
+    if (!mobileMenu.contains(e.target) && e.target !== hamburger)
+      mobileMenu.classList.add("hidden");
+  });
+}
+
+// ── ABOUT TOGGLE ──────────────────────────────────────────
+const toggleBtn = document.getElementById("toggleBtn");
+if (toggleBtn) {
+  toggleBtn.addEventListener("click", () => {
+    const content = document.getElementById("moreContent");
+    if (!content) return;
+    content.classList.toggle("hidden");
+    toggleBtn.textContent = content.classList.contains("hidden") ? "See More" : "See Less";
+  });
+}
+
+// ── COPY ACCOUNT ──────────────────────────────────────────
+function copyAcct() {
+  navigator.clipboard.writeText("0230092228")
+    .then(() => showToast("Account number copied!"))
+    .catch(() => showToast("Copy failed — number: 0230092228"));
+}
+window.copyAcct = copyAcct;
 
 // ── CATEGORIES DROPDOWN (desktop) ─────────────────────────
 (function () {
@@ -61,45 +84,47 @@ document.addEventListener("click", (e) => {
   const dd  = document.getElementById("catNavDropdown");
   const chv = document.getElementById("catNavChevron");
   const li  = document.getElementById("catNavItem");
-  if (!btn || !dd) return;
+  if (!btn || !dd || !li) return;
 
   function openDd() {
-    dd.classList.remove("opacity-0", "pointer-events-none", "-translate-y-[6px]", "-translate-y-1.5");
-    dd.classList.add("opacity-100", "translate-y-0");
-    chv.style.transform = "rotate(180deg)";
+    dd.style.opacity       = "1";
+    dd.style.pointerEvents = "auto";
+    dd.style.transform     = "translateX(-50%) translateY(0)";
+    if (chv) chv.style.transform = "rotate(180deg)";
   }
   function closeDd() {
-    dd.classList.add("opacity-0", "pointer-events-none");
-    dd.classList.remove("opacity-100", "translate-y-0");
-    chv.style.transform = "";
+    dd.style.opacity       = "0";
+    dd.style.pointerEvents = "none";
+    dd.style.transform     = "translateX(-50%) translateY(-6px)";
+    if (chv) chv.style.transform = "";
   }
 
   li.addEventListener("mouseenter", openDd);
   li.addEventListener("mouseleave", closeDd);
   btn.addEventListener("click", (e) => {
     e.stopPropagation();
-    dd.classList.contains("opacity-0") ? openDd() : closeDd();
+    dd.style.opacity === "1" ? closeDd() : openDd();
   });
   document.addEventListener("click", (e) => { if (!li.contains(e.target)) closeDd(); });
 
+  // On index page, cat nav links scroll to shop + filter
   if (!window.location.pathname.includes("shop.html")) {
     document.querySelectorAll(".cat-nav-link").forEach((a) => {
       a.addEventListener("click", (e) => {
         e.preventDefault();
         closeDd();
-        mobileMenu.classList.add("hidden");
-        if (typeof setFilter === "function") {
-          setFilter(a.dataset.cat);
-          document.getElementById("shop").scrollIntoView({ behavior: "smooth" });
-        }
+        if (mobileMenu) mobileMenu.classList.add("hidden");
+        setFilter(a.dataset.cat);
+        document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" });
       });
     });
   }
 
   document.querySelectorAll(".mob-cat-btn").forEach((b) => {
     b.addEventListener("click", () => {
-      if (typeof setFilter === "function") setFilter(b.dataset.cat);
-      mobileMenu.classList.add("hidden");
+      setFilter(b.dataset.cat);
+      if (mobileMenu) mobileMenu.classList.add("hidden");
+      document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" });
     });
   });
 })();
@@ -109,28 +134,20 @@ function loadCart() {
   try { return JSON.parse(localStorage.getItem(CART_KEY) || "[]"); }
   catch { return []; }
 }
-function saveCart(c) {
-  localStorage.setItem(CART_KEY, JSON.stringify(c));
-}
+function saveCart(c) { localStorage.setItem(CART_KEY, JSON.stringify(c)); }
 
-// ── IMAGE HELPERS (sizing/format only — no other logic touched) ──
-// Appends/normalizes width + quality params on Unsplash URLs so the
-// browser downloads an image close to its actual rendered size
-// instead of a much larger one, and requests auto format (webp/avif
-// when supported) for a smaller payload.
+// ── IMAGE URL OPTIMIZER ───────────────────────────────────
 function optimizeImgUrl(url, w) {
   if (!url || typeof url !== "string") return url;
   if (!url.includes("images.unsplash.com")) return url;
   try {
     const u = new URL(url);
     u.searchParams.set("auto", "format");
-    u.searchParams.set("fit", "crop");
-    u.searchParams.set("w", String(w));
-    u.searchParams.set("q", "70");
+    u.searchParams.set("fit",  "crop");
+    u.searchParams.set("w",    String(w));
+    u.searchParams.set("q",    "70");
     return u.toString();
-  } catch {
-    return url;
-  }
+  } catch { return url; }
 }
 
 // ── PRODUCTS DATA (fallback) ──────────────────────────────
@@ -186,6 +203,8 @@ const products = [
 ];
 
 const fmt = (n) => "₦" + Number(n).toLocaleString("en-NG");
+
+// ── ACTIVE CATEGORY — default "all" so everything shows on load ──
 let activeCat  = "all";
 let searchTerm = "";
 
@@ -205,59 +224,74 @@ function renderProducts() {
   });
 
   if (!list.length) {
-    grid.innerHTML = '<div class="col-span-full text-center py-16 px-5 text-gray-500 dark:text-gray-400 text-sm">No products found.</div>';
+    grid.innerHTML = `<div class="col-span-full text-center py-16 px-5 text-gray-500 dark:text-gray-400 text-sm">No products found.</div>`;
     return;
   }
 
   grid.innerHTML = list.map((p, i) => `
-    <div class="product-card bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col transition-all hover:shadow-xl hover:border-brand animate-fadeUp group" style="animation-delay:${i * 0.04}s">
-      <div class="relative aspect-square overflow-hidden bg-gray-100 dark:bg-neutral-800">
-        <img src="${optimizeImgUrl(p.img, 400)}" alt="${p.name}" width="400" height="400" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105">
-        ${p.new_arrival ? '<span class="absolute top-2 left-2 bg-brand text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">New</span>' : ""}
+    <div class="product-card bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col transition-all hover:shadow-xl hover:border-brand group" style="animation:fadeUp 0.35s ease ${i * 0.04}s both">
+      <div class="relative" style="padding-top:100%;background:#f3f4f6;">
+        <img
+          src="${optimizeImgUrl(p.img, 400)}"
+          alt="${p.name}"
+          width="400" height="400"
+          loading="lazy" decoding="async"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 0.35s ease;"
+          onmouseover="this.style.transform='scale(1.05)'"
+          onmouseout="this.style.transform='scale(1)'"
+        />
+        ${p.new_arrival ? `<span style="position:absolute;top:8px;left:8px;background:#ff7a00;color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em;">New</span>` : ""}
       </div>
       <div class="p-3.5 flex-1 flex flex-col">
         <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-1">${p.cat}</div>
-        <div class="text-[13px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis" title="${p.name}">${p.name}</div>
+        <div class="text-[13px] font-semibold mb-1 overflow-hidden" style="white-space:nowrap;text-overflow:ellipsis;" title="${p.name}">${p.name}</div>
         <div class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed mb-2.5 line-clamp-2 flex-1">${p.desc || ""}</div>
         <div class="text-[15px] font-bold text-brand mb-3">${fmt(p.price)}</div>
         <div class="flex gap-2">
-          <button class="flex-1 px-1 py-2 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 text-[12px] font-semibold hover:border-brand hover:text-brand transition-colors" data-id="${p.id}" data-action="details">Details</button>
-          <button class="flex-1 px-1 py-2 rounded-full bg-brand text-white text-[12px] font-semibold hover:opacity-85 transition-opacity" data-id="${p.id}" data-action="cart">Add to Cart</button>
+          <button
+            class="flex-1 px-1 py-2 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 text-[12px] font-semibold hover:border-brand hover:text-brand transition-colors"
+            data-id="${p.id}" data-action="details">Details</button>
+          <button
+            class="flex-1 px-1 py-2 rounded-full bg-brand text-white text-[12px] font-semibold hover:opacity-85 transition-opacity"
+            data-id="${p.id}" data-action="cart">Add to Cart</button>
         </div>
       </div>
     </div>
   `).join("");
 }
 
-document.getElementById("productGrid").addEventListener("click", (e) => {
-  const btn = e.target.closest("[data-action]");
-  if (!btn) return;
-  const id = +btn.dataset.id;
-  if (btn.dataset.action === "cart") {
-    const p = products.find((x) => x.id === id);
-    if (p) addToCart(p, 1);
-  } else {
-    const p = products.find((x) => x.id === id);
-    if (p) openProductDetail(p);
-  }
-});
+// Delegate click events on product grid
+const productGrid = document.getElementById("productGrid");
+if (productGrid) {
+  productGrid.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-action]");
+    if (!btn) return;
+    const id = +btn.dataset.id;
+    const p  = products.find((x) => x.id === id);
+    if (!p) return;
+    if (btn.dataset.action === "cart") addToCart(p, 1);
+    else openProductDetail(p);
+  });
+}
 
 // ── FILTERS ───────────────────────────────────────────────
-const pillBase     = "px-[18px] py-2 rounded-full border-[1.5px] text-[13px] font-medium transition-all whitespace-nowrap";
-const pillInactive = "border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-gray-900 dark:text-gray-100 hover:border-brand hover:text-brand";
 const pillActive   = "bg-brand text-white border-brand";
-const catCardBase  = "cat-card flex flex-col items-center gap-3 bg-white dark:bg-neutral-900 border-[1.5px] rounded-2xl py-7 px-4 text-[13px] font-medium hover:border-brand hover:shadow-[0_4px_20px_rgba(255,122,0,0.12)] transition-all";
+const pillInactive = "border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-gray-900 dark:text-gray-100 hover:border-brand hover:text-brand";
 
 function styleFilterPills() {
+  // Style filter pills (above product grid)
   document.querySelectorAll(".filter-pill").forEach((b) => {
     const active = b.dataset.cat === activeCat;
-    b.className = pillBase + " " + (active ? pillActive : pillInactive);
+    b.className = `filter-pill px-[18px] py-2 rounded-full border-[1.5px] text-[13px] font-medium transition-all whitespace-nowrap ${active ? pillActive : pillInactive}`;
   });
+
+  // ✅ FIX: Style ALL cat-card buttons including the "All" card
   document.querySelectorAll(".cat-card").forEach((b) => {
     const active = b.dataset.cat === activeCat;
-    b.className = catCardBase + " " + (active
-      ? "border-brand shadow-[0_4px_20px_rgba(255,122,0,0.12)]"
-      : "border-gray-200 dark:border-neutral-800");
+    b.style.borderColor = active ? "#ff7a00" : "";
+    b.style.color       = active ? "#ff7a00" : "";
+    b.style.boxShadow   = active ? "0 4px 20px rgba(255,122,0,0.12)" : "";
+    b.style.fontWeight  = active ? "600" : "";
   });
 }
 
@@ -267,22 +301,22 @@ function setFilter(cat) {
   renderProducts();
 }
 
-const filterRowEl = document.getElementById("filterRow");
-if (filterRowEl) {
-  filterRowEl.classList.remove("hidden");
-  filterRowEl.addEventListener("click", (e) => {
+const filterRow = document.getElementById("filterRow");
+if (filterRow) {
+  filterRow.addEventListener("click", (e) => {
     const btn = e.target.closest(".filter-pill");
     if (btn) setFilter(btn.dataset.cat);
   });
 }
 
+// ✅ FIX: catGrid click handler now covers the All button since it's a cat-card
 const catGrid = document.getElementById("catGrid");
 if (catGrid) {
   catGrid.addEventListener("click", (e) => {
     const btn = e.target.closest(".cat-card");
     if (!btn) return;
     setFilter(btn.dataset.cat);
-    document.getElementById("shop").scrollIntoView({ behavior: "smooth" });
+    document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" });
   });
 }
 
@@ -290,7 +324,7 @@ document.querySelectorAll(".footer-cat").forEach((a) => {
   a.addEventListener("click", (e) => {
     e.preventDefault();
     setFilter(a.dataset.cat);
-    document.getElementById("shop").scrollIntoView({ behavior: "smooth" });
+    document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" });
   });
 });
 
@@ -305,8 +339,7 @@ window.addEventListener("DOMContentLoaded", () => {
 function doSearch(val) {
   searchTerm = val.trim();
   renderProducts();
-  const shop = document.getElementById("shop");
-  if (shop) shop.scrollIntoView({ behavior: "smooth" });
+  document.getElementById("shop")?.scrollIntoView({ behavior: "smooth" });
 }
 
 const searchDesktop = document.getElementById("searchDesktop");
@@ -320,10 +353,20 @@ if (searchBtnD) searchBtnD.addEventListener("click", () => doSearch(document.get
 const searchMobile = document.getElementById("searchMobile");
 if (searchMobile) {
   searchMobile.addEventListener("input",   (e) => { searchTerm = e.target.value; renderProducts(); });
-  searchMobile.addEventListener("keydown", (e) => { if (e.key === "Enter") { doSearch(e.target.value); mobileMenu.classList.add("hidden"); } });
+  searchMobile.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      doSearch(e.target.value);
+      if (mobileMenu) mobileMenu.classList.add("hidden");
+    }
+  });
 }
 const searchBtnM = document.getElementById("searchBtnM");
-if (searchBtnM) searchBtnM.addEventListener("click", () => { doSearch(document.getElementById("searchMobile").value); mobileMenu.classList.add("hidden"); });
+if (searchBtnM) {
+  searchBtnM.addEventListener("click", () => {
+    doSearch(document.getElementById("searchMobile").value);
+    if (mobileMenu) mobileMenu.classList.add("hidden");
+  });
+}
 
 // ── CART ──────────────────────────────────────────────────
 function addToCart(p, qty) {
@@ -338,9 +381,9 @@ function addToCart(p, qty) {
 
 function renderCart() {
   const cartArr = loadCart();
-  const badge = document.getElementById("cartBadge");
-  const total = document.getElementById("cartTotal");
-  const items = document.getElementById("cartItems");
+  const badge   = document.getElementById("cartBadge");
+  const total   = document.getElementById("cartTotal");
+  const items   = document.getElementById("cartItems");
   if (!badge || !total || !items) return;
 
   const count = cartArr.reduce((s, i) => s + i.qty, 0);
@@ -349,19 +392,25 @@ function renderCart() {
   total.textContent = fmt(sum);
 
   if (!cartArr.length) {
-    items.innerHTML = `<div class="flex flex-col items-center justify-center h-full text-gray-300 dark:text-gray-600 gap-2.5 text-center p-10">
-      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="opacity-40"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-      <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Your cart is empty</p>
-      <span class="text-xs">Add some gadgets to get started</span>
-    </div>`;
+    items.innerHTML = `
+      <div class="flex flex-col items-center justify-center h-full text-gray-300 dark:text-gray-600 gap-2.5 text-center p-10">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="opacity-40">
+          <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Your cart is empty</p>
+        <span class="text-xs">Add some gadgets to get started</span>
+      </div>`;
     return;
   }
 
   items.innerHTML = cartArr.map((item) => `
     <div class="flex gap-3 items-center p-2.5 bg-gray-100 dark:bg-neutral-800 rounded-[10px]">
-      <img src="${optimizeImgUrl(item.img, 104)}" alt="${item.name}" width="52" height="52" loading="lazy" decoding="async" class="w-[52px] h-[52px] object-cover rounded-lg shrink-0">
+      <img src="${optimizeImgUrl(item.img, 104)}" alt="${item.name}" width="52" height="52" loading="lazy" decoding="async"
+        style="width:52px;height:52px;object-fit:cover;border-radius:8px;flex-shrink:0;"/>
       <div class="flex-1 min-w-0">
-        <div class="text-xs font-semibold whitespace-nowrap overflow-hidden text-ellipsis mb-0.5">${item.name}</div>
+        <div class="text-xs font-semibold mb-0.5" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.name}</div>
         <div class="text-xs text-brand font-semibold mb-1.5">${fmt(item.price)}</div>
         <div class="flex items-center gap-2">
           <button class="qty-btn w-6 h-6 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-sm flex items-center justify-center hover:border-brand transition-colors leading-none" data-id="${item.id}" data-action="dec">−</button>
@@ -376,41 +425,61 @@ function renderCart() {
   `).join("");
 }
 
-document.getElementById("cartItems").addEventListener("click", (e) => {
-  const btn = e.target.closest("[data-action]");
-  if (!btn || !btn.dataset.id) return;
-  const id      = btn.dataset.id;
-  const cartArr = loadCart();
-  const item    = cartArr.find((i) => String(i.id) === String(id));
-  if (!item) return;
-  if      (btn.dataset.action === "inc")    item.qty++;
-  else if (btn.dataset.action === "dec")  { item.qty--; if (item.qty <= 0) cartArr.splice(cartArr.indexOf(item), 1); }
-  else if (btn.dataset.action === "remove") cartArr.splice(cartArr.indexOf(item), 1);
-  saveCart(cartArr);
-  renderCart();
-});
+const cartItemsEl = document.getElementById("cartItems");
+if (cartItemsEl) {
+  cartItemsEl.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-action]");
+    if (!btn || !btn.dataset.id) return;
+    const id      = btn.dataset.id;
+    const cartArr = loadCart();
+    const item    = cartArr.find((i) => String(i.id) === String(id));
+    if (!item) return;
+    if      (btn.dataset.action === "inc")    { item.qty++; }
+    else if (btn.dataset.action === "dec")    { item.qty--; if (item.qty <= 0) cartArr.splice(cartArr.indexOf(item), 1); }
+    else if (btn.dataset.action === "remove") { cartArr.splice(cartArr.indexOf(item), 1); }
+    saveCart(cartArr);
+    renderCart();
+  });
+}
 
 window.addEventListener("storage", (e) => { if (e.key === CART_KEY) renderCart(); });
 
+// ── CART DRAWER ───────────────────────────────────────────
 const cartDrawer  = document.getElementById("cartDrawer");
 const cartOverlay = document.getElementById("cartOverlay");
 
-function openCart()  {
+function openCart() {
+  if (!cartDrawer || !cartOverlay) return;
   cartOverlay.classList.remove("hidden");
-  requestAnimationFrame(() => cartDrawer.classList.remove("translate-x-full"));
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      cartDrawer.style.transform = "translateX(0)";
+    });
+  });
 }
+
 function closeCart() {
-  cartDrawer.classList.add("translate-x-full");
+  if (!cartDrawer || !cartOverlay) return;
+  cartDrawer.style.transform = "translateX(100%)";
   cartOverlay.classList.add("hidden");
 }
 
-document.getElementById("cartBtn").addEventListener("click", openCart);
-document.getElementById("cartClose").addEventListener("click", closeCart);
-cartOverlay.addEventListener("click", closeCart);
+document.getElementById("cartBtn")?.addEventListener("click", openCart);
+document.getElementById("cartClose")?.addEventListener("click", closeCart);
+cartOverlay?.addEventListener("click", closeCart);
 
-// ── CHECKOUT / PAYMENT MODAL ──────────────────────────────
-function copyAcct() {
-  navigator.clipboard.writeText("0230092228").then(() => showToast("Account number copied!"));
+// ── PAYMENT MODAL ─────────────────────────────────────────
+function showOverlay(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove("hidden");
+  el.style.display = "flex";
+}
+function hideOverlay(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.add("hidden");
+  el.style.display = "";
 }
 
 async function openPaymentModal() {
@@ -423,7 +492,8 @@ async function openPaymentModal() {
   const itemLines    = cartArr.map(i => `${i.name} x${i.qty} — ${fmt(i.price * i.qty)}`).join("\n");
   const itemsSummary = cartArr.map(i => `${i.name} x${i.qty}`).join(", ");
 
-  document.getElementById("paymentTotal").textContent = totalFmt;
+  const payTotal = document.getElementById("paymentTotal");
+  if (payTotal) payTotal.textContent = totalFmt;
 
   let orderId = null;
   if (sb) {
@@ -437,32 +507,25 @@ async function openPaymentModal() {
         status:         "pending",
       }]).select().single();
       if (!error && data) orderId = data.id;
-    } catch (err) {
-      console.warn("Order save failed", err);
-    }
+    } catch (err) { console.warn("Order save failed", err); }
   }
 
   const refTag = orderId ? ` (Ref: ${String(orderId).slice(0, 8).toUpperCase()})` : "";
-  const msg = encodeURIComponent(
+  const msg    = encodeURIComponent(
     `Hello Minipi NG! 👋\n\nI just made a payment for my order${refTag}:\n\n` +
     `🛒 *Items Ordered:*\n${itemLines}\n\n💰 *Total Paid: ${totalFmt}*\n\nPlease find my payment receipt attached. Kindly confirm my order. Thank you!`
   );
-  document.getElementById("whatsappPayLink").href = `https://wa.me/2348034970248?text=${msg}`;
+  const waLink = document.getElementById("whatsappPayLink");
+  if (waLink) waLink.href = `https://wa.me/2348034970248?text=${msg}`;
 
   closeCart();
-  const ov = document.getElementById("paymentOverlay");
-  ov.classList.remove("hidden");
-  ov.classList.add("flex");
+  showOverlay("paymentOverlay");
 }
 
-document.getElementById("checkoutBtn").addEventListener("click", openPaymentModal);
-
-document.getElementById("paymentClose").addEventListener("click", () => {
-  document.getElementById("paymentOverlay").classList.add("hidden");
-  document.getElementById("paymentOverlay").classList.remove("flex");
-});
-document.getElementById("paymentOverlay").addEventListener("click", function (e) {
-  if (e.target === this) { this.classList.add("hidden"); this.classList.remove("flex"); }
+document.getElementById("checkoutBtn")?.addEventListener("click", openPaymentModal);
+document.getElementById("paymentClose")?.addEventListener("click", () => hideOverlay("paymentOverlay"));
+document.getElementById("paymentOverlay")?.addEventListener("click", function(e) {
+  if (e.target === this) hideOverlay("paymentOverlay");
 });
 
 // ── NEW ARRIVALS ──────────────────────────────────────────
@@ -479,31 +542,45 @@ function renderHomeArrivals() {
   }
 
   track.innerHTML = arrivals.map((p) => `
-    <div class="bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col group cursor-pointer hover:border-brand hover:shadow-lg transition-all"
-         onclick='openProductDetail(${JSON.stringify(p).replace(/'/g, "&#39;")})'>
-      <div class="relative aspect-square overflow-hidden bg-gray-100 dark:bg-neutral-800">
-        <img src="${optimizeImgUrl(p.img, 220)}" alt="${p.name}" width="220" height="220" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-350 group-hover:scale-105" />
-        <span class="absolute top-2 left-2 bg-brand text-white text-[9px] font-bold px-2 py-1 rounded-full uppercase tracking-wide">New</span>
+    <div class="bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl overflow-hidden flex flex-col cursor-pointer hover:border-brand hover:shadow-lg transition-all"
+         style="width:220px;flex-shrink:0;"
+         data-arrival-id="${p.id}">
+      <div style="position:relative;padding-top:100%;background:#f3f4f6;">
+        <img src="${optimizeImgUrl(p.img, 220)}" alt="${p.name}" width="220" height="220" loading="lazy" decoding="async"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"/>
+        <span style="position:absolute;top:8px;left:8px;background:#ff7a00;color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em;">New</span>
       </div>
       <div class="p-3 flex-1 flex flex-col">
         <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-0.5">${p.cat}</div>
-        <div class="text-[12px] font-semibold mb-1 whitespace-nowrap overflow-hidden text-ellipsis">${p.name}</div>
+        <div class="text-[12px] font-semibold mb-1" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.name}</div>
         <div class="text-[13px] font-bold text-brand mt-auto pt-2">${fmt(p.price)}</div>
       </div>
-    </div>`
-  ).join("");
+    </div>
+  `).join("");
+
+  track.addEventListener("click", (e) => {
+    const card = e.target.closest("[data-arrival-id]");
+    if (!card) return;
+    const id = +card.dataset.arrivalId;
+    const p  = products.find((x) => x.id === id);
+    if (p) openProductDetail(p);
+  });
 }
 
-document.getElementById("arrLeft")?.addEventListener("click",  () => document.getElementById("arrivalsTrack")?.scrollBy({ left: -250, behavior: "smooth" }));
-document.getElementById("arrRight")?.addEventListener("click", () => document.getElementById("arrivalsTrack")?.scrollBy({ left:  250, behavior: "smooth" }));
+document.getElementById("arrLeft")?.addEventListener("click", () => {
+  document.getElementById("arrivalsTrack")?.scrollBy({ left: -250, behavior: "smooth" });
+});
+document.getElementById("arrRight")?.addEventListener("click", () => {
+  document.getElementById("arrivalsTrack")?.scrollBy({ left: 250, behavior: "smooth" });
+});
 
 // ── SCROLL ANIMATION ──────────────────────────────────────
 const fadeSections = document.querySelectorAll(".fade-section");
-const observer = new IntersectionObserver(
+const sectionObserver = new IntersectionObserver(
   (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("show"); }),
-  { threshold: 0.2 }
+  { threshold: 0.15 }
 );
-fadeSections.forEach((s) => observer.observe(s));
+fadeSections.forEach((s) => sectionObserver.observe(s));
 
 // ── PRODUCT DETAIL MODAL ──────────────────────────────────
 let pdCurrent = null, pdQty = 1;
@@ -511,34 +588,35 @@ let pdCurrent = null, pdQty = 1;
 function openProductDetail(p) {
   pdCurrent = p;
   pdQty     = 1;
-  document.getElementById("pdImg").src           = optimizeImgUrl(p.img, 560);
-  document.getElementById("pdImg").alt           = p.name;
-  document.getElementById("pdCat").textContent   = (p.cat || "").toUpperCase();
-  document.getElementById("pdName").textContent  = p.name;
-  document.getElementById("pdDesc").textContent  = p.desc || "";
-  document.getElementById("pdPrice").textContent = fmt(p.price);
-  document.getElementById("pdQty").textContent   = 1;
-  const ov = document.getElementById("pdOverlay");
-  ov.classList.remove("hidden");
-  ov.classList.add("flex");
+  const pdImg   = document.getElementById("pdImg");
+  const pdCat   = document.getElementById("pdCat");
+  const pdName  = document.getElementById("pdName");
+  const pdDesc  = document.getElementById("pdDesc");
+  const pdPrice = document.getElementById("pdPrice");
+  const pdQtyEl = document.getElementById("pdQty");
+  if (pdImg)   { pdImg.src = optimizeImgUrl(p.img, 560); pdImg.alt = p.name; }
+  if (pdCat)   pdCat.textContent   = (p.cat || "").toUpperCase();
+  if (pdName)  pdName.textContent  = p.name;
+  if (pdDesc)  pdDesc.textContent  = p.desc || "";
+  if (pdPrice) pdPrice.textContent = fmt(p.price);
+  if (pdQtyEl) pdQtyEl.textContent = 1;
+  showOverlay("pdOverlay");
 }
 
-document.getElementById("pdClose").addEventListener("click", () => {
-  document.getElementById("pdOverlay").classList.add("hidden");
-  document.getElementById("pdOverlay").classList.remove("flex");
+document.getElementById("pdClose")?.addEventListener("click", () => hideOverlay("pdOverlay"));
+document.getElementById("pdOverlay")?.addEventListener("click", (e) => { if (e.target === e.currentTarget) hideOverlay("pdOverlay"); });
+document.getElementById("pdInc")?.addEventListener("click", () => {
+  pdQty++;
+  const el = document.getElementById("pdQty");
+  if (el) el.textContent = pdQty;
 });
-document.getElementById("pdOverlay").addEventListener("click", (e) => {
-  if (e.target === document.getElementById("pdOverlay")) {
-    document.getElementById("pdOverlay").classList.add("hidden");
-    document.getElementById("pdOverlay").classList.remove("flex");
-  }
+document.getElementById("pdDec")?.addEventListener("click", () => {
+  if (pdQty > 1) { pdQty--; const el = document.getElementById("pdQty"); if (el) el.textContent = pdQty; }
 });
-document.getElementById("pdInc").addEventListener("click", () => { pdQty++; document.getElementById("pdQty").textContent = pdQty; });
-document.getElementById("pdDec").addEventListener("click", () => { if (pdQty > 1) { pdQty--; document.getElementById("pdQty").textContent = pdQty; } });
-document.getElementById("pdAddCart").addEventListener("click", () => {
+document.getElementById("pdAddCart")?.addEventListener("click", () => {
   if (pdCurrent) addToCart(pdCurrent, pdQty);
-  document.getElementById("pdOverlay").classList.add("hidden");
-  document.getElementById("pdOverlay").classList.remove("flex");
+  hideOverlay("pdOverlay");
+  openCart();
 });
 
 // ── INFO MODAL ────────────────────────────────────────────
@@ -564,44 +642,30 @@ document.querySelectorAll(".info-link").forEach((btn) => {
   btn.addEventListener("click", () => {
     const d = infoContent[btn.dataset.info];
     if (!d) return;
-    document.getElementById("infoTitle").textContent = d.title;
-    document.getElementById("infoBody").innerHTML    = d.body;
-    const ov = document.getElementById("infoOverlay");
-    ov.classList.remove("hidden");
-    ov.classList.add("flex");
+    const titleEl = document.getElementById("infoTitle");
+    const bodyEl  = document.getElementById("infoBody");
+    if (titleEl) titleEl.textContent = d.title;
+    if (bodyEl)  bodyEl.innerHTML    = d.body;
+    showOverlay("infoOverlay");
   });
 });
-document.getElementById("infoClose").addEventListener("click", () => {
-  document.getElementById("infoOverlay").classList.add("hidden");
-  document.getElementById("infoOverlay").classList.remove("flex");
-});
-document.getElementById("infoOverlay").addEventListener("click", (e) => {
-  if (e.target === document.getElementById("infoOverlay")) {
-    document.getElementById("infoOverlay").classList.add("hidden");
-    document.getElementById("infoOverlay").classList.remove("flex");
-  }
-});
+document.getElementById("infoClose")?.addEventListener("click", () => hideOverlay("infoOverlay"));
+document.getElementById("infoOverlay")?.addEventListener("click", (e) => { if (e.target === e.currentTarget) hideOverlay("infoOverlay"); });
 
 // ── TOAST ─────────────────────────────────────────────────
-let toastT = null;
+let toastTimer = null;
 function showToast(msg, duration = 2500) {
-  const t = document.getElementById("toast");
-  document.getElementById("toastMsg").textContent = msg;
-  t.classList.remove("opacity-0", "translate-y-20");
-  t.classList.add("opacity-100", "translate-y-0");
-  if (toastT) clearTimeout(toastT);
-  toastT = setTimeout(() => {
-    t.classList.add("opacity-0", "translate-y-20");
-    t.classList.remove("opacity-100", "translate-y-0");
+  const t      = document.getElementById("toast");
+  const msg_el = document.getElementById("toastMsg");
+  if (!t || !msg_el) return;
+  msg_el.textContent = msg;
+  t.style.opacity   = "1";
+  t.style.transform = "translateX(-50%) translateY(0)";
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    t.style.opacity   = "0";
+    t.style.transform = "translateX(-50%) translateY(80px)";
   }, duration);
-}
-
-// ── ABOUT TOGGLE ──────────────────────────────────────────
-function toggleContent() {
-  const content = document.getElementById("moreContent");
-  const button  = document.getElementById("toggleBtn");
-  content.classList.toggle("hidden");
-  button.textContent = content.classList.contains("hidden") ? "See More" : "See Less";
 }
 
 // ── AUTH STATE ────────────────────────────────────────────
@@ -622,7 +686,7 @@ function subscribeToUserOrders() {
     }, (payload) => {
       const updated = payload.new;
       if (updated.status === "success") {
-        showToast(`🎉 Your order "${updated.items_summary.split(",")[0]}…" has been approved!`, 5000);
+        showToast(`🎉 Your order "${(updated.items_summary || "").split(",")[0]}…" has been approved!`, 5000);
         const mpOverlay = document.getElementById("mp-overlay");
         if (mpOverlay && mpOverlay.style.display !== "none") openMpModal();
       }
@@ -639,54 +703,63 @@ function unsubscribeFromUserOrders() {
   if (orderChannel && sb) { sb.removeChannel(orderChannel); orderChannel = null; }
 }
 
-// ── refreshAuthUI ─────────────────────────────────────────
+// ── REFRESH AUTH UI ───────────────────────────────────────
 function refreshAuthUI() {
-  const authDd    = document.getElementById("authDropdown");
-  const userDd    = document.getElementById("userDropdown");
-  const adminLink = document.getElementById("adminNavLink");
+  const authDd     = document.getElementById("authDropdown");
+  const userDd     = document.getElementById("userDropdown");
+  const adminLink  = document.getElementById("adminNavLink");
+  const adminLinkM = document.getElementById("adminNavLinkMobile");
 
-  authDd.classList.add("hidden");
-  userDd.classList.add("hidden");
+  if (authDd) authDd.classList.add("hidden");
+  if (userDd) userDd.classList.add("hidden");
 
   if (currentUser) {
-    document.getElementById("userName").textContent  = currentUser.name;
-    document.getElementById("userEmail").textContent = currentUser.email;
-    if (adminLink) {
-      const isAdmin = ADMIN_EMAILS.map(e => e.toLowerCase()).includes(currentUser.email.toLowerCase());
-      adminLink.classList.toggle("hidden", !isAdmin);
-      adminLink.classList.toggle("flex",    isAdmin);
-    }
+    const nameEl  = document.getElementById("userName");
+    const emailEl = document.getElementById("userEmail");
+    if (nameEl)  nameEl.textContent  = currentUser.name;
+    if (emailEl) emailEl.textContent = currentUser.email;
+
+    const isAdmin = ADMIN_EMAILS.map(e => e.toLowerCase()).includes(currentUser.email.toLowerCase());
+    if (adminLink)  adminLink.style.display  = isAdmin ? "inline-flex" : "none";
+    if (adminLinkM) adminLinkM.style.display = isAdmin ? "flex" : "none";
     subscribeToUserOrders();
   } else {
-    document.getElementById("userName").textContent  = "—";
-    document.getElementById("userEmail").textContent = "—";
-    if (adminLink) { adminLink.classList.add("hidden"); adminLink.classList.remove("flex"); }
+    const nameEl  = document.getElementById("userName");
+    const emailEl = document.getElementById("userEmail");
+    if (nameEl)  nameEl.textContent  = "—";
+    if (emailEl) emailEl.textContent = "—";
+    if (adminLink)  adminLink.style.display  = "none";
+    if (adminLinkM) adminLinkM.style.display = "none";
     unsubscribeFromUserOrders();
   }
 }
 
-// ── ACCOUNT DROPDOWN ──────────────────────────────────────
+// ── ACCOUNT BUTTON ────────────────────────────────────────
 const accountBtn = document.getElementById("accountBtn");
 const authDd     = document.getElementById("authDropdown");
 const userDd     = document.getElementById("userDropdown");
 
-accountBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
-  if (currentUser) {
-    authDd.classList.add("hidden");
-    userDd.classList.add("hidden");
-    openMpModal();
-  } else {
-    const isHidden = authDd.classList.contains("hidden");
-    authDd.classList.toggle("hidden", !isHidden);
-    userDd.classList.add("hidden");
-  }
-});
+if (accountBtn) {
+  accountBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    if (currentUser) {
+      if (authDd) authDd.classList.add("hidden");
+      if (userDd) userDd.classList.add("hidden");
+      openMpModal();
+    } else {
+      if (authDd) {
+        const isHidden = authDd.classList.contains("hidden");
+        authDd.classList.toggle("hidden", !isHidden);
+      }
+      if (userDd) userDd.classList.add("hidden");
+    }
+  });
+}
 
 document.addEventListener("click", (e) => {
-  if (!accountBtn.contains(e.target)) {
-    authDd.classList.add("hidden");
-    userDd.classList.add("hidden");
+  if (accountBtn && !accountBtn.contains(e.target)) {
+    if (authDd) authDd.classList.add("hidden");
+    if (userDd) userDd.classList.add("hidden");
   }
 });
 
@@ -696,25 +769,27 @@ const signInModal = document.getElementById("signInModal");
 const signUpModal = document.getElementById("signUpModal");
 
 function showAuthModal(which) {
+  if (!authOverlay) return;
   authOverlay.classList.remove("hidden");
-  authOverlay.classList.add("flex");
-  authDd.classList.add("hidden");
-  userDd.classList.add("hidden");
+  authOverlay.style.display = "flex";
+  if (authDd) authDd.classList.add("hidden");
+  if (userDd) userDd.classList.add("hidden");
   if (which === "signIn") {
-    signInModal.classList.remove("hidden");
-    signUpModal.classList.add("hidden");
+    signInModal?.classList.remove("hidden");
+    signUpModal?.classList.add("hidden");
   } else {
-    signUpModal.classList.remove("hidden");
-    signInModal.classList.add("hidden");
+    signUpModal?.classList.remove("hidden");
+    signInModal?.classList.add("hidden");
   }
   clearAuthAlerts();
 }
 
 function closeAuthModal() {
+  if (!authOverlay) return;
   authOverlay.classList.add("hidden");
-  authOverlay.classList.remove("flex");
-  signInModal.classList.add("hidden");
-  signUpModal.classList.add("hidden");
+  authOverlay.style.display = "";
+  signInModal?.classList.add("hidden");
+  signUpModal?.classList.add("hidden");
   clearAuthAlerts();
 }
 
@@ -730,12 +805,12 @@ function showAlert(id, msg) {
   if (el) { el.textContent = msg; el.classList.remove("hidden"); }
 }
 
-document.getElementById("openSignIn").addEventListener("click", () => showAuthModal("signIn"));
-document.getElementById("openSignUp").addEventListener("click", () => showAuthModal("signUp"));
-document.getElementById("toSignUp").addEventListener("click",   () => showAuthModal("signUp"));
-document.getElementById("toSignIn").addEventListener("click",   () => showAuthModal("signIn"));
+document.getElementById("openSignIn")?.addEventListener("click", () => showAuthModal("signIn"));
+document.getElementById("openSignUp")?.addEventListener("click", () => showAuthModal("signUp"));
+document.getElementById("toSignUp")?.addEventListener("click",   () => showAuthModal("signUp"));
+document.getElementById("toSignIn")?.addEventListener("click",   () => showAuthModal("signIn"));
 document.querySelectorAll(".auth-close").forEach((btn) => btn.addEventListener("click", closeAuthModal));
-authOverlay.addEventListener("click", (e) => { if (e.target === authOverlay) closeAuthModal(); });
+authOverlay?.addEventListener("click", (e) => { if (e.target === authOverlay) closeAuthModal(); });
 
 document.addEventListener("click", (e) => {
   const btn = e.target.closest(".toggle-pwd");
@@ -744,7 +819,7 @@ document.addEventListener("click", (e) => {
   if (input) input.type = input.type === "password" ? "text" : "password";
 });
 
-document.getElementById("suPwd").addEventListener("input", (e) => {
+document.getElementById("suPwd")?.addEventListener("input", (e) => {
   const v = e.target.value;
   let s = 0;
   if (v.length >= 6) s++;
@@ -761,23 +836,24 @@ document.getElementById("suPwd").addEventListener("input", (e) => {
   if (lbl) { lbl.textContent = v.length ? (labels[s - 1] || "") : ""; lbl.style.color = v.length && s > 0 ? colors[s - 1] : ""; }
 });
 
-document.getElementById("siEmail").addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("signInBtn").click(); });
-document.getElementById("siPwd").addEventListener("keydown",   (e) => { if (e.key === "Enter") document.getElementById("signInBtn").click(); });
-document.getElementById("suPwd").addEventListener("keydown",   (e) => { if (e.key === "Enter") document.getElementById("signUpBtn").click(); });
+document.getElementById("siEmail")?.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("signInBtn")?.click(); });
+document.getElementById("siPwd")?.addEventListener("keydown",   (e) => { if (e.key === "Enter") document.getElementById("signInBtn")?.click(); });
+document.getElementById("suPwd")?.addEventListener("keydown",   (e) => { if (e.key === "Enter") document.getElementById("signUpBtn")?.click(); });
 
 function setBusy(btn, busy, loadTxt, origTxt) {
+  if (!btn) return;
   btn.disabled  = busy;
   btn.innerHTML = busy
-    ? `<span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin shrink-0"></span>${loadTxt}`
+    ? `<span style="width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;"></span>${loadTxt}`
     : origTxt;
 }
 
 // ── SIGN UP ───────────────────────────────────────────────
-document.getElementById("signUpBtn").addEventListener("click", async () => {
+document.getElementById("signUpBtn")?.addEventListener("click", async () => {
   clearAuthAlerts();
-  const name  = document.getElementById("suName").value.trim();
-  const email = document.getElementById("suEmail").value.trim().toLowerCase();
-  const pwd   = document.getElementById("suPwd").value;
+  const name  = document.getElementById("suName")?.value.trim();
+  const email = document.getElementById("suEmail")?.value.trim().toLowerCase();
+  const pwd   = document.getElementById("suPwd")?.value;
   const btn   = document.getElementById("signUpBtn");
 
   if (!name)  { showAlert("suError", "Please enter your full name."); return; }
@@ -795,9 +871,12 @@ document.getElementById("signUpBtn").addEventListener("click", async () => {
     if (error) throw error;
     if (data.user && !data.session) {
       showAlert("suSuccess", `Account created! Check ${email} for a confirmation link.`);
-      document.getElementById("suName").value  = "";
-      document.getElementById("suEmail").value = "";
-      document.getElementById("suPwd").value   = "";
+      const suName  = document.getElementById("suName");
+      const suEmail = document.getElementById("suEmail");
+      const suPwd   = document.getElementById("suPwd");
+      if (suName)  suName.value  = "";
+      if (suEmail) suEmail.value = "";
+      if (suPwd)   suPwd.value   = "";
     } else if (data.session) {
       currentUser = { id: data.user.id, name, email: data.user.email };
       refreshAuthUI();
@@ -815,10 +894,10 @@ document.getElementById("signUpBtn").addEventListener("click", async () => {
 });
 
 // ── SIGN IN ───────────────────────────────────────────────
-document.getElementById("signInBtn").addEventListener("click", async () => {
+document.getElementById("signInBtn")?.addEventListener("click", async () => {
   clearAuthAlerts();
-  const email = document.getElementById("siEmail").value.trim().toLowerCase();
-  const pwd   = document.getElementById("siPwd").value;
+  const email = document.getElementById("siEmail")?.value.trim().toLowerCase();
+  const pwd   = document.getElementById("siPwd")?.value;
   const btn   = document.getElementById("signInBtn");
 
   if (!email) { showAlert("siError", "Please enter your email address."); return; }
@@ -847,10 +926,9 @@ document.getElementById("signInBtn").addEventListener("click", async () => {
 });
 
 // ── FORGOT PASSWORD ───────────────────────────────────────
-// FIX: error was silently swallowed; now properly thrown and caught
-document.getElementById("forgotBtn").addEventListener("click", async () => {
+document.getElementById("forgotBtn")?.addEventListener("click", async () => {
   clearAuthAlerts();
-  const email = document.getElementById("siEmail").value.trim().toLowerCase();
+  const email = document.getElementById("siEmail")?.value.trim().toLowerCase();
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     showAlert("siError", 'Enter your email address first, then click "Forgot password?".');
     return;
@@ -858,25 +936,23 @@ document.getElementById("forgotBtn").addEventListener("click", async () => {
   if (!sb) { showAlert("siError", "Feature unavailable right now."); return; }
 
   const fBtn = document.getElementById("forgotBtn");
-  fBtn.textContent = "Sending…";
-  fBtn.disabled    = true;
+  if (fBtn) { fBtn.textContent = "Sending…"; fBtn.disabled = true; }
   try {
     const { error } = await sb.auth.resetPasswordForEmail(email, {
-      redirectTo: "https://www.minipi.org/index.html",
+      redirectTo: window.location.origin + "/index.html",
     });
     if (error) throw error;
     showAlert("siSuccess", `Reset link sent to ${email}. Check your inbox (and spam folder).`);
   } catch (err) {
     showAlert("siError", err.message || "Could not send reset email. Please try again.");
   } finally {
-    fBtn.textContent = "Forgot password?";
-    fBtn.disabled    = false;
+    if (fBtn) { fBtn.textContent = "Forgot password?"; fBtn.disabled = false; }
   }
 });
 
 // ── SIGN OUT ──────────────────────────────────────────────
-document.getElementById("logoutBtn").addEventListener("click", async () => {
-  userDd.classList.add("hidden");
+document.getElementById("logoutBtn")?.addEventListener("click", async () => {
+  if (userDd) userDd.classList.add("hidden");
   if (sb) { try { await sb.auth.signOut(); } catch (e) {} }
   currentUser = null;
   const mpOverlay = document.getElementById("mp-overlay");
@@ -887,68 +963,48 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
 });
 
 // ── RESET PASSWORD MODAL ──────────────────────────────────
-// FIX: openResetModal and the submit handler were either missing or incomplete
 function openResetModal() {
-  // Close any open auth modal first
-  authOverlay.classList.add("hidden");
-  authOverlay.classList.remove("flex");
-  signInModal.classList.add("hidden");
-  signUpModal.classList.add("hidden");
-
-  // Clear fields and alerts
-  document.getElementById("rpPwd").value        = "";
-  document.getElementById("rpPwdConfirm").value = "";
+  closeAuthModal();
+  const rpPwd     = document.getElementById("rpPwd");
+  const rpConfirm = document.getElementById("rpPwdConfirm");
+  if (rpPwd)     rpPwd.value     = "";
+  if (rpConfirm) rpConfirm.value = "";
   ["rpError", "rpSuccess"].forEach((id) => {
     const el = document.getElementById(id);
     if (el) { el.classList.add("hidden"); el.textContent = ""; }
   });
-  document.getElementById("rpSubmitBtn").innerHTML = "Update Password";
-  document.getElementById("rpSubmitBtn").disabled  = false;
-
-  const ov = document.getElementById("resetOverlay");
-  ov.classList.remove("hidden");
-  ov.classList.add("flex");
+  const submitBtn = document.getElementById("rpSubmitBtn");
+  if (submitBtn) { submitBtn.innerHTML = "Update Password"; submitBtn.disabled = false; }
+  showOverlay("resetOverlay");
 }
 
-function closeResetModal() {
-  const ov = document.getElementById("resetOverlay");
-  ov.classList.add("hidden");
-  ov.classList.remove("flex");
-}
+function closeResetModal() { hideOverlay("resetOverlay"); }
 
-document.getElementById("rpClose").addEventListener("click", closeResetModal);
-document.getElementById("resetOverlay").addEventListener("click", (e) => {
-  if (e.target === document.getElementById("resetOverlay")) closeResetModal();
-});
+document.getElementById("rpClose")?.addEventListener("click", closeResetModal);
+document.getElementById("resetOverlay")?.addEventListener("click", (e) => { if (e.target === e.currentTarget) closeResetModal(); });
 
-// Allow Enter key in reset fields
-document.getElementById("rpPwd").addEventListener("keydown",        (e) => { if (e.key === "Enter") document.getElementById("rpSubmitBtn").click(); });
-document.getElementById("rpPwdConfirm").addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("rpSubmitBtn").click(); });
+document.getElementById("rpPwd")?.addEventListener("keydown",        (e) => { if (e.key === "Enter") document.getElementById("rpSubmitBtn")?.click(); });
+document.getElementById("rpPwdConfirm")?.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("rpSubmitBtn")?.click(); });
 
-// FIX: This handler was completely missing in the broken version
-document.getElementById("rpSubmitBtn").addEventListener("click", async () => {
-  const pwd    = document.getElementById("rpPwd").value;
-  const cnf    = document.getElementById("rpPwdConfirm").value;
-  const errEl  = document.getElementById("rpError");
-  const okEl   = document.getElementById("rpSuccess");
-  const btn    = document.getElementById("rpSubmitBtn");
+document.getElementById("rpSubmitBtn")?.addEventListener("click", async () => {
+  const pwd   = document.getElementById("rpPwd")?.value;
+  const cnf   = document.getElementById("rpPwdConfirm")?.value;
+  const errEl = document.getElementById("rpError");
+  const okEl  = document.getElementById("rpSuccess");
+  const btn   = document.getElementById("rpSubmitBtn");
 
-  // Clear previous alerts
   [errEl, okEl].forEach((el) => { if (el) { el.classList.add("hidden"); el.textContent = ""; } });
 
   if (!pwd || pwd.length < 6) {
-    errEl.textContent = "Password must be at least 6 characters.";
-    errEl.classList.remove("hidden");
+    if (errEl) { errEl.textContent = "Password must be at least 6 characters."; errEl.classList.remove("hidden"); }
     return;
   }
   if (pwd !== cnf) {
-    errEl.textContent = "Passwords do not match.";
-    errEl.classList.remove("hidden");
+    if (errEl) { errEl.textContent = "Passwords do not match."; errEl.classList.remove("hidden"); }
     return;
   }
   if (!sb) {
-    errEl.textContent = "Auth service unavailable.";
-    errEl.classList.remove("hidden");
+    if (errEl) { errEl.textContent = "Auth service unavailable."; errEl.classList.remove("hidden"); }
     return;
   }
 
@@ -956,12 +1012,8 @@ document.getElementById("rpSubmitBtn").addEventListener("click", async () => {
   try {
     const { error } = await sb.auth.updateUser({ password: pwd });
     if (error) throw error;
+    if (okEl) { okEl.textContent = "Password updated! Signing you in…"; okEl.classList.remove("hidden"); }
 
-    // Show success then refresh session
-    okEl.textContent = "Password updated! Signing you in…";
-    okEl.classList.remove("hidden");
-
-    // Refresh the session so currentUser is populated
     const { data } = await sb.auth.getSession();
     if (data?.session?.user) {
       const u = data.session.user;
@@ -972,30 +1024,21 @@ document.getElementById("rpSubmitBtn").addEventListener("click", async () => {
       };
       refreshAuthUI();
     }
-
-    setTimeout(() => {
-      closeResetModal();
-      showToast("Password updated successfully! 🎉");
-    }, 1800);
+    setTimeout(() => { closeResetModal(); showToast("Password updated successfully! 🎉"); }, 1800);
   } catch (err) {
-    errEl.textContent = err.message || "Failed to update password. Please request a new reset link.";
-    errEl.classList.remove("hidden");
+    if (errEl) { errEl.textContent = err.message || "Failed to update password. Please request a new reset link."; errEl.classList.remove("hidden"); }
   } finally {
     setBusy(btn, false, "", "Update Password");
   }
 });
 
-// ── SESSION / AUTH STATE ──────────────────────────────────
-// FIX: onAuthStateChange was placed AFTER getSession in original — now properly ordered
-// and PASSWORD_RECOVERY event correctly opens reset modal
+// ── SESSION / AUTH STATE CHANGE ───────────────────────────
 if (sb) {
   sb.auth.onAuthStateChange((event, session) => {
-    // User clicked the reset link in their email
     if (event === "PASSWORD_RECOVERY") {
       openResetModal();
       return;
     }
-
     if (session?.user) {
       const u = session.user;
       currentUser = {
@@ -1004,7 +1047,6 @@ if (sb) {
         email: u.email,
       };
       refreshAuthUI();
-      // Only close auth modal on explicit SIGNED_IN, not on TOKEN_REFRESHED etc.
       if (event === "SIGNED_IN") closeAuthModal();
     } else if (event === "SIGNED_OUT") {
       currentUser = null;
@@ -1012,7 +1054,6 @@ if (sb) {
     }
   });
 
-  // Restore existing session on page load
   sb.auth.getSession().then(({ data }) => {
     if (data?.session?.user) {
       const u = data.session.user;
@@ -1038,87 +1079,52 @@ const testimonials = [
 
 const PAGE_SIZE   = 3;
 const AUTOPLAY_MS = 6000;
-const container     = document.getElementById("testimonialContainer");
-const dotsContainer = document.getElementById("testimonialDots");
-const progressFill  = document.getElementById("testimonialProgress");
-const prevBtn       = document.getElementById("testimonialPrev");
-const nextBtn       = document.getElementById("testimonialNext");
-const wrap          = document.getElementById("testimonialWrap");
+
+let currentPage = 0;
+let autoTimer   = null;
 
 const pages = [];
 for (let i = 0; i < testimonials.length; i += PAGE_SIZE) pages.push(testimonials.slice(i, i + PAGE_SIZE));
 
-let currentPage = 0, timer = null;
-
 function cardMarkup(item) {
-  return `<div class="relative bg-white/5 dark:bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-2xl shadow-black/30 hover:shadow-brand/70 hover:border-brand hover:-translate-y-2 transition-all duration-500">
-    <span class="absolute top-3 right-5 text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-br from-brand to-brand opacity-10 select-none">&rdquo;</span>
-    <div class="flex mb-5 text-yellow-400 text-xl drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]">★★★★★</div>
-    <p class="text-black dark:text-white/90 leading-relaxed mb-6 text-sm md:text-base">"${item.text}"</p>
-    <div class="flex items-center gap-4">
-      <div class="w-14 h-14 rounded-full bg-gradient-to-r from-white to-brand/40 flex items-center justify-center font-bold text-lg text-white shadow-lg shadow-brand/50">${item.name.charAt(0)}</div>
-      <div><h4 class="font-semibold text-lg text-black dark:text-white">${item.name}</h4><p class="text-sm dark:text-gray-400">${item.role}</p></div>
-    </div>
-  </div>`;
+  return `
+    <div class="testimonial-card relative bg-white border border-gray-100 rounded-3xl p-8 shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-500" style="animation:float 4s ease-in-out infinite;">
+      <div class="flex mb-5 text-yellow-400 text-xl">★★★★★</div>
+      <p class="text-gray-700 leading-relaxed mb-6 text-sm md:text-base">"${item.text}"</p>
+      <div class="flex items-center gap-4">
+        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#ff7a00,#ff9d44);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#fff;flex-shrink:0;">
+          ${item.name.charAt(0)}
+        </div>
+        <div>
+          <h4 class="font-semibold text-base text-gray-900">${item.name}</h4>
+          <p class="text-sm text-gray-500">${item.role}</p>
+        </div>
+      </div>
+    </div>`;
 }
 
-function paint(index) { if (!container) return; container.innerHTML = pages[index].map(cardMarkup).join(""); }
-
-function renderPage(index, animate = true) {
+function renderTestimonialPage(index) {
+  const container = document.getElementById("testimonialContainer");
   if (!container) return;
-  if (animate) {
-    container.classList.add("opacity-0", "translate-y-2");
-    setTimeout(() => { paint(index); container.classList.remove("opacity-0", "translate-y-2"); }, 260);
-  } else {
-    paint(index);
-  }
-  updateDots(index);
-  restartProgress();
+  container.classList.add("fading");
+  setTimeout(() => {
+    container.innerHTML = pages[index].map(cardMarkup).join("");
+    container.classList.remove("fading");
+  }, 260);
 }
 
-function buildDots() {
-  if (!dotsContainer) return;
-  dotsContainer.innerHTML = pages.map((_, i) =>
-    `<button class="h-2 rounded-full transition-all duration-300 ${i === 0 ? "w-6 bg-gradient-to-r from-cyan-400 to-brand" : "w-2 bg-white/20 hover:bg-white/40"}" data-index="${i}" aria-current="${i === 0 ? "true" : "false"}"></button>`
-  ).join("");
-  dotsContainer.querySelectorAll("button").forEach((dot) => {
-    dot.addEventListener("click", () => {
-      currentPage = parseInt(dot.dataset.index, 10);
-      renderPage(currentPage);
-      restartAutoplay();
-    });
-  });
+function goToTestimonialPage(index) {
+  currentPage = ((index % pages.length) + pages.length) % pages.length;
+  renderTestimonialPage(currentPage);
 }
 
-function updateDots(index) {
-  if (!dotsContainer) return;
-  dotsContainer.querySelectorAll("button").forEach((dot, i) => {
-    dot.setAttribute("aria-current", i === index ? "true" : "false");
-    dot.className = `h-2 rounded-full transition-all duration-300 ${i === index ? "w-6 bg-gradient-to-r from-cyan-400 to-blue-600" : "w-2 bg-white/20 hover:bg-white/40"}`;
-  });
+function startTestimonialAutoplay() {
+  if (autoTimer) clearInterval(autoTimer);
+  autoTimer = setInterval(() => goToTestimonialPage(currentPage + 1), AUTOPLAY_MS);
 }
 
-function restartProgress() {
-  if (!progressFill) return;
-  progressFill.style.animation = "none";
-  void progressFill.offsetHeight;
-  progressFill.style.animation = `fillProgress ${AUTOPLAY_MS}ms linear`;
-}
-
-function goTo(index) { currentPage = (index + pages.length) % pages.length; renderPage(currentPage); }
-function restartAutoplay() { clearInterval(timer); timer = setInterval(() => goTo(currentPage + 1), AUTOPLAY_MS); }
-
-if (prevBtn) prevBtn.addEventListener("click", () => { goTo(currentPage - 1); restartAutoplay(); });
-if (nextBtn) nextBtn.addEventListener("click", () => { goTo(currentPage + 1); restartAutoplay(); });
-if (wrap) {
-  wrap.addEventListener("mouseenter", () => { clearInterval(timer); if (progressFill) progressFill.style.animationPlayState = "paused"; });
-  wrap.addEventListener("mouseleave", () => { if (progressFill) progressFill.style.animationPlayState = "running"; restartAutoplay(); });
-}
-
-buildDots();
-paint(0);
-restartProgress();
-restartAutoplay();
+renderTestimonialPage(0);
+startTestimonialAutoplay();
 
 // ── LOAD PRODUCTS FROM SUPABASE ───────────────────────────
 async function loadProductsFromSupabase() {
@@ -1126,8 +1132,7 @@ async function loadProductsFromSupabase() {
     try {
       const { data, error } = await sb.from("products").select("*");
       if (!error && data && data.length) {
-        products.length = 0;
-        products.push(...data);
+        products.splice(0, products.length, ...data);
       }
     } catch (e) {
       console.warn("Could not load products from Supabase, using fallback data", e);
@@ -1135,15 +1140,23 @@ async function loadProductsFromSupabase() {
 
     sb.channel("home-products-live")
       .on("postgres_changes", { event: "*", schema: "public", table: "products" }, (payload) => {
-        if      (payload.eventType === "INSERT") { products.unshift(payload.new); showToast(`🔥 New: ${payload.new.name}`); }
-        else if (payload.eventType === "UPDATE") { const i = products.findIndex((p) => String(p.id) === String(payload.new.id)); if (i !== -1) products[i] = payload.new; }
-        else if (payload.eventType === "DELETE") { const i = products.findIndex((p) => String(p.id) === String(payload.old.id)); if (i !== -1) products.splice(i, 1); }
+        if (payload.eventType === "INSERT") {
+          products.unshift(payload.new);
+          showToast(`🔥 New arrival: ${payload.new.name}`);
+        } else if (payload.eventType === "UPDATE") {
+          const i = products.findIndex((p) => String(p.id) === String(payload.new.id));
+          if (i !== -1) products[i] = payload.new;
+        } else if (payload.eventType === "DELETE") {
+          const i = products.findIndex((p) => String(p.id) === String(payload.old.id));
+          if (i !== -1) products.splice(i, 1);
+        }
         renderProducts();
         renderHomeArrivals();
       })
       .subscribe();
   }
 
+  // ✅ FIX: activeCat is "all" by default — styleFilterPills highlights the All card immediately on load
   styleFilterPills();
   renderProducts();
   renderHomeArrivals();
@@ -1163,23 +1176,24 @@ function mpOrderCard(o) {
   const dateStr = o.created_at
     ? new Date(o.created_at).toLocaleDateString("en-NG", { day: "numeric", month: "short", year: "numeric" })
     : "";
-  return `<div style="background:#f9fafb;border-radius:10px;border:.5px solid #e5e7eb;padding:.9rem 1rem;margin-bottom:.65rem;display:flex;gap:12px;align-items:center;">
-    <div style="width:38px;height:38px;border-radius:8px;background:${c.bg};color:${c.color};display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">${c.icon}</div>
-    <div style="flex:1;min-width:0;">
-      <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.items_summary}</div>
-      <div style="font-size:11px;color:#6b7280;margin-top:1px;">#${String(o.id).slice(0, 8).toUpperCase()} · ${dateStr}</div>
-    </div>
-    <div style="text-align:right;flex-shrink:0;">
-      <div style="font-size:13px;font-weight:600;">${mpFmt(o.total)}</div>
-      <span style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;margin-top:3px;font-weight:600;background:${c.bg};color:${c.color};">${c.label}</span>
-    </div>
-  </div>`;
+  return `
+    <div style="background:#f9fafb;border-radius:10px;border:.5px solid #e5e7eb;padding:.9rem 1rem;margin-bottom:.65rem;display:flex;gap:12px;align-items:center;">
+      <div style="width:38px;height:38px;border-radius:8px;background:${c.bg};color:${c.color};display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">${c.icon}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.items_summary || "Order"}</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:1px;">#${String(o.id).slice(0, 8).toUpperCase()} · ${dateStr}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <div style="font-size:13px;font-weight:600;">${mpFmt(o.total)}</div>
+        <span style="display:inline-block;font-size:10px;padding:2px 8px;border-radius:20px;margin-top:3px;font-weight:600;background:${c.bg};color:${c.color};">${c.label}</span>
+      </div>
+    </div>`;
 }
 
 async function openMpModal() {
   if (!currentUser) return;
-  document.getElementById("mp-overlay").style.display = "flex";
-  const user = currentUser;
+  const mpOverlay = document.getElementById("mp-overlay");
+  if (mpOverlay) mpOverlay.style.display = "flex";
 
   document.querySelectorAll(".mp-tab").forEach((t) => {
     const is = t.dataset.tab === "overview";
@@ -1188,32 +1202,38 @@ async function openMpModal() {
     t.style.fontWeight   = is ? "600" : "400";
   });
   ["overview", "history", "pending", "account"].forEach((id) => {
-    document.getElementById("mp-tab-" + id).style.display = id === "overview" ? "block" : "none";
+    const el = document.getElementById("mp-tab-" + id);
+    if (el) el.style.display = id === "overview" ? "block" : "none";
   });
 
-  document.getElementById("mp-avatar").textContent     = (user.name || user.email || "U").charAt(0).toUpperCase();
-  document.getElementById("mp-disp-name").textContent  = user.name  || "—";
-  document.getElementById("mp-disp-email").textContent = user.email || "—";
-  document.getElementById("mp-acc-name").textContent   = user.name  || "—";
-  document.getElementById("mp-acc-email").textContent  = user.email || "—";
+  const avatar    = document.getElementById("mp-avatar");
+  const dispName  = document.getElementById("mp-disp-name");
+  const dispEmail = document.getElementById("mp-disp-email");
+  const accName   = document.getElementById("mp-acc-name");
+  const accEmail  = document.getElementById("mp-acc-email");
+  const accSince  = document.getElementById("mp-acc-since");
 
-  if (sb && currentUser.id) {
+  if (avatar)    avatar.textContent    = (currentUser.name || currentUser.email || "U").charAt(0).toUpperCase();
+  if (dispName)  dispName.textContent  = currentUser.name  || "—";
+  if (dispEmail) dispEmail.textContent = currentUser.email || "—";
+  if (accName)   accName.textContent   = currentUser.name  || "—";
+  if (accEmail)  accEmail.textContent  = currentUser.email || "—";
+
+  if (sb && currentUser.id && accSince) {
     try {
       const { data: prof } = await sb.from("profiles").select("created_at").eq("id", currentUser.id).single();
-      document.getElementById("mp-acc-since").textContent = prof?.created_at
+      accSince.textContent = prof?.created_at
         ? new Date(prof.created_at).toLocaleDateString("en-NG", { day: "numeric", month: "long", year: "numeric" })
         : "—";
-    } catch (e) {
-      document.getElementById("mp-acc-since").textContent = "—";
-    }
-  } else {
-    document.getElementById("mp-acc-since").textContent = "—";
+    } catch { accSince.textContent = "—"; }
   }
 
   let orders = [];
   if (sb && currentUser.id) {
     try {
-      const { data, error } = await sb.from("orders").select("*").eq("user_id", currentUser.id).order("created_at", { ascending: false });
+      const { data, error } = await sb.from("orders").select("*")
+        .eq("user_id", currentUser.id)
+        .order("created_at", { ascending: false });
       if (!error && data) orders = data;
     } catch (e) { console.warn("Orders load failed", e); }
   }
@@ -1222,27 +1242,31 @@ async function openMpModal() {
   const pendingOrders   = orders.filter((o) => o.status === "pending");
   const cancelledOrders = orders.filter((o) => o.status === "cancelled");
 
-  document.getElementById("mp-stat-total").textContent   = orders.length;
-  document.getElementById("mp-stat-success").textContent = successOrders.length;
-  document.getElementById("mp-stat-pending").textContent = pendingOrders.length;
+  const statTotal   = document.getElementById("mp-stat-total");
+  const statSuccess = document.getElementById("mp-stat-success");
+  const statPending = document.getElementById("mp-stat-pending");
+  if (statTotal)   statTotal.textContent   = orders.length;
+  if (statSuccess) statSuccess.textContent = successOrders.length;
+  if (statPending) statPending.textContent = pendingOrders.length;
 
   const emptyMsg = (t) => `<div style="text-align:center;padding:1.5rem 0;font-size:12px;color:#9ca3af;">${t}</div>`;
 
-  document.getElementById("mp-recent-list").innerHTML  = orders.length
-    ? orders.slice(0, 5).map(mpOrderCard).join("")
-    : emptyMsg("No orders yet. Start shopping! 🛍️");
-  document.getElementById("mp-history-list").innerHTML = successOrders.length
-    ? successOrders.map(mpOrderCard).join("")
-    : emptyMsg("No completed orders yet");
-  document.getElementById("mp-pending-list").innerHTML = [...pendingOrders, ...cancelledOrders].length
+  const recentList  = document.getElementById("mp-recent-list");
+  const historyList = document.getElementById("mp-history-list");
+  const pendingList = document.getElementById("mp-pending-list");
+
+  if (recentList)  recentList.innerHTML  = orders.length         ? orders.slice(0, 5).map(mpOrderCard).join("") : emptyMsg("No orders yet. Start shopping! 🛍️");
+  if (historyList) historyList.innerHTML = successOrders.length  ? successOrders.map(mpOrderCard).join("")       : emptyMsg("No completed orders yet");
+  if (pendingList) pendingList.innerHTML = (pendingOrders.length || cancelledOrders.length)
     ? [...pendingOrders, ...cancelledOrders].map(mpOrderCard).join("")
     : emptyMsg("No pending orders 🎉");
 }
 
-document.getElementById("mp-close-btn").addEventListener("click", () => {
-  document.getElementById("mp-overlay").style.display = "none";
+document.getElementById("mp-close-btn")?.addEventListener("click", () => {
+  const mpOverlay = document.getElementById("mp-overlay");
+  if (mpOverlay) mpOverlay.style.display = "none";
 });
-document.getElementById("mp-overlay").addEventListener("click", (e) => {
+document.getElementById("mp-overlay")?.addEventListener("click", (e) => {
   if (e.target === e.currentTarget) e.target.style.display = "none";
 });
 document.querySelectorAll(".mp-tab").forEach((tab) => {
@@ -1256,7 +1280,8 @@ document.querySelectorAll(".mp-tab").forEach((tab) => {
     tab.style.borderBottom = "2px solid #ff7a00";
     tab.style.fontWeight   = "600";
     ["overview", "history", "pending", "account"].forEach((id) => {
-      document.getElementById("mp-tab-" + id).style.display = id === tab.dataset.tab ? "block" : "none";
+      const el = document.getElementById("mp-tab-" + id);
+      if (el) el.style.display = id === tab.dataset.tab ? "block" : "none";
     });
   });
 });

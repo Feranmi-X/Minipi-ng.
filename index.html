@@ -5,16 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Minipi NG</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
-    />
-    <link
-      rel="preload"
-      as="image"
-      href="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=440&q=70"
-      fetchpriority="high"
     />
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -227,10 +220,11 @@
               >Shop</a
             >
           </li>
-            
-          <li><a href="/booking.html" class="hover:text-brand transition-colors"
+          <li>
+            <a href="/booking.html" class="hover:text-brand transition-colors"
               >Book Repair</a
-            ></li>
+            >
+          </li>
           <a
             href="/Admin.html"
             id="adminNavLink"
@@ -534,20 +528,22 @@
               >Home</a
             >
           </li>
-            <li><a href="/booking.html" class="hover:text-brand transition-colors"
+          <li>
+            <a href="/booking.html" class="hover:text-brand transition-colors"
               >Book Repair</a
-            ></li>
+            >
+          </li>
           <li>
             <a href="/shop.html" class="text-brand font-semibold">Shop</a>
           </li>
-           </li>
           <li
-            href="/Admin.html"
-            id="adminNavLink"
+            id="adminNavLinkMobile"
             class="hidden items-center gap-1 px-3 py-2 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-xs font-semibold hover:border-brand hover:text-brand transition-colors shrink-0"
             title="Admin dashboard"
           >
-            <i class="fas fa-user-shield text-xs"></i> Admin
+            <a href="/Admin.html"
+              ><i class="fas fa-user-shield text-xs"></i> Admin</a
+            >
           </li>
           <li>
             <p
@@ -661,14 +657,8 @@
           </div>
         </div>
         <img
-          src="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=440&q=70"
-          srcset="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=280&q=70 280w, https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=440&q=70 440w"
-          sizes="(max-width: 767px) 280px, 440px"
+          src="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=700&q=80"
           alt="Wireless earbuds"
-          width="440"
-          height="440"
-          fetchpriority="high"
-          decoding="async"
           class="w-full max-w-[280px] md:max-w-[440px] aspect-square object-cover rounded-3xl shadow-2xl justify-self-center mx-auto"
         />
       </div>
@@ -685,7 +675,26 @@
             Find exactly what you're looking for
           </p>
         </div>
-        <div id="catGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <!-- ✅ FIX: All button now uses cat-card class so it gets the orange highlight on load and on click -->
+        <div id="catGrid" class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+          <button
+            class="cat-card flex flex-col items-center gap-3 bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl py-7 px-4 text-[13px] font-medium hover:border-brand hover:shadow-[0_4px_20px_rgba(255,122,0,0.12)] transition-all"
+            data-cat="all"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              class="w-8 h-8 text-brand"
+            >
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+            </svg>
+            All
+          </button>
           <button
             class="cat-card flex flex-col items-center gap-3 bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl py-7 px-4 text-[13px] font-medium hover:border-brand hover:shadow-[0_4px_20px_rgba(255,122,0,0.12)] transition-all"
             data-cat="phone"
@@ -781,7 +790,7 @@
       </div>
     </section>
 
-    <!-- ★ NEW ARRIVALS (added from shop page) -->
+    <!-- NEW ARRIVALS -->
     <section id="newArrivals" class="max-w-[1280px] mx-auto px-5 pt-12 pb-0">
       <div class="flex items-center justify-between mb-5">
         <div>
@@ -1077,14 +1086,8 @@
           </div>
         </div>
         <img
-          src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=460&q=70"
-          srcset="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=280&q=70 280w, https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=460&q=70 460w"
-          sizes="(max-width: 767px) 280px, 460px"
+          src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=700&q=80"
           alt="Smartphones"
-          width="460"
-          height="460"
-          loading="lazy"
-          decoding="async"
           class="w-full max-w-[280px] md:max-w-[460px] rounded-3xl object-cover shadow-2xl justify-self-center mx-auto"
         />
       </div>
@@ -1196,7 +1199,7 @@
             </li>
             <li>
               <a
-                href="tel:+2348034970248"
+                href="tel:+2349020300736"
                 class="text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
                 >+234 9020300736</a
               >
@@ -1261,7 +1264,7 @@
       </div>
     </aside>
 
-    <!-- ★ PAYMENT MODAL -->
+    <!-- PAYMENT MODAL -->
     <div
       id="paymentOverlay"
       class="hidden fixed inset-0 bg-black/60 z-[600] items-center justify-center p-5"
@@ -1284,7 +1287,6 @@
             <path d="M18 6L6 18M6 6l12 12" />
           </svg>
         </button>
-        <!-- Icon -->
         <div
           class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4"
         >
@@ -1312,16 +1314,12 @@
           Transfer the total amount to the account below, then send your receipt
           on WhatsApp.
         </p>
-
-        <!-- Order summary -->
         <div class="bg-brand/10 rounded-2xl p-4 mb-5 text-center">
           <p class="text-[12px] text-gray-500 dark:text-gray-400 mb-1">
             Order Total
           </p>
           <p id="paymentTotal" class="text-2xl font-extrabold text-brand">₦0</p>
         </div>
-
-        <!-- Bank details -->
         <div
           class="bg-gray-50 dark:bg-neutral-800 rounded-2xl p-4 mb-5 space-y-3"
         >
@@ -1333,14 +1331,12 @@
           <div class="flex justify-between items-center">
             <span class="text-[13px] text-gray-500 dark:text-gray-400"
               >Bank</span
-            >
-            <span class="text-[13px] font-bold">Wema</span>
+            ><span class="text-[13px] font-bold">Wema</span>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-[13px] text-gray-500 dark:text-gray-400"
               >Account Name</span
-            >
-            <span class="text-[13px] font-bold">Maxwell Ikiriko</span>
+            ><span class="text-[13px] font-bold">Maxwell Ikiriko</span>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-[13px] text-gray-500 dark:text-gray-400"
@@ -1359,8 +1355,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Steps -->
         <ol
           class="text-[12px] text-gray-500 dark:text-gray-400 space-y-2 mb-6 list-none"
         >
@@ -1383,16 +1377,13 @@
             >Send the screenshot to us on WhatsApp to confirm your order.
           </li>
         </ol>
-
-        <!-- WhatsApp button -->
         <a
           id="whatsappPayLink"
           href="#"
           target="_blank"
           class="w-full py-3 rounded-full bg-green-500 text-white text-sm font-semibold flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
         >
-          <i class="fab fa-whatsapp text-lg"></i>
-          Send Receipt on WhatsApp
+          <i class="fab fa-whatsapp text-lg"></i>Send Receipt on WhatsApp
         </a>
         <p class="text-[11px] text-gray-400 text-center mt-3">
           Your order will be confirmed once we receive your payment screenshot.
@@ -1454,10 +1445,8 @@
           class="hidden auth-alert px-3.5 py-2.5 rounded-[10px] text-xs mb-3.5 leading-relaxed bg-green-50 border-[1.5px] border-green-200 text-green-600 dark:bg-green-500/10 dark:border-green-500/30 dark:text-green-400"
         ></div>
         <div class="mb-4">
-          <label class="block text-xs font-semibold mb-1.5"
-            >Email address</label
-          >
-          <input
+          <label class="block text-xs font-semibold mb-1.5">Email address</label
+          ><input
             id="siEmail"
             type="email"
             autocomplete="email"
@@ -1474,8 +1463,7 @@
               autocomplete="current-password"
               placeholder="••••••••"
               class="w-full px-4 py-[11px] pr-10 rounded-[10px] border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-[13px] outline-none focus:border-brand placeholder:text-gray-400 transition-colors"
-            />
-            <button
+            /><button
               class="toggle-pwd absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
               data-target="siPwd"
               type="button"
@@ -1571,8 +1559,8 @@
           class="hidden auth-alert px-3.5 py-2.5 rounded-[10px] text-xs mb-3.5 leading-relaxed bg-green-50 border-[1.5px] border-green-200 text-green-600 dark:bg-green-500/10 dark:border-green-500/30 dark:text-green-400"
         ></div>
         <div class="mb-4">
-          <label class="block text-xs font-semibold mb-1.5">Full name</label>
-          <input
+          <label class="block text-xs font-semibold mb-1.5">Full name</label
+          ><input
             id="suName"
             type="text"
             autocomplete="name"
@@ -1581,10 +1569,8 @@
           />
         </div>
         <div class="mb-4">
-          <label class="block text-xs font-semibold mb-1.5"
-            >Email address</label
-          >
-          <input
+          <label class="block text-xs font-semibold mb-1.5">Email address</label
+          ><input
             id="suEmail"
             type="email"
             autocomplete="email"
@@ -1601,8 +1587,7 @@
               autocomplete="new-password"
               placeholder="At least 6 characters"
               class="w-full px-4 py-[11px] pr-10 rounded-[10px] border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-[13px] outline-none focus:border-brand placeholder:text-gray-400 transition-colors"
-            />
-            <button
+            /><button
               class="toggle-pwd absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
               data-target="suPwd"
               type="button"
@@ -1688,8 +1673,6 @@
             id="pdImg"
             src=""
             alt=""
-            loading="lazy"
-            decoding="async"
             class="w-full aspect-square object-cover rounded-2xl bg-gray-100 dark:bg-neutral-800"
           />
           <div class="flex flex-col">
@@ -1827,8 +1810,7 @@
               type="password"
               placeholder="At least 6 characters"
               class="w-full px-4 py-[11px] pr-10 rounded-[10px] border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-[13px] outline-none focus:border-brand placeholder:text-gray-400 transition-colors"
-            />
-            <button
+            /><button
               class="toggle-pwd absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
               data-target="rpPwd"
               type="button"
@@ -1857,8 +1839,7 @@
               type="password"
               placeholder="Repeat your new password"
               class="w-full px-4 py-[11px] pr-10 rounded-[10px] border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-[13px] outline-none focus:border-brand placeholder:text-gray-400 transition-colors"
-            />
-            <button
+            /><button
               class="toggle-pwd absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
               data-target="rpPwdConfirm"
               type="button"
