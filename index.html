@@ -1320,6 +1320,7 @@
           <p id="paymentTotal" class="text-2xl font-extrabold text-brand">₦0</p>
         </div>
         <div
+          id="bankDetailsBox"
           class="bg-gray-50 dark:bg-neutral-800 rounded-2xl p-4 mb-5 space-y-3"
         >
           <h3
@@ -1330,20 +1331,26 @@
           <div class="flex justify-between items-center">
             <span class="text-[13px] text-gray-500 dark:text-gray-400"
               >Bank</span
-            ><span class="text-[13px] font-bold">Wema</span>
+            ><span id="checkoutBankName" class="text-[13px] font-bold"
+              >Wema</span
+            >
           </div>
           <div class="flex justify-between items-center">
             <span class="text-[13px] text-gray-500 dark:text-gray-400"
               >Account Name</span
-            ><span class="text-[13px] font-bold">Maxwell Ikiriko</span>
+            ><span id="checkoutAccountName" class="text-[13px] font-bold"
+              >MINIPI NIG LTD</span
+            >
           </div>
           <div class="flex justify-between items-center">
             <span class="text-[13px] text-gray-500 dark:text-gray-400"
               >Account Number</span
             >
             <div class="flex items-center gap-2">
-              <span class="text-[15px] font-extrabold text-brand tracking-wider"
-                >0230092228</span
+              <span
+                id="checkoutAccountNumber"
+                class="text-[15px] font-extrabold text-brand tracking-wider"
+                >0128197851</span
               >
               <button
                 onclick="copyAcct()"
@@ -2266,6 +2273,116 @@
       ></noscript
     >
 
+    <script src="/main.js"></script>
+
+    <!-- ── LIVE PAYMENT SETTINGS (bank details from Supabase "settings" table) ── -->
+    <script>
+      (function () {
+        // Same Supabase project as the admin dashboard.
+        const SB_URL = "https://sygdrjmjjxwxuczcnxjr.supabase.co";
+        const SB_KEY =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN5Z2Ryam1qanh3eHVjemNueGpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzODI0MDIsImV4cCI6MjA5Njk1ODQwMn0.xp-zwipa_l-1JeYzyTqSNxeK1dwqGH-ilK35jIXSncg";
+
+        let _sbSettings = null;
+        try {
+          if (window.supabase?.createClient) {
+            _sbSettings = window.supabase.createClient(SB_URL, SB_KEY);
+          }
+        } catch (e) {
+          console.warn("Supabase init failed (payment settings)", e);
+        }
+
+        // Fallback values (used only if the Supabase fetch fails or the
+        // "settings" table/row doesn't exist yet).
+        window.PAYMENT_SETTINGS = {
+          bank_name: "Wema",
+          account_name: "MINIPI NIG LTD",
+          account_number: "0128197851",
+        };
+
+        function applyPaymentSettings(s) {
+          const bankEl = document.getElementById("checkoutBankName");
+          const nameEl = document.getElementById("checkoutAccountName");
+          const numEl = document.getElementById("checkoutAccountNumber");
+          if (bankEl) bankEl.textContent = s.bank_name;
+          if (nameEl) nameEl.textContent = s.account_name;
+          if (numEl) numEl.textContent = s.account_number;
+        }
+
+        async function loadPaymentSettings() {
+          if (!_sbSettings) return;
+          try {
+            const { data, error } = await _sbSettings
+              .from("settings")
+              .select("*")
+              .eq("id", 1)
+              .maybeSingle();
+            if (error) throw error;
+            if (data) {
+              window.PAYMENT_SETTINGS = {
+                bank_name: data.bank_name || window.PAYMENT_SETTINGS.bank_name,
+                account_name:
+                  data.account_name || window.PAYMENT_SETTINGS.account_name,
+                account_number:
+                  data.account_number || window.PAYMENT_SETTINGS.account_number,
+              };
+              applyPaymentSettings(window.PAYMENT_SETTINGS);
+            }
+          } catch (e) {
+            // Falls back silently to the hardcoded defaults above.
+            console.warn(
+              "Could not load live payment settings, using fallback.",
+              e,
+            );
+          }
+        }
+
+        // Overrides any copyAcct() defined in main.js so the button always
+        // copies the live account number, not the hardcoded markup.
+        window.copyAcct = function () {
+          const num = window.PAYMENT_SETTINGS.account_number;
+          if (navigator.clipboard?.writeText) {
+            navigator.clipboard
+              .writeText(num)
+              .then(() => {
+                if (typeof showToast === "function") {
+                  showToast("Account number copied!");
+                } else {
+                  const msgEl = document.getElementById("toastMsg");
+                  const toastEl = document.getElementById("toast");
+                  if (msgEl && toastEl) {
+                    msgEl.textContent = "Account number copied!";
+                    toastEl.classList.replace("opacity-0", "opacity-100");
+                    toastEl.classList.replace(
+                      "translate-y-20",
+                      "translate-y-0",
+                    );
+                    setTimeout(() => {
+                      toastEl.classList.replace("opacity-100", "opacity-0");
+                      toastEl.classList.replace(
+                        "translate-y-0",
+                        "translate-y-20",
+                      );
+                    }, 3500);
+                  }
+                }
+              })
+              .catch(() => {});
+          }
+        };
+
+        // Load immediately, and also refresh right when the payment modal
+        // opens, in case an admin updated it after this page first loaded.
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", loadPaymentSettings);
+        } else {
+          loadPaymentSettings();
+        }
+        document
+          .getElementById("checkoutBtn")
+          ?.addEventListener("click", loadPaymentSettings);
+      })();
+    </script>
     <script src="/main.js"></script>
   </body>
 </html>

@@ -229,6 +229,12 @@
           >
             <i class="fas fa-users mr-1.5 text-[11px]"></i>Users
           </button>
+          <button
+            class="tab-btn px-4 py-2 rounded-full border border-gray-200 dark:border-neutral-700 text-[13px] font-medium whitespace-nowrap"
+            data-tab="settings"
+          >
+            <i class="fas fa-cog mr-1.5 text-[11px]"></i>Settings
+          </button>
         </div>
       </div>
 
@@ -719,6 +725,79 @@
             </div>
           </div>
         </div>
+
+        <!-- SETTINGS TAB -->
+        <div id="tab-settings" class="hidden">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+            <h2 class="text-lg font-bold">Payment Settings</h2>
+          </div>
+          <div
+            class="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-2xl shadow-sm max-w-[560px] p-6"
+          >
+            <p class="text-[13px] text-gray-500 dark:text-gray-400 mb-5">
+              These bank details are shown to customers at checkout so they know
+              where to send payment. Update them here and they'll be reflected
+              the next time the storefront loads its settings.
+            </p>
+            <div
+              id="settingsError"
+              class="hidden mb-4 px-3 py-2.5 rounded-xl text-xs bg-red-50 border border-red-200 text-red-600 dark:bg-red-500/10 dark:border-red-500/30 dark:text-red-400"
+            ></div>
+            <div
+              id="settingsLoading"
+              class="py-10 text-center text-gray-400 text-sm"
+            >
+              <i
+                class="fas fa-spinner fa-spin text-brand text-2xl mb-3 block"
+              ></i
+              >Loading settings…
+            </div>
+            <div id="settingsForm" class="hidden flex-col gap-4">
+              <div>
+                <label class="block text-xs font-semibold mb-1.5"
+                  >Bank Name <span class="text-red-500">*</span></label
+                >
+                <input
+                  id="fBankName"
+                  type="text"
+                  placeholder="e.g. GTBank"
+                  class="w-full px-4 py-[11px] rounded-xl border border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 text-[13px] focus:border-brand placeholder:text-gray-400 transition-colors"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold mb-1.5"
+                  >Account Number <span class="text-red-500">*</span></label
+                >
+                <input
+                  id="fAccountNumber"
+                  type="text"
+                  inputmode="numeric"
+                  placeholder="e.g. 0123456789"
+                  class="w-full px-4 py-[11px] rounded-xl border border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 text-[13px] focus:border-brand placeholder:text-gray-400 transition-colors font-mono tracking-wide"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold mb-1.5"
+                  >Account Name <span class="text-red-500">*</span></label
+                >
+                <input
+                  id="fAccountName"
+                  type="text"
+                  placeholder="e.g. Minipi NG Limited"
+                  class="w-full px-4 py-[11px] rounded-xl border border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 text-[13px] focus:border-brand placeholder:text-gray-400 transition-colors"
+                />
+              </div>
+              <div class="flex justify-end pt-2">
+                <button
+                  id="settingsSaveBtn"
+                  class="px-6 py-2.5 rounded-full bg-brand text-white text-sm font-semibold hover:opacity-90 disabled:opacity-60 transition-opacity flex items-center gap-2"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
 
@@ -1020,6 +1099,7 @@
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN5Z2Ryam1qanh3eHVjemNueGpyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzODI0MDIsImV4cCI6MjA5Njk1ODQwMn0.xp-zwipa_l-1JeYzyTqSNxeK1dwqGH-ilK35jIXSncg";
       const ADMIN_EMAILS = ["admin@minipi.ng", "maxwellikiriko@yahoo.co.uk"];
       const BUCKET = "product-images"; // ← your Supabase storage bucket name
+      const SETTINGS_ID = 1; // fixed row id for the single settings record
 
       // ── SUPABASE ──────────────────────────────────────────────
       let sb = null;
@@ -1090,7 +1170,7 @@
             b.classList.add("border-transparent");
           }
         });
-        ["overview", "products", "orders", "users"].forEach((t) => {
+        ["overview", "products", "orders", "users", "settings"].forEach((t) => {
           document
             .getElementById("tab-" + t)
             ?.classList.toggle("hidden", t !== name);
@@ -1099,6 +1179,7 @@
         if (name === "orders") loadOrders();
         if (name === "users") loadUsers();
         if (name === "overview") loadOverview();
+        if (name === "settings") loadSettings();
       }
       document.querySelectorAll(".tab-btn").forEach((btn) => {
         btn.addEventListener("click", () => switchTab(btn.dataset.tab));
@@ -2178,6 +2259,87 @@
             showToast("Delete failed: " + err.message, "error");
           } finally {
             setBusy(btn, false, "", "Delete User");
+          }
+        });
+
+      // ── SETTINGS (bank/payment details shown to customers at checkout) ──
+      async function loadSettings() {
+        const loading = document.getElementById("settingsLoading");
+        const form = document.getElementById("settingsForm");
+        const errEl = document.getElementById("settingsError");
+        loading.classList.remove("hidden");
+        form.classList.add("hidden");
+        errEl.classList.add("hidden");
+        if (!sb) return;
+        try {
+          const { data, error } = await sb
+            .from("settings")
+            .select("*")
+            .eq("id", SETTINGS_ID)
+            .maybeSingle();
+          if (error) throw error;
+          document.getElementById("fBankName").value = data?.bank_name || "";
+          document.getElementById("fAccountNumber").value =
+            data?.account_number || "";
+          document.getElementById("fAccountName").value =
+            data?.account_name || "";
+          loading.classList.add("hidden");
+          form.classList.remove("hidden");
+          form.classList.add("flex");
+        } catch (err) {
+          loading.classList.add("hidden");
+          errEl.textContent =
+            "Failed to load settings: " +
+            err.message +
+            " (make sure a 'settings' table exists — see notes below).";
+          errEl.classList.remove("hidden");
+        }
+      }
+
+      document
+        .getElementById("settingsSaveBtn")
+        .addEventListener("click", async () => {
+          const bankName = document.getElementById("fBankName").value.trim();
+          const accountNumber = document
+            .getElementById("fAccountNumber")
+            .value.trim();
+          const accountName = document
+            .getElementById("fAccountName")
+            .value.trim();
+          const errEl = document.getElementById("settingsError");
+          const btn = document.getElementById("settingsSaveBtn");
+          errEl.classList.add("hidden");
+
+          if (!bankName || !accountNumber || !accountName) {
+            errEl.textContent =
+              "Please fill in bank name, account number, and account name.";
+            errEl.classList.remove("hidden");
+            return;
+          }
+          if (!/^\d{6,20}$/.test(accountNumber)) {
+            errEl.textContent =
+              "Account number should contain only digits (6–20 of them).";
+            errEl.classList.remove("hidden");
+            return;
+          }
+
+          const origHTML = btn.innerHTML;
+          setBusy(btn, true, "Saving…", origHTML);
+          try {
+            const { error } = await sb.from("settings").upsert({
+              id: SETTINGS_ID,
+              bank_name: bankName,
+              account_number: accountNumber,
+              account_name: accountName,
+              updated_at: new Date().toISOString(),
+            });
+            if (error) throw error;
+            showToast("Payment settings updated!");
+          } catch (err) {
+            errEl.textContent = err.message || "Failed to save settings.";
+            errEl.classList.remove("hidden");
+          } finally {
+            setBusy(btn, false, "", origHTML);
           }
         });
     </script>

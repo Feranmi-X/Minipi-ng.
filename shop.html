@@ -966,20 +966,24 @@
           <div class="flex justify-between items-center">
             <span class="text-[13px] text-gray-500 dark:text-gray-400"
               >Bank</span
-            ><span class="text-[13px] font-bold">Opay</span>
+            ><span id="bankNameDisplay" class="text-[13px] font-bold">—</span>
           </div>
           <div class="flex justify-between items-center">
             <span class="text-[13px] text-gray-500 dark:text-gray-400"
               >Account Name</span
-            ><span class="text-[13px] font-bold">Oluwafemi</span>
+            ><span id="bankAcctNameDisplay" class="text-[13px] font-bold"
+              >—</span
+            >
           </div>
           <div class="flex justify-between items-center">
             <span class="text-[13px] text-gray-500 dark:text-gray-400"
               >Account Number</span
             >
             <div class="flex items-center gap-2">
-              <span class="text-[15px] font-extrabold text-brand tracking-wider"
-                >7089344370</span
+              <span
+                id="bankAcctNumberDisplay"
+                class="text-[15px] font-extrabold text-brand tracking-wider"
+                >—</span
               >
               <button
                 onclick="copyAcct()"
@@ -1376,6 +1380,7 @@
 
     <script>
       const CART_KEY = "minipi_cart";
+      const SETTINGS_ID = 1; // must match the row id used in admin.html settings
 
       // ── SUPABASE ─────────────────────────────────────────────────────────────────
       // Use the SAME key as main.js (anon key, not publishable key)
@@ -1392,6 +1397,58 @@
         }
       } catch (e) {
         console.warn("Supabase init failed", e);
+      }
+
+      // ── BANK / PAYMENT SETTINGS (linked to admin.html "Settings" tab) ─────────────
+      let bankDetails = {
+        bank_name: "",
+        account_number: "",
+        account_name: "",
+      };
+
+      async function loadBankSettings() {
+        if (!sb) return;
+        try {
+          const { data, error } = await sb
+            .from("settings")
+            .select("*")
+            .eq("id", SETTINGS_ID)
+            .maybeSingle();
+          if (error) throw error;
+          if (data) {
+            bankDetails = {
+              bank_name: data.bank_name || "",
+              account_number: data.account_number || "",
+              account_name: data.account_name || "",
+            };
+          }
+        } catch (err) {
+          console.warn("Failed to load bank settings", err);
+        }
+      }
+
+      function subscribeToSettings() {
+        if (!sb) return;
+        sb.channel("shop-settings-live")
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "settings",
+              filter: `id=eq.${SETTINGS_ID}`,
+            },
+            (payload) => {
+              if (payload.new) {
+                bankDetails = {
+                  bank_name: payload.new.bank_name || "",
+                  account_number: payload.new.account_number || "",
+                  account_name: payload.new.account_name || "",
+                };
+              }
+            },
+          )
+          .subscribe();
       }
 
       // ── AUTH STATE ────────────────────────────────────────────────────────────────
@@ -2524,8 +2581,12 @@
 
       // ── PAYMENT MODAL ─────────────────────────────────────────────────────────────
       function copyAcct() {
+        if (!bankDetails.account_number) {
+          showToast("Account number not available yet");
+          return;
+        }
         navigator.clipboard
-          .writeText("7089344370")
+          .writeText(bankDetails.account_number)
           .then(() => showToast("Account number copied!"));
       }
 
@@ -2555,6 +2616,15 @@
             .join(", ");
 
           document.getElementById("paymentTotal").textContent = totalFmt;
+
+          // Refresh + populate bank details in case admin updated them since page load
+          await loadBankSettings();
+          document.getElementById("bankNameDisplay").textContent =
+            bankDetails.bank_name || "—";
+          document.getElementById("bankAcctNameDisplay").textContent =
+            bankDetails.account_name || "—";
+          document.getElementById("bankAcctNumberDisplay").textContent =
+            bankDetails.account_number || "—";
 
           // Save order to Supabase (same as home page)
           let orderId = null;
@@ -2707,6 +2777,8 @@
       }
 
       // ── INIT ──────────────────────────────────────────────────────────────────────
+      loadBankSettings();
+      subscribeToSettings();
       loadProducts().then(() => {
         renderCart();
         subscribeToProducts();
