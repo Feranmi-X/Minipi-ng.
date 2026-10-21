@@ -120,9 +120,10 @@
     <div class="overflow-hidden bg-gradient-to-r from-brand to-brand/50 py-3">
       <div class="scroll-right text-white font-bold text-lg">
         🚀 SHOP NOW!!! &nbsp; | &nbsp; 📱 Latest Gadgets &nbsp; | &nbsp; 🎧
-        Premium Audio Gear &nbsp; | &nbsp; 💻 Tech Deals Daily &nbsp; | &nbsp;
-        ⚡ Fast Delivery &nbsp; | &nbsp; 🔥 Limited Time Offers &nbsp; | &nbsp;
-        🛒 Best Prices Guaranteed &nbsp; | &nbsp; ✨ Upgrade Your Tech Today!
+        Premium Audio Gear &nbsp; | &nbsp; ⌚ Smart &amp; Classic Watches
+        &nbsp; | &nbsp; 💻 Tech Deals Daily &nbsp; | &nbsp; ⚡ Fast Delivery
+        &nbsp; | &nbsp; 🔥 Limited Time Offers &nbsp; | &nbsp; 🛒 Best Prices
+        Guaranteed &nbsp; | &nbsp; ✨ Upgrade Your Tech Today!
       </div>
     </div>
 
@@ -143,7 +144,7 @@
           <input
             id="searchDesktop"
             type="text"
-            placeholder="Search phones, laptops, tablets…"
+            placeholder="Search phones, laptops, audio, watches…"
             class="w-full pl-4 pr-11 py-2.5 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-sm outline-none focus:border-brand placeholder:text-gray-400 transition-colors"
           />
           <button
@@ -245,7 +246,7 @@
                 >Laptops
               </button>
               <button
-                class="dd-cat-link w-full flex items-center gap-3 px-4 py-3 text-[13px] font-medium hover:bg-gray-50 dark:hover:bg-neutral-800 hover:text-brand transition-colors"
+                class="dd-cat-link w-full flex items-center gap-3 px-4 py-3 text-[13px] font-medium hover:bg-gray-50 dark:hover:bg-neutral-800 hover:text-brand border-b border-gray-100 dark:border-neutral-800 transition-colors"
                 data-cat="gaming"
               >
                 <svg
@@ -289,6 +290,45 @@
                     stroke-width="2.5"
                   /></svg
                 >Gaming
+              </button>
+              <button
+                class="dd-cat-link w-full flex items-center gap-3 px-4 py-3 text-[13px] font-medium hover:bg-gray-50 dark:hover:bg-neutral-800 hover:text-brand border-b border-gray-100 dark:border-neutral-800 transition-colors"
+                data-cat="audio"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="w-5 h-5 text-brand shrink-0"
+                >
+                  <path d="M3 18v-6a9 9 0 0118 0v6" />
+                  <path
+                    d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"
+                  /></svg
+                >Audio Gear
+              </button>
+              <button
+                class="dd-cat-link w-full flex items-center gap-3 px-4 py-3 text-[13px] font-medium hover:bg-gray-50 dark:hover:bg-neutral-800 hover:text-brand transition-colors"
+                data-cat="watch"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="w-5 h-5 text-brand shrink-0"
+                >
+                  <circle cx="12" cy="12" r="6" />
+                  <polyline points="12 9 12 12 13.5 13.5" />
+                  <path
+                    d="M16.51 17.35l-.35 3.83a2 2 0 01-2 1.82H9.83a2 2 0 01-2-1.82l-.35-3.83m.01-10.7l.35-3.83A2 2 0 019.83 1h4.35a2 2 0 012 1.82l.35 3.83"
+                  /></svg
+                >Watches
               </button>
             </div>
           </li>
@@ -514,6 +554,18 @@
               >
                 Gaming
               </button>
+              <button
+                class="mob-cat-btn px-3 py-1.5 rounded-full border-[1.5px] text-xs font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"
+                data-cat="audio"
+              >
+                Audio Gear
+              </button>
+              <button
+                class="mob-cat-btn px-3 py-1.5 rounded-full border-[1.5px] text-xs font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"
+                data-cat="watch"
+              >
+                Watches
+              </button>
             </div>
           </li>
           <li>
@@ -548,8 +600,8 @@
           <p
             class="text-sm text-gray-500 dark:text-gray-400 max-w-[400px] leading-relaxed"
           >
-            Browse phones, tablets, laptops and gaming gear — all at the best
-            Naira prices.
+            Browse phones, tablets, laptops, gaming gear, audio gear and
+            watches — all at the best Naira prices.
           </p>
         </div>
         <div class="flex gap-3 flex-wrap">
@@ -582,6 +634,18 @@
             data-cat="gaming"
           >
             Gaming
+          </button>
+          <button
+            class="hero-cat-btn px-5 py-2.5 rounded-full border-[1.5px] border-gray-300 dark:border-neutral-700 text-sm font-medium hover:border-brand hover:text-brand transition-all"
+            data-cat="audio"
+          >
+            Audio Gear
+          </button>
+          <button
+            class="hero-cat-btn px-5 py-2.5 rounded-full border-[1.5px] border-gray-300 dark:border-neutral-700 text-sm font-medium hover:border-brand hover:text-brand transition-all"
+            data-cat="watch"
+          >
+            Watches
           </button>
         </div>
       </div>
@@ -686,6 +750,18 @@
             >
               Gaming
             </button>
+            <button
+              class="filter-pill px-[15px] py-2 rounded-full border-[1.5px] text-[12px] font-medium transition-all whitespace-nowrap pill-inactive border-gray-200 dark:border-neutral-700"
+              data-cat="audio"
+            >
+              Audio Gear
+            </button>
+            <button
+              class="filter-pill px-[15px] py-2 rounded-full border-[1.5px] text-[12px] font-medium transition-all whitespace-nowrap pill-inactive border-gray-200 dark:border-neutral-700"
+              data-cat="watch"
+            >
+              Watches
+            </button>
           </div>
           <select
             id="sortSelect"
@@ -751,8 +827,8 @@
           <p
             class="text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed"
           >
-            Your one-stop shop for phones, tablets, laptops and gaming gear in
-            Nigeria. Authentic products, best prices.
+            Your one-stop shop for phones, tablets, laptops, gaming gear, audio
+            gear and watches in Nigeria. Authentic products, best prices.
           </p>
         </div>
         <div>
@@ -788,6 +864,22 @@
                 class="footer-cat text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
                 data-cat="gaming"
                 >Gaming</a
+              >
+            </li>
+            <li>
+              <a
+                href="#shop"
+                class="footer-cat text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
+                data-cat="audio"
+                >Audio Gear</a
+              >
+            </li>
+            <li>
+              <a
+                href="#shop"
+                class="footer-cat text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
+                data-cat="watch"
+                >Watches</a
               >
             </li>
           </ul>
@@ -1381,6 +1473,7 @@
     <script>
       const CART_KEY = "minipi_cart";
       const SETTINGS_ID = 1; // must match the row id used in admin.html settings
+      const VALID_CATS = ["phone", "tablet", "laptop", "gaming", "audio", "watch"];
 
       // ── SUPABASE ─────────────────────────────────────────────────────────────────
       // Use the SAME key as main.js (anon key, not publishable key)
@@ -1791,6 +1884,9 @@
             setFilter(b.dataset.cat);
             mobileMenu.classList.add("hidden");
           });
+        });
+        document.querySelectorAll(".footer-cat").forEach((a) => {
+          a.addEventListener("click", () => setFilter(a.dataset.cat));
         });
       })();
 
@@ -2237,11 +2333,7 @@
 
         const params = new URLSearchParams(window.location.search);
         const catParam = params.get("cat");
-        if (
-          catParam &&
-          ["phone", "tablet", "laptop", "gaming"].includes(catParam)
-        )
-          activeCat = catParam;
+        if (catParam && VALID_CATS.includes(catParam)) activeCat = catParam;
 
         document.getElementById("loadingState").classList.add("hidden");
         document.getElementById("productGrid").classList.remove("hidden");
@@ -2325,6 +2417,8 @@
           tablet: "Tablets",
           laptop: "Laptops",
           gaming: "Gaming",
+          audio: "Audio Gear",
+          watch: "Watches",
         };
         document.getElementById("shopHeading").textContent = searchTerm
           ? `Search: "${searchTerm}"`
@@ -2698,7 +2792,7 @@
       const infoContent = {
         about: {
           title: "About Minipi NG",
-          body: `<p class="mb-2">Minipi NG is Nigeria's go-to online store for the latest phones, tablets, laptops and gaming gear.</p><p class="mb-2">We source authentic devices directly from trusted brands and deliver them to your doorstep, with prices always listed in Naira.</p><p>Founded with one goal: make great technology accessible to everyone in Nigeria.</p>`,
+          body: `<p class="mb-2">Minipi NG is Nigeria's go-to online store for the latest phones, tablets, laptops, gaming gear, audio gear and watches.</p><p class="mb-2">We source authentic devices directly from trusted brands and deliver them to your doorstep, with prices always listed in Naira.</p><p>Founded with one goal: make great technology accessible to everyone in Nigeria.</p>`,
         },
         faqs: {
           title: "Frequently Asked Questions",

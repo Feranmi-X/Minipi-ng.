@@ -318,7 +318,7 @@
           </div>
 
           <div
-            class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8"
+            class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4 mb-8"
           >
             <div
               class="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-2xl p-4 flex items-center gap-3 shadow-sm"
@@ -383,6 +383,32 @@
               <div>
                 <div id="statGaming" class="text-xl font-bold">0</div>
                 <div class="text-[11px] text-gray-500">Gaming</div>
+              </div>
+            </div>
+            <div
+              class="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-2xl p-4 flex items-center gap-3 shadow-sm"
+            >
+              <div
+                class="w-9 h-9 rounded-xl bg-gray-50 dark:bg-neutral-800 flex items-center justify-center shrink-0"
+              >
+                <i class="fas fa-headphones text-pink-500"></i>
+              </div>
+              <div>
+                <div id="statAudio" class="text-xl font-bold">0</div>
+                <div class="text-[11px] text-gray-500">Audio Gear</div>
+              </div>
+            </div>
+            <div
+              class="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-800 rounded-2xl p-4 flex items-center gap-3 shadow-sm"
+            >
+              <div
+                class="w-9 h-9 rounded-xl bg-gray-50 dark:bg-neutral-800 flex items-center justify-center shrink-0"
+              >
+                <i class="fas fa-clock text-indigo-500"></i>
+              </div>
+              <div>
+                <div id="statWatches" class="text-xl font-bold">0</div>
+                <div class="text-[11px] text-gray-500">Watches</div>
               </div>
             </div>
           </div>
@@ -461,6 +487,8 @@
                 <option value="tablet">Tablets</option>
                 <option value="laptop">Laptops</option>
                 <option value="gaming">Gaming</option>
+                <option value="audio">Audio Gear</option>
+                <option value="watch">Watches</option>
               </select>
               <button
                 id="addProductBtn"
@@ -848,6 +876,8 @@
               <option value="tablet">Tablet</option>
               <option value="laptop">Laptop</option>
               <option value="gaming">Gaming</option>
+              <option value="audio">Audio Gear</option>
+              <option value="watch">Watch</option>
             </select>
           </div>
 
@@ -1342,6 +1372,12 @@
           document.getElementById("statGaming").textContent = prods.filter(
             (p) => p.cat === "gaming",
           ).length;
+          document.getElementById("statAudio").textContent = prods.filter(
+            (p) => p.cat === "audio",
+          ).length;
+          document.getElementById("statWatches").textContent = prods.filter(
+            (p) => p.cat === "watch",
+          ).length;
 
           const badge = document.getElementById("pendingOrdersBadge");
           const alert = document.getElementById("pendingAlert");
@@ -1472,6 +1508,10 @@
             "bg-teal-50 text-teal-700 dark:bg-teal-500/10 dark:text-teal-400",
           gaming:
             "bg-orange-50 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400",
+          audio:
+            "bg-pink-50 text-pink-700 dark:bg-pink-500/10 dark:text-pink-400",
+          watch:
+            "bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400",
         };
         tbody.innerHTML = page
           .map(

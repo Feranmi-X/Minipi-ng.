@@ -199,17 +199,38 @@ const products = [
   { id: 42, name: "Corsair K70 RGB Keyboard",    cat: "gaming", price: 165000,  new_arrival: false, img: "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=400&q=80", desc: "Mechanical RGB keyboard, PBT keycaps, hyper-polling." },
   { id: 43, name: "Meta Quest 3",                cat: "gaming", price: 980000,  new_arrival: true,  img: "https://images.unsplash.com/photo-1622979135225-d2ba269cf1ac?auto=format&fit=crop&w=400&q=80", desc: "Mixed reality VR headset, 128GB storage, Snapdragon XR2." },
   { id: 44, name: "SteelSeries Arctis Nova Pro", cat: "gaming", price: 295000,  new_arrival: false, img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=400&q=80", desc: "Active noise cancelling wireless gaming headset." },
+  // AUDIO GEAR
+  { id: 45, name: "Sony WH-1000XM5",             cat: "audio",  price: 520000,  new_arrival: true,  img: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?auto=format&fit=crop&w=400&q=80", desc: "Industry-leading noise cancelling, 30hr battery, multipoint." },
+  { id: 46, name: "AirPods Pro (2nd Gen)",       cat: "audio",  price: 360000,  new_arrival: true,  img: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=400&q=80", desc: "Active noise cancellation, adaptive transparency, USB-C case." },
+  { id: 47, name: "Bose QuietComfort Ultra",     cat: "audio",  price: 610000,  new_arrival: false, img: "https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=400&q=80", desc: "Immersive spatial audio, world-class noise cancelling." },
+  { id: 48, name: "JBL Flip 6 Speaker",          cat: "audio",  price: 135000,  new_arrival: false, img: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=400&q=80", desc: "Portable waterproof speaker, bold sound, 12hr playtime." },
+  { id: 49, name: "Samsung Galaxy Buds2 Pro",    cat: "audio",  price: 210000,  new_arrival: false, img: "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=400&q=80", desc: "24-bit Hi-Fi audio, intelligent ANC, compact comfort fit." },
+  { id: 50, name: "Marshall Emberton II",        cat: "audio",  price: 245000,  new_arrival: false, img: "https://images.unsplash.com/photo-1545127398-14699f92334b?auto=format&fit=crop&w=400&q=80", desc: "Iconic design, 360° sound, 30+ hours of portable playtime." },
+  { id: 51, name: "Beats Studio Pro",            cat: "audio",  price: 395000,  new_arrival: false, img: "https://images.unsplash.com/photo-1484704849700-f032a568e944?auto=format&fit=crop&w=400&q=80", desc: "Personalised spatial audio, lossless via USB-C, 40hr battery." },
+  { id: 52, name: "Anker Soundcore Liberty 4",   cat: "audio",  price: 95000,   new_arrival: false, img: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?auto=format&fit=crop&w=400&q=80", desc: "Adaptive ANC, heart-rate sensing earbuds, 28hr total battery." },
+  // WATCHES
+  { id: 53, name: "Apple Watch Series 9",        cat: "watch",  price: 540000,  new_arrival: true,  img: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&w=400&q=80", desc: "S9 chip, Double Tap gesture, bright Always-On Retina display." },
+  { id: 54, name: "Samsung Galaxy Watch 6",      cat: "watch",  price: 310000,  new_arrival: true,  img: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=400&q=80", desc: "Advanced sleep coaching, body composition, sapphire crystal glass." },
+  { id: 55, name: "Garmin Forerunner 265",       cat: "watch",  price: 420000,  new_arrival: false, img: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=400&q=80", desc: "AMOLED GPS running watch, training readiness, 13-day battery." },
+  { id: 56, name: "Casio G-Shock GA-2100",       cat: "watch",  price: 125000,  new_arrival: false, img: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=400&q=80", desc: "Carbon core guard, 200m water resistance, slim octagon bezel." },
+  { id: 57, name: "Fossil Gen 6 Smartwatch",     cat: "watch",  price: 245000,  new_arrival: false, img: "https://images.unsplash.com/photo-1522312346375-d1a52e2b99b3?auto=format&fit=crop&w=400&q=80", desc: "Wear OS, fast charging, heart-rate and SpO2 tracking." },
+  { id: 58, name: "Huawei Watch GT 4",           cat: "watch",  price: 230000,  new_arrival: false, img: "https://images.unsplash.com/photo-1434056886845-dac89ffe9b56?auto=format&fit=crop&w=400&q=80", desc: "Classic octagonal design, 14-day battery, precise health tracking." },
+  { id: 59, name: "Seiko 5 Sports Automatic",    cat: "watch",  price: 285000,  new_arrival: false, img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=400&q=80", desc: "Self-winding movement, day-date display, 100m water resistance." },
+  { id: 60, name: "Xiaomi Smart Band 8 Pro",     cat: "watch",  price: 55000,   new_arrival: false, img: "https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?auto=format&fit=crop&w=400&q=80", desc: "1.74-inch AMOLED, built-in GPS, 150+ sport modes." },
 ];
 
 const fmt = (n) => "₦" + Number(n).toLocaleString("en-NG");
 
+// Pretty label for category tags on cards / modal
+const CAT_LABELS = { phone: "Phone", tablet: "Tablet", laptop: "Laptop", gaming: "Gaming", audio: "Audio Gear", watch: "Watch" };
+const catLabel = (c) => CAT_LABELS[c] || c || "";
+
 // ── ACTIVE CATEGORY — default "all" so everything shows on load ──
-const VALID_CATS = ["all", "phone", "tablet", "laptop", "gaming"];
+const VALID_CATS = ["all", "phone", "tablet", "laptop", "gaming", "audio", "watch"];
 let activeCat  = "all";
 let searchTerm = "";
 
 // ── CLEAR SEARCH INPUTS HELPER ────────────────────────────
-// Prevents browser autofill from contaminating the product grid
 function clearSearchInputs() {
   const sd = document.getElementById("searchDesktop");
   const sm = document.getElementById("searchMobile");
@@ -229,6 +250,7 @@ function renderProducts() {
     const okQ   = !q ||
       (p.name || "").toLowerCase().includes(q) ||
       (p.cat  || "").toLowerCase().includes(q) ||
+      catLabel(p.cat).toLowerCase().includes(q) ||
       (p.desc || "").toLowerCase().includes(q);
     return okCat && okQ;
   });
@@ -253,7 +275,7 @@ function renderProducts() {
         ${p.new_arrival ? `<span style="position:absolute;top:8px;left:8px;background:#ff7a00;color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em;">New</span>` : ""}
       </div>
       <div class="p-3.5 flex-1 flex flex-col">
-        <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-1">${p.cat}</div>
+        <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-1">${catLabel(p.cat)}</div>
         <div class="text-[13px] font-semibold mb-1 overflow-hidden" style="white-space:nowrap;text-overflow:ellipsis;" title="${p.name}">${p.name}</div>
         <div class="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed mb-2.5 line-clamp-2 flex-1">${p.desc || ""}</div>
         <div class="text-[15px] font-bold text-brand mb-3">${fmt(p.price)}</div>
@@ -303,10 +325,8 @@ function styleFilterPills() {
   });
 }
 
-// FIX: setFilter now validates the incoming category against the known
-// list and falls back to "all" for anything unrecognized (missing/typo'd
-// data-cat attributes, stale markup, etc.) instead of silently filtering
-// the grid to an unintended category or leaving it blank.
+// setFilter validates the incoming category against the known list and
+// falls back to "all" for anything unrecognized.
 function setFilter(cat) {
   activeCat = VALID_CATS.includes(cat) ? cat : "all";
   styleFilterPills();
@@ -340,12 +360,7 @@ document.querySelectorAll(".footer-cat").forEach((a) => {
 });
 
 // ── SEARCH ────────────────────────────────────────────────
-// FIX: Clear inputs on DOMContentLoaded AND after a short delay to catch
-// late browser autofill that fires after the initial load event
 window.addEventListener("DOMContentLoaded", () => {
-  // FIX: explicitly re-assert the default "all" state on load (instead of
-  // relying solely on the module-level initializer) so a stale value
-  // injected before this listener runs can never leak into the first render
   setFilter("all");
   clearSearchInputs();
   renderProducts();
@@ -355,8 +370,6 @@ window.addEventListener("DOMContentLoaded", () => {
     const sm = document.getElementById("searchMobile");
     const sdVal = sd ? sd.value.trim() : "";
     const smVal = sm ? sm.value.trim() : "";
-    // Only re-clear if the value doesn't look like a real product search
-    // (i.e. it contains @ or looks like an email/phone — autofill artifacts)
     if (sdVal.includes("@") || /^\+?\d{6,}$/.test(sdVal)) {
       if (sd) sd.value = "";
       searchTerm = "";
@@ -585,7 +598,7 @@ function renderHomeArrivals() {
         <span style="position:absolute;top:8px;left:8px;background:#ff7a00;color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.06em;">New</span>
       </div>
       <div class="p-3 flex-1 flex flex-col">
-        <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-0.5">${p.cat}</div>
+        <div class="text-[10px] font-semibold uppercase tracking-[0.08em] text-brand mb-0.5">${catLabel(p.cat)}</div>
         <div class="text-[12px] font-semibold mb-1" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.name}</div>
         <div class="text-[13px] font-bold text-brand mt-auto pt-2">${fmt(p.price)}</div>
       </div>
@@ -616,13 +629,7 @@ const sectionObserver = new IntersectionObserver(
 );
 fadeSections.forEach((s) => sectionObserver.observe(s));
 
-// FIX: Safety net — if a fade-section never intersects (e.g. it sits below
-// the fold on a short mobile viewport and the user never scrolls far enough
-// to trigger it, or never reflows the page), force it visible after a short
-// delay so content is never permanently stuck at opacity:0. This previously
-// caused product cards to render correctly into the DOM but stay invisible
-// on mobile until an unrelated click (e.g. a filter button) triggered a
-// scrollIntoView that happened to bring the section into view.
+// Safety net so content never stays stuck at opacity:0 on short viewports.
 setTimeout(() => {
   fadeSections.forEach((s) => s.classList.add("show"));
 }, 1200);
@@ -640,7 +647,7 @@ function openProductDetail(p) {
   const pdPrice = document.getElementById("pdPrice");
   const pdQtyEl = document.getElementById("pdQty");
   if (pdImg)   { pdImg.src = optimizeImgUrl(p.img, 560); pdImg.alt = p.name; }
-  if (pdCat)   pdCat.textContent   = (p.cat || "").toUpperCase();
+  if (pdCat)   pdCat.textContent   = catLabel(p.cat).toUpperCase();
   if (pdName)  pdName.textContent  = p.name;
   if (pdDesc)  pdDesc.textContent  = p.desc || "";
   if (pdPrice) pdPrice.textContent = fmt(p.price);
@@ -668,7 +675,7 @@ document.getElementById("pdAddCart")?.addEventListener("click", () => {
 const infoContent = {
   about: {
     title: "About Minipi NG",
-    body: `<p>Minipi NG is Nigeria's go-to online store for the latest phones, tablets, laptops and gaming gear.</p>
+    body: `<p>Minipi NG is Nigeria's go-to online store for the latest phones, tablets, laptops, gaming gear, audio gear and watches.</p>
            <p>We source authentic devices directly from trusted brands and deliver them to your doorstep, with prices always listed in Naira.</p>
            <p>Founded with one goal: make great technology accessible to everyone in Nigeria.</p>`,
   },
@@ -750,8 +757,6 @@ function unsubscribeFromUserOrders() {
 
 // ── REFRESH AUTH UI ───────────────────────────────────────
 function refreshAuthUI() {
-  // FIX: Always clear search inputs on auth state change to prevent
-  // browser autofill from contaminating the product grid with email/phone values
   clearSearchInputs();
   renderProducts();
 
@@ -841,7 +846,6 @@ function closeAuthModal() {
   signInModal?.classList.add("hidden");
   signUpModal?.classList.add("hidden");
   clearAuthAlerts();
-  // FIX: Clear search inputs when auth modal closes in case autofill fired
   clearSearchInputs();
   renderProducts();
 }
@@ -1088,7 +1092,6 @@ document.getElementById("rpSubmitBtn")?.addEventListener("click", async () => {
 // ── SESSION / AUTH STATE CHANGE ───────────────────────────
 if (sb) {
   sb.auth.onAuthStateChange((event, session) => {
-    // FIX: Clear search inputs on every auth event to prevent autofill bleed
     clearSearchInputs();
 
     if (event === "PASSWORD_RECOVERY") {
@@ -1212,9 +1215,6 @@ async function loadProductsFromSupabase() {
       .subscribe();
   }
 
-  // FIX: re-assert default filter state once Supabase data is in so the
-  // styled pills/cards reflect "all" against the (possibly replaced)
-  // products array, instead of trusting whatever was rendered earlier
   setFilter(activeCat);
   renderHomeArrivals();
   renderCart();

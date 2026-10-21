@@ -151,6 +151,21 @@
       .badge-new {
         animation: badgePop 1.8s ease infinite;
       }
+      /* Filter pills scroll sideways on small screens instead of wrapping messily */
+      #filterRow {
+        max-width: 100%;
+      }
+      @media (max-width: 639px) {
+        #filterRow {
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          scrollbar-width: none;
+          padding-bottom: 4px;
+        }
+        #filterRow::-webkit-scrollbar {
+          display: none;
+        }
+      }
     </style>
     <link
       rel="stylesheet"
@@ -164,9 +179,10 @@
     <div class="overflow-hidden bg-gradient-to-r from-brand to-brand/50 py-3">
       <div class="scroll-right text-white font-bold text-lg">
         🚀 SHOP NOW!!! &nbsp; | &nbsp; 📱 Latest Gadgets &nbsp; | &nbsp; 🎧
-        Premium Audio Gear &nbsp; | &nbsp; 💻 Tech Deals Daily &nbsp; | &nbsp;
-        ⚡ Fast Delivery &nbsp; | &nbsp; 🔥 Limited Time Offers &nbsp; | &nbsp;
-        🛒 Best Prices Guaranteed &nbsp; | &nbsp; ✨ Upgrade Your Tech Today!
+        Premium Audio Gear &nbsp; | &nbsp; ⌚ Smart &amp; Classic Watches
+        &nbsp; | &nbsp; 💻 Tech Deals Daily &nbsp; | &nbsp; ⚡ Fast Delivery
+        &nbsp; | &nbsp; 🔥 Limited Time Offers &nbsp; | &nbsp; 🛒 Best Prices
+        Guaranteed &nbsp; | &nbsp; ✨ Upgrade Your Tech Today!
       </div>
     </div>
 
@@ -188,7 +204,7 @@
             id="searchDesktop"
             type="text"
             autocomplete="off"
-            placeholder="Search phones, laptops, tablets…"
+            placeholder="Search phones, laptops, audio, watches…"
             class="w-full pl-4 pr-11 py-2.5 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 bg-gray-100 dark:bg-neutral-800 text-sm outline-none focus:border-brand placeholder:text-gray-400 transition-colors"
           />
           <button
@@ -309,7 +325,7 @@
               </a>
               <a
                 href="shop.html?cat=gaming"
-                class="cat-nav-link flex items-center gap-3 px-4 py-3 text-[13px] font-medium hover:bg-gray-50 dark:hover:bg-neutral-800 hover:text-brand transition-colors"
+                class="cat-nav-link flex items-center gap-3 px-4 py-3 text-[13px] font-medium hover:bg-gray-50 dark:hover:bg-neutral-800 hover:text-brand border-b border-gray-100 dark:border-neutral-800 transition-colors"
                 data-cat="gaming"
               >
                 <svg
@@ -353,6 +369,47 @@
                     stroke-width="2.5"
                   /></svg
                 >Gaming
+              </a>
+              <a
+                href="shop.html?cat=audio"
+                class="cat-nav-link flex items-center gap-3 px-4 py-3 text-[13px] font-medium hover:bg-gray-50 dark:hover:bg-neutral-800 hover:text-brand border-b border-gray-100 dark:border-neutral-800 transition-colors"
+                data-cat="audio"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="w-5 h-5 text-brand shrink-0"
+                >
+                  <path d="M3 18v-6a9 9 0 0118 0v6" />
+                  <path
+                    d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"
+                  /></svg
+                >Audio Gear
+              </a>
+              <a
+                href="shop.html?cat=watch"
+                class="cat-nav-link flex items-center gap-3 px-4 py-3 text-[13px] font-medium hover:bg-gray-50 dark:hover:bg-neutral-800 hover:text-brand transition-colors"
+                data-cat="watch"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="w-5 h-5 text-brand shrink-0"
+                >
+                  <circle cx="12" cy="12" r="6" />
+                  <polyline points="12 9 12 12 13.5 13.5" />
+                  <path
+                    d="M16.51 17.35l-.35 3.83a2 2 0 01-2 1.82H9.83a2 2 0 01-2-1.82l-.35-3.83m.01-10.7l.35-3.83A2 2 0 019.83 1h4.35a2 2 0 012 1.82l.35 3.83"
+                  /></svg
+                >Watches
               </a>
             </div>
           </li>
@@ -583,6 +640,18 @@
               >
                 Gaming
               </button>
+              <button
+                class="mob-cat-btn px-3 py-1.5 rounded-full border-[1.5px] text-xs font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"
+                data-cat="audio"
+              >
+                Audio Gear
+              </button>
+              <button
+                class="mob-cat-btn px-3 py-1.5 rounded-full border-[1.5px] text-xs font-medium transition-all border-gray-200 dark:border-neutral-700 hover:border-brand hover:text-brand"
+                data-cat="watch"
+              >
+                Watches
+              </button>
             </div>
           </li>
           <li>
@@ -618,8 +687,8 @@
           <p
             class="text-sm text-gray-500 dark:text-gray-400 max-w-[420px] mb-7 leading-relaxed mx-auto md:mx-0"
           >
-            Shop the newest phones, tablets, laptops and gaming consoles — all
-            in one place, at the best prices in Naira.
+            Shop the newest phones, tablets, laptops, gaming consoles, audio
+            gear and watches — all in one place, at the best prices in Naira.
           </p>
           <a
             href="/shop.html"
@@ -658,7 +727,7 @@
           </div>
         </div>
         <img
-          src="https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=700&q=80"
+          src="/image/KQFQ2663.JPG"
           alt="Wireless earbuds"
           class="w-full max-w-[280px] md:max-w-[440px] aspect-square object-cover rounded-3xl shadow-2xl justify-self-center mx-auto"
         />
@@ -676,7 +745,10 @@
             Find exactly what you're looking for
           </p>
         </div>
-        <div id="catGrid" class="grid grid-cols-2 sm:grid-cols-5 gap-4">
+        <div
+          id="catGrid"
+          class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4"
+        >
           <button
             class="cat-card flex flex-col items-center gap-3 bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl py-7 px-4 text-[13px] font-medium hover:border-brand hover:shadow-[0_4px_20px_rgba(255,122,0,0.12)] transition-all"
             data-cat="all"
@@ -785,6 +857,45 @@
               /></svg
             >Gaming
           </button>
+          <button
+            class="cat-card flex flex-col items-center gap-3 bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl py-7 px-4 text-[13px] font-medium hover:border-brand hover:shadow-[0_4px_20px_rgba(255,122,0,0.12)] transition-all"
+            data-cat="audio"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="w-8 h-8 text-brand"
+            >
+              <path d="M3 18v-6a9 9 0 0118 0v6" />
+              <path
+                d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"
+              /></svg
+            >Audio Gear
+          </button>
+          <button
+            class="cat-card flex flex-col items-center gap-3 bg-white dark:bg-neutral-900 border-[1.5px] border-gray-200 dark:border-neutral-800 rounded-2xl py-7 px-4 text-[13px] font-medium hover:border-brand hover:shadow-[0_4px_20px_rgba(255,122,0,0.12)] transition-all"
+            data-cat="watch"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="w-8 h-8 text-brand"
+            >
+              <circle cx="12" cy="12" r="6" />
+              <polyline points="12 9 12 12 13.5 13.5" />
+              <path
+                d="M16.51 17.35l-.35 3.83a2 2 0 01-2 1.82H9.83a2 2 0 01-2-1.82l-.35-3.83m.01-10.7l.35-3.83A2 2 0 019.83 1h4.35a2 2 0 012 1.82l.35 3.83"
+              /></svg
+            >Watches
+          </button>
         </div>
       </div>
     </section>
@@ -884,6 +995,18 @@
               data-cat="gaming"
             >
               Gaming
+            </button>
+            <button
+              class="filter-pill px-[18px] py-2 rounded-full border-[1.5px] text-[13px] font-medium transition-all whitespace-nowrap"
+              data-cat="audio"
+            >
+              Audio Gear
+            </button>
+            <button
+              class="filter-pill px-[18px] py-2 rounded-full border-[1.5px] text-[13px] font-medium transition-all whitespace-nowrap"
+              data-cat="watch"
+            >
+              Watches
             </button>
           </div>
         </div>
@@ -1018,21 +1141,21 @@
       </h2>
       <p class="text-gray-300 text-sm leading-relaxed mb-6 text-center">
         Mini Pi NG is a trusted gadget store offering quality laptops, tablets,
-        smartphones, gaming consoles, and accessories at affordable prices.
+        smartphones, gaming consoles, audio gear, watches and accessories at
+        affordable prices.
       </p>
       <div id="moreContent" class="hidden mt-6 p-6 rounded-lg shadow">
         <p class="text-gray-300 text-sm leading-relaxed text-center mb-6">
           Minipi is Nigeria's go-to online store for the latest phones, tablets,
-          laptops and gaming gear. We source authentic devices directly from
-          trusted brands and deliver them to your doorstep, with prices always
-          listed in Naira. Founded with one goal: make great technology
-          accessible to everyone in Nigeria.
+          laptops, gaming gear, audio gear and watches. We source authentic
+          devices directly from trusted brands and deliver them to your
+          doorstep, with prices always listed in Naira. Founded with one goal:
+          make great technology accessible to everyone in Nigeria.
         </p>
       </div>
       <div class="text-center mt-6">
         <button
           id="toggleBtn"
-          onclick="toggleContent()"
           class="bg-brand text-white px-6 py-3 rounded-full hover:opacity-90 transition-opacity"
         >
           See More
@@ -1085,12 +1208,154 @@
           </div>
         </div>
         <img
-          src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=700&q=80"
+          src="/image/VWOP3006.JPG"
           alt="Smartphones"
           class="w-full max-w-[280px] md:max-w-[460px] rounded-3xl object-cover shadow-2xl justify-self-center mx-auto"
         />
       </div>
     </div>
+    <!-- ═══════════════════════════════════════════════════════════
+     VISIT OUR STORE
+     Paste between the BANNER block and the FOOTER in index.html.
+     Needs the /images folder next to index.html.
+     ═══════════════════════════════════════════════════════════ -->
+<section id="visit" class="bg-white dark:bg-neutral-950 transition-colors duration-300">
+  <div class="max-w-[1280px] mx-auto px-5 py-14 md:py-20">
+    <div class="max-w-[560px] mb-8 md:mb-10">
+      <h2 class="text-xl sm:text-2xl md:text-[28px] font-bold mb-2">Visit our store in Eputu</h2>
+      <p class="text-[13px] sm:text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+        See the devices in person before you buy. Phones, games, audio gear and watches are on display, and our team will help you pick.
+      </p>
+    </div>
+
+    <!-- Photos -->
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-4">
+      <!-- Storefront -->
+      <button
+        type="button"
+        data-lightbox="/image/CCJL4342.JPG"
+        data-caption="Minipi NG Ltd storefront, Eputu"
+        class="store-photo md:col-span-5 relative overflow-hidden rounded-2xl bg-gray-100 dark:bg-neutral-800 aspect-[4/5] md:aspect-auto md:min-h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+      >
+        <img
+          src="/image/CCJL4342.JPG"
+          alt="Minipi NG Ltd storefront with orange signboard on Eputu-Oribanwa Road"
+          width="1100" height="1467"
+          loading="lazy" decoding="async"
+          class="absolute inset-0 w-full h-full object-cover"
+        />
+      </button>
+
+      <div class="md:col-span-7 flex flex-col gap-3 md:gap-4">
+        <!-- Interior -->
+        <button
+          type="button"
+          data-lightbox="/image/DZYR0966.JPG"
+          data-caption="Inside the store: phones, games, audio and watches"
+          class="store-photo relative overflow-hidden rounded-2xl bg-gray-100 dark:bg-neutral-800 aspect-[4/3] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+        >
+          <img
+            src="/image/DZYR0966.JPG"
+            alt="Shelves of phones, PlayStation consoles, speakers and watches inside Minipi NG"
+            width="300px" height="200px"
+            loading="lazy" decoding="async"
+            class="absolute inset-0 w-full h-full object-cover object-[50%_35%]"
+          />
+        </button>
+
+        <!-- Signboard -->
+        <button
+          type="button"
+          data-lightbox="/image/VFBE5402.JPG"
+          data-caption="Minipi NG Ltd. Plot 15, Eputu-Oribanwa Road, Opp Jay Hotel, Eputu, Lagos State"
+          class="store-photo relative overflow-hidden rounded-2xl bg-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+        >
+          <img
+            src="/image/VFBE5402.JPG"
+            alt="Minipi NG Ltd signboard listing tech deals, audio gear, games, phones and laptops"
+            width="160" height="36"
+            loading="lazy" decoding="async"
+            class="w-[700px] h-[200px]"
+          />
+        </button>
+      </div>
+    </div>
+
+    <!-- Details -->
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-[1.4fr_1fr_auto] gap-6 md:gap-10 items-start border-t border-gray-200 dark:border-neutral-800 pt-8">
+      <div>
+        <h3 class="text-sm font-semibold mb-1.5">Address</h3>
+        <p class="text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed">
+          Plot 15, Eputu-Oribanwa Road, opposite Jay Hotel,<br />Eputu, Lagos State
+        </p>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold mb-1.5">Call or WhatsApp</h3>
+        <p class="text-[13px] leading-relaxed flex flex-col text-gray-500 dark:text-gray-400">
+          <a href="tel:+2349020300736" class="hover:text-brand transition-colors">0902 030 0736</a>
+          <a href="tel:+2348034970248" class="hover:text-brand transition-colors">0803 497 0248</a>
+          <a href="tel:+2349011717804" class="hover:text-brand transition-colors">0901 171 7804</a>
+        </p>
+      </div>
+      <div class="flex flex-col sm:flex-row md:flex-col gap-2.5">
+        <a
+          href="https://www.google.com/maps/search/?api=1&query=Plot+15+Eputu-Oribanwa+Road+Eputu+Lagos"
+          target="_blank" rel="noopener"
+          class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-brand text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+        >
+          <i class="fas fa-location-dot text-xs"></i>Get directions
+        </a>
+        <a
+          href="https://wa.me/2348034970248"
+          target="_blank" rel="noopener"
+          class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full border-[1.5px] border-gray-200 dark:border-neutral-700 text-sm font-semibold hover:border-brand hover:text-brand transition-colors"
+        >
+          <i class="fab fa-whatsapp text-base"></i>Message us
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox (opens when a store photo is tapped) -->
+<div
+  id="lightbox"
+  class="hidden fixed inset-0 z-[700] bg-black/85 items-center justify-center p-4 sm:p-8"
+  role="dialog" aria-modal="true" aria-label="Photo viewer"
+>
+  <button
+    id="lightboxClose" type="button" aria-label="Close photo"
+    class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 text-white flex items-center justify-center hover:bg-white/20 transition-colors"
+  >
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12" /></svg>
+  </button>
+  <figure class="max-w-full max-h-full flex flex-col items-center gap-3">
+    <img id="lightboxImg" src="" alt="" class="max-w-full max-h-[80vh] rounded-xl object-contain" />
+    <figcaption id="lightboxCaption" class="text-[13px] text-white/80 text-center max-w-[560px]"></figcaption>
+  </figure>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOOTER CONTACT COLUMN (replace the existing <div> that holds
+     "Contact", "Call lines" and "Location" in your footer)
+     ═══════════════════════════════════════════════════════════ -->
+<!--
+<div>
+  <h4 class="text-[13px] font-semibold mb-3.5">Contact</h4>
+  <ul class="flex flex-col gap-2.5">
+    <li>
+      <a href="mailto:support@gadgets.ng" class="text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors">support@gadgets.ng</a>
+    </li>
+    <li><a href="tel:+2349020300736" class="text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors">+234 902 030 0736</a></li>
+    <li><a href="tel:+2348034970248" class="text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors">+234 803 497 0248</a></li>
+    <li><a href="tel:+2349011717804" class="text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors">+234 901 171 7804</a></li>
+    <li class="text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed">
+      Plot 15, Eputu-Oribanwa Road, Opp Jay Hotel, Eputu, Lagos State
+    </li>
+  </ul>
+</div>
+
 
     <!-- FOOTER -->
     <footer
@@ -1109,8 +1374,8 @@
           <p
             class="text-[13px] text-gray-500 dark:text-gray-400 leading-relaxed"
           >
-            Your one-stop shop for phones, tablets, laptops and gaming gear in
-            Nigeria. Authentic products, best prices.
+            Your one-stop shop for phones, tablets, laptops, gaming gear, audio
+            gear and watches in Nigeria. Authentic products, best prices.
           </p>
         </div>
         <div>
@@ -1146,6 +1411,22 @@
                 class="footer-cat text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
                 data-cat="gaming"
                 >Gaming</a
+              >
+            </li>
+            <li>
+              <a
+                href="#shop"
+                class="footer-cat text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
+                data-cat="audio"
+                >Audio Gear</a
+              >
+            </li>
+            <li>
+              <a
+                href="#shop"
+                class="footer-cat text-[13px] text-gray-500 dark:text-gray-400 hover:text-brand transition-colors"
+                data-cat="watch"
+                >Watches</a
               >
             </li>
           </ul>
@@ -2277,6 +2558,39 @@
 
     <!-- ── LIVE PAYMENT SETTINGS (bank details from Supabase "settings" table) ── -->
     <script>
+ (function () {
+    var box = document.getElementById("lightbox");
+    var img = document.getElementById("lightboxImg");
+    var cap = document.getElementById("lightboxCaption");
+    if (!box || !img) return;
+
+    function open(src, caption) {
+      img.src = src;
+      img.alt = caption || "";
+      cap.textContent = caption || "";
+      box.classList.remove("hidden");
+      box.style.display = "flex";
+      document.body.style.overflow = "hidden";
+    }
+    function close() {
+      box.classList.add("hidden");
+      box.style.display = "";
+      img.src = "";
+      document.body.style.overflow = "";
+    }
+
+    document.querySelectorAll("[data-lightbox]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        open(b.dataset.lightbox, b.dataset.caption);
+      });
+    });
+    document.getElementById("lightboxClose").addEventListener("click", close);
+    box.addEventListener("click", function (e) { if (e.target === box) close(); });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !box.classList.contains("hidden")) close();
+    });
+  })();
+
       (function () {
         // Same Supabase project as the admin dashboard.
         const SB_URL = "https://sygdrjmjjxwxuczcnxjr.supabase.co";
@@ -2383,6 +2697,5 @@
           ?.addEventListener("click", loadPaymentSettings);
       })();
     </script>
-    <script src="/main.js"></script>
   </body>
 </html>
